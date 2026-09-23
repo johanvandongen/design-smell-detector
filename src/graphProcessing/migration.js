@@ -38,6 +38,53 @@ export const prepareGraph = function (graphData) {
 		edge.data.group = edge.data.label;
 	});
 
+    // Service if a node has only incoming dependencies
+    // for (const node of graph.abstract.elements.nodes) {
+    //     let ingoing = false;
+    //     let outgoing = false;
+    //     for (const edge of graph.abstract.elements.edges) {
+    //         if (edge.data.label !== 'calls') continue;
+    //         if (edge.data.source === node.data.id) {
+    //             outgoing = true;
+    //         }
+    //         if (edge.data.target === node.data.id) {
+    //             ingoing = true;
+    //         }
+    //     }
+    //     if (ingoing && !outgoing) {
+    //         console.log("marking service", node.data.name)
+    //         node.data.labels.push("Service");
+    //     }
+    // }
+
+    // Cyclic dependency
+    // Improve by creating a dependency adjancency list, and node A depend on node B if there is a parameterizes or invokes relationsship. Right now those are missed since they are not at class level
+    let smell_node_ids = [];
+    const problematic_interactions = ['calls', 'holds', 'accepts'];
+    for (const edge1 of graph.abstract.elements.edges) {
+        if (!problematic_interactions.includes(edge1.data.label)) continue;
+        for (const edge2 of graph.abstract.elements.edges) {
+            if (!problematic_interactions.includes(edge2.data.label)) continue;
+
+            if (edge1.data.source === edge2.data.target && edge1.data.target === edge2.data.source) {
+                // console.log("marking cyclic dependency between", edge1.data.source, "and", edge1.data.target)
+                // console.log(edge1, edge2)
+                smell_node_ids.push(edge1.data.source);
+                smell_node_ids.push(edge1.data.target);
+            }
+        }
+    }
+    for (const node of graph.abstract.elements.nodes) {
+        if (smell_node_ids.includes(node.data.id)) {
+            node.data.labels.push("Smell");
+        }
+    }
+    // for (const edge of graph.abstract.elements.edges) {
+    //     if (smell_node_ids.includes(edge.data.source) || smell_node_ids.includes(edge.data.target)) {
+    //         console.log(edge.data.interaction, edge)
+    //     }
+    // }
+
 	return graph;
 };
 
@@ -240,6 +287,10 @@ const abstractizeV2 = function (pGraphData) {
 		(edge) => edge.source !== edge.target
 	);
 
+    const parameterizes = compose(invert(edges['parameterizes']) || [], edges['typed'] || [], "parameterizes").filter(
+		(edge) => edge.source !== edge.target
+	);
+
 	/**
 	 * Identify top-level classes by analyzing "contains" edges
 	 */
@@ -378,7 +429,7 @@ const abstractizeV2 = function (pGraphData) {
 	 * Build the "abstract" set of nodes (remove packages to remove)
 	 */
 	const abstractNodes = filterNodesByIds(
-		filterNodesByLabels(nodes, ["Scope", "Type", "Problem", "Operation", "Category"]),
+		filterNodesByLabels(nodes, ["Scope", "Type", "Problem", "Operation", "Category", "Variable"]),
 		packagesToRemove
 	);
 
@@ -439,6 +490,13 @@ const abstractizeV2 = function (pGraphData) {
 		holds: holds || [],
 		accepts: accepts || [],
 		returns: returns || [],
+
+        // Johan add original edges
+        invokes: edges['invokes'] || [],
+        rawReturns: edges['returns'] || [],
+        typed: edges['typed'] || [],
+        parameterizes: parameterizes || [],
+
 
 		implements: edges['implements'] || [],
 		succeeds: edges['succeeds'] || [],

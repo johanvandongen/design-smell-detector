@@ -26,6 +26,7 @@ export function bootstrapApp() {
 	const headlessPipeline = createHeadlessPipeline({ state });
 	const visualPipeline = createVisualPipeline({ state });
 	installWindowStateShim(state);
+    Split(['#cy', '#cypreview'])
 
 	const stageResetRuntimeState = tap((ctx) => {
 		ctx.state.hiddenEdges = {};

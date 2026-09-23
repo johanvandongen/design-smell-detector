@@ -8,6 +8,7 @@
   <link rel="icon" href="favicon.ico" />
 
   <!-- External Libraries (Optimized Order) -->
+   <script src="https://unpkg.com/split.js/dist/split.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/cytoscape@3.31.0/dist/cytoscape.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/cytoscape-navigator@2.0.2/cytoscape-navigator.min.js"></script>
@@ -45,136 +46,144 @@
 
 <body>
   <div class="titlebar">
+      <div id="toolbar">
+          <button title="Upload JSON" id="btn-upload" class="toolbutton">
+              <img class="icon icon-download" src="img/upload.png" alt="upload" />
+          <input type="file" id="file-selector" accept=".json" />
+        </button>
+        <button title="Download as SVG" id="btn-download" class="toolbutton">
+            <img class="icon icon-download" src="img/download.png" alt="download" />
+        </button>
+        <button title="Open SVG in new tab" id="btn-popup" class="toolbutton">
+            <img class="icon icon-download" src="img/open-new.png" alt="popout" />
+        </button>
+    </div>
     <h1 id="filename">Software Visualization</h1>
-    <button title="Upload JSON" id="btn-upload" class="toolbutton">
-      <img class="icon icon-download" src="img/upload.png" alt="upload" />
-      <input type="file" id="file-selector" accept=".json" />
-    </button>
-    <button title="Download as SVG" id="btn-download" class="toolbutton">
-      <img class="icon icon-download" src="img/download.png" alt="download" />
-    </button>
-    <button title="Open SVG in new tab" id="btn-popup" class="toolbutton">
-      <img class="icon icon-download" src="img/open-new.png" alt="popout" />
-    </button>
   </div>
 
-  <div id="sidebar">
-    <div class="notice">
-      <strong>Tip:</strong> try (right-)clicking on nodes and edges! Watch a
-      screencast <a href="screencast.mp4" target="_blank">here</a>!
-    </div>
-    <div class="tab-bar">
-      <ul class="tabs">
-        <li>
-          <a class="tabs tablink active" data-tab="tab-general">
-            General
-          </a>
-        </li>
-        <li>
-          <a class="tabs tablink" data-tab="tab-traces">
-            Traces
-          </a>
-      </ul>
-    </div>
-    <div class="sidebar-tab" id="tab-general">
-      <div class="menu" id="menu-layout">
-        <h2>Graph</h2>
-        <div>
-          <h3>Layout algorithm</h3>
-          <label for="selectlayout">
-            Select layout
-            <select class="dd" id="selectlayout" size="1">
-              <option value="cola">cola</option>
-              <option selected value="klay">klay</option>
-              <option value="fcose">fcose</option>
-              <option value="cose-bilkent">cose-bilkent</option>
-              <option value="euler">euler</option>
-              <option value="spread">spread (takes a while...)</option>
-              <option value="dagre">dagre</option>
-            </select>
-          </label>
-          <button class="sidebar" id="btn-relayout">
-            Relayout
-          </button>
+  <div id="main-container">
+      <div id="sidebar">
+        <div class="notice">
+          <strong>Tip:</strong> try (right-)clicking on nodes and edges! Watch a
+          screencast <a href="screencast.mp4" target="_blank">here</a>!
         </div>
-
-        <!-- <div>
-          <h3>Expand and Collapse</h2>
-            <button class="sidebar" id="expandNodes">Expand Nodes</button>
-            <button class="sidebar" id="collapseNodes">Collapse Nodes</button><br />
-            <button class="sidebar" id="collapseEdges">Collapse Edges</button>
-        </div> -->
-      </div>
-
-      <div class="menu" id="menu-nodes">
-        <h2>Nodes</h2>
-        <div>
-          <button class="sidebar" id="btn-hideClasses">Hide classes</button>
-          <button class="sidebar" id="btn-showClasses">Show classes</button>
+        <div class="tab-bar">
+          <ul class="tabs">
+            <li>
+              <a class="tabs tablink active" data-tab="tab-general">
+                General
+              </a>
+            </li>
+            <li>
+              <a class="tabs tablink" data-tab="tab-traces">
+                Traces
+              </a>
+          </ul>
         </div>
-
-        <!-- <label for="showPrimitives">
-                      <input type="checkbox" id="showPrimitives" name="showPrimitives" value="showPrimitives" checked="checked" />
-                      Show primitives
-                    </label> -->
-        <!-- <br />
-                    <label for="showPackages">
-                      <input type="checkbox" id="showPackages" name="showPackages" value="showPackages" checked="checked" />
-                      Show packages
-                    </label> -->
-        <div class="coloring-mode">
-          <h3>Node Coloring</h3>
-          <div id="coloring-options"></div>
-          <div id="coloring-legend"></div>
+        <div class="sidebar-tab" id="tab-general">
+          <div class="menu" id="menu-layout">
+            <h2>Graph</h2>
+            <div>
+              <h3>Layout algorithm</h3>
+              <label for="selectlayout">
+                Select layout
+                <select class="dd" id="selectlayout" size="1">
+                  <option value="cola">cola</option>
+                  <option selected value="klay">klay</option>
+                  <option value="fcose">fcose</option>
+                  <option value="cose-bilkent">cose-bilkent</option>
+                  <option value="euler">euler</option>
+                  <option value="spread">spread (takes a while...)</option>
+                  <option value="dagre">dagre</option>
+                </select>
+              </label>
+              <button class="sidebar" id="btn-relayout">
+                Relayout
+              </button>
+            </div>
+    
+            <!-- <div>
+              <h3>Expand and Collapse</h2>
+                <button class="sidebar" id="expandNodes">Expand Nodes</button>
+                <button class="sidebar" id="collapseNodes">Collapse Nodes</button><br />
+                <button class="sidebar" id="collapseEdges">Collapse Edges</button>
+            </div> -->
+          </div>
+    
+          <div class="menu" id="menu-nodes">
+            <h2>Nodes</h2>
+            <div>
+              <button class="sidebar" id="btn-hideClasses">Hide classes</button>
+              <button class="sidebar" id="btn-showClasses">Show classes</button>
+            </div>
+    
+            <!-- <label for="showPrimitives">
+                          <input type="checkbox" id="showPrimitives" name="showPrimitives" value="showPrimitives" checked="checked" />
+                          Show primitives
+                        </label> -->
+            <!-- <br />
+                        <label for="showPackages">
+                          <input type="checkbox" id="showPackages" name="showPackages" value="showPackages" checked="checked" />
+                          Show packages
+                        </label> -->
+            <div class="coloring-mode">
+              <h3>Node Coloring</h3>
+              <div id="coloring-options"></div>
+              <div id="coloring-legend"></div>
+            </div>
+    
+            <div>
+              <h3>Highlight nodes</h3>
+            
+              <label for="highlight">Separate node names by comma, whitespace, or new line.</label>
+              <textarea id="highlight" name="highlight" rows="3"></textarea>
+              <button class="sidebar" id="btn-reset">Reset</button>
+              <button class="sidebar" id="btn-highlight">Highlight</button>
+              <p />
+              <button class="sidebar" id="btn-toggleVisibility">
+                Toggle visibility
+              </button>
+            </div>
+    
+          </div>
+    
+          <div class="menu" id="menu-edges">
+            <h2>Edges</h2>
+            <table style="width: 100%; text-align: left" id="reltab">
+              <thead>
+                <th>Edge Type</th>
+                <th>└</th>
+                <th>╰</th>
+                <th>Action</th>
+              </thead>
+              <!-- relationship types here will be loaded from dataset -->
+            </table>
+          </div>
+    
+    
         </div>
-
-        <div>
-          <h3>Highlight nodes</h3>
-        
-          <label for="highlight">Separate node names by comma, whitespace, or new line.</label>
-          <textarea id="highlight" name="highlight" rows="3"></textarea>
-          <button class="sidebar" id="btn-reset">Reset</button>
-          <button class="sidebar" id="btn-highlight">Highlight</button>
-          <p />
-          <button class="sidebar" id="btn-toggleVisibility">
-            Toggle visibility
-          </button>
+        <div class="sidebar-tab" id="tab-traces" style="display: none">
+          <div class="menu">
+            <h2>Traces highlight</h2>
+            <div id="selectfeature"></div>
+          </div>
+    
         </div>
-
+        <!-- <div class="sidebar-tab" id="tab-bugs" style="display:none;"></div> -->
       </div>
-
-      <div class="menu" id="menu-edges">
-        <h2>Edges</h2>
-        <table style="width: 100%; text-align: left" id="reltab">
-          <thead>
-            <th>Edge Type</th>
-            <th>└</th>
-            <th>╰</th>
-            <th>Action</th>
-          </thead>
-          <!-- relationship types here will be loaded from dataset -->
-        </table>
-      </div>
-
-
-    </div>
-    <div class="sidebar-tab" id="tab-traces" style="display: none">
-      <div class="menu">
-        <h2>Traces highlight</h2>
-        <div id="selectfeature"></div>
-      </div>
-
-    </div>
-    <!-- <div class="sidebar-tab" id="tab-bugs" style="display:none;"></div> -->
+      
+        <div id="graph-container">
+            <div id="cy"></div>
+            <div id="cypreview"></div>
+        </div>
+        <div id="tooltip"></div>
+        <div id="infobox">
+            <div class="resizer"></div>
+             <!-- <div id="infotitle"></div> -->
+              <div id="infobody"></div>
+        </div>
   </div>
-  <div id="infobox">
-    <div class="resizer"></div>
-    <!-- <div id="infotitle"></div> -->
-    <div id="infobody"></div>
-  </div>
 
-  <div id="cy"></div>
-  <div id="tooltip"></div>
 
   <script type="module" src="script.js"></script>
 </body>

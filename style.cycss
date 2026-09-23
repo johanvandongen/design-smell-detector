@@ -81,7 +81,18 @@ node[properties.kind = "file"] {
 }
 
 node[properties.kind = "field"] {
+  shape: round-rectangle;
+  font-size: 16;
+  padding: 16px;
+  height: label;
+  width: label;
+  label: data(properties.simpleName);
+  border-color: grey;
+  background-color: whitesmoke;
+  border-width: 6px;
   shape: ellipse;
+  text-halign: center;
+  text-valign: center;
 }
 
 node[properties.kind = "parameter"] {
@@ -90,6 +101,20 @@ node[properties.kind = "parameter"] {
 
 node[properties.kind = "method"] {
   shape: round-rectangle;
+
+  
+  font-size: 16;
+  padding: 16px;
+  height: label;
+  width: label;
+  label: data(label);
+  border-color: grey;
+  background-color: whitesmoke;
+  border-width: 6px;
+  shape: rectangle;
+  text-halign: center;
+  text-valign: center;
+  text-border-color: grey;
 }
 
 node[properties.kind = "ctor"] {
@@ -136,8 +161,42 @@ edge[label = "calls"] {
   line-gradient-stop-colors: #CCFF66 #000080;
   line-gradient-stop-positions: 0% 100%;
   source-arrow-shape: none;
-  target-arrow-shape: none;
+  target-arrow-shape: triangle;
   line-style: dashed;
+  taxi-direction: leftward;
+  taxi-turn: -32px;
+}
+
+edge[label = "invokes"] {
+  source-arrow-color: #400080;
+  line-fill: linear-gradient;
+  line-gradient-stop-colors: #66FFCC #400080;
+  line-gradient-stop-positions: 0% 100%;
+  source-arrow-shape: none;
+  source-arrow-fill: hollow;
+  target-arrow-shape: triangle;
+  taxi-direction: leftward;
+  taxi-turn: -32px;
+}
+edge[label = "typed"] {
+  source-arrow-color: #400080;
+  line-fill: linear-gradient;
+  line-gradient-stop-colors: #66FFCC #400080;
+  line-gradient-stop-positions: 0% 100%;
+  source-arrow-shape: none;
+  source-arrow-fill: hollow;
+  target-arrow-shape: triangle;
+  taxi-direction: leftward;
+  taxi-turn: -32px;
+}
+edge[label = "parameterizes"] {
+  source-arrow-color: #400080;
+  line-fill: linear-gradient;
+  line-gradient-stop-colors: #66FFCC #400080;
+  line-gradient-stop-positions: 0% 100%;
+  source-arrow-shape: none;
+  source-arrow-fill: hollow;
+  target-arrow-shape: triangle;
   taxi-direction: leftward;
   taxi-turn: -32px;
 }
@@ -160,7 +219,7 @@ edge[label = "accepts"] {
   line-gradient-stop-colors: #66FF66 #800000;
   line-gradient-stop-positions: 0% 100%;
   source-arrow-shape: none;
-  target-arrow-shape: none;
+  target-arrow-shape: triangle;
   taxi-direction: leftward;
   taxi-turn: -32px;
 }
@@ -172,7 +231,7 @@ edge[label = "holds"] {
   line-gradient-stop-positions: 0% 100%;
   source-arrow-shape: none;
   source-arrow-fill: hollow;
-  target-arrow-shape: none;
+  target-arrow-shape: triangle;
   taxi-direction: leftward;
   taxi-turn: -32px;
 }

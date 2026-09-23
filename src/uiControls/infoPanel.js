@@ -25,6 +25,23 @@ const prepareRenderData = (node) => {
 		});
 	}
 
+    if (node.data('labels')) {
+		renderData.properties.push({
+			key: "(Debug) Labels",
+			value: node.data('labels').join(', ')
+				.replace(/\./g, '.\u200B')
+				.replace(/([A-Z])/g, '\u200B$1')
+		});
+	}
+    if (node.data('properties.kind')) {
+		renderData.properties.push({
+			key: "(Debug) kind",
+			value: node.data('properties.kind')
+				.replace(/\./g, '.\u200B')
+				.replace(/([A-Z])/g, '\u200B$1')
+		});
+	}
+
 	if (node.data('properties.description')) {
 		const d = h('div');
 		if (node.data('properties.title')) {

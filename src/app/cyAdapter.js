@@ -13,6 +13,9 @@ export function createCyAdapter() {
 			return new Promise((resolve) => {
 				cytoscape({
 					container,
+                    minZoom: 0.2,
+                    maxZoom: 2.5,
+                    wheelSensitivity: 0.2,
 					elements,
 					style,
 					textureOnViewport,

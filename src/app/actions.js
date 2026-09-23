@@ -234,6 +234,57 @@ export function createActions({ state, ui }) {
 		}
 	}
 
+    function showEdgesBetweenSmells(smellNode1, smellNode2, relationships) {
+        const edgesToRestore = [];
+        for (const edge of state.hiddenEdges[relationships]) {
+            // child to child relation, check if parents are smell nodes
+            if (edge.source().parent().id() === smellNode1 && edge.target().parent().id() === smellNode2) {
+                edgesToRestore.push(edge);
+            }
+            if (edge.target().parent().id() === smellNode1 && edge.source().parent().id() === smellNode2) {
+                edgesToRestore.push(edge);
+            }
+
+            // child to parent
+            if (edge.source().parent().id() === smellNode1 && edge.target().id() === smellNode2) {
+                edgesToRestore.push(edge);
+            }
+            if (edge.source().parent().id() === smellNode2 && edge.target().id() === smellNode1) {
+                edgesToRestore.push(edge);
+            }
+        }
+        edgesToRestore.forEach((e) => e.restore());
+
+    }
+    
+    function johanExpandNode(cy, node) {
+        console.log("node", node.data());
+
+        if (!node.data('labels').includes("Smell")) { return }
+        const connectedSmellNodes = node.outgoers().targets((n) => nodeHasLabel(n, 'Smell'));
+        if (connectedSmellNodes.length === 0) { return }
+
+        const smellNode1 = node.id();
+        const smellNode2 = connectedSmellNodes.length > 0 ? connectedSmellNodes[0].id() : null;
+        showEdgesBetweenSmells(smellNode1, smellNode2, 'invokes');
+        showEdgesBetweenSmells(smellNode1, smellNode2, 'returns');
+        showEdgesBetweenSmells(smellNode1, smellNode2, 'typed');
+        showEdgesBetweenSmells(smellNode1, smellNode2, 'parameterizes');
+        
+        
+        // state.hiddenNodes['methods'].restore();
+        
+        // console.log(cy.edges('[label = "invokes"]'));
+        
+        // if (node.data('labels').includes("Type")) {
+		//     const methods = node.scratch('_classviz')['methods'];
+        //     console.log(methods);
+        //     cy.add(methods.map(m => ({
+        //         group: 'nodes',
+        //         data: { ...m,  parent: node.id(), label: m.properties?.simpleName || m.name || 'unnamed' },
+        //     })));
+        // }
+    }
 	function bindCyInteractions() {
 		const cy = state.cy;
 		const cyDiv = ui.$('#cy');
@@ -241,6 +292,7 @@ export function createActions({ state, ui }) {
 		cy.on('select', 'node', (event) => {
 			event.target.addClass('selected');
 			displayInfo('#infobody')(event.target);
+            johanExpandNode(cy, event.target);
 			if (ui.$('#infobox').style.display !== 'flex') {
 				ui.$('#infobox').style.display = 'flex';
 				cyDiv.style.right = '270px';

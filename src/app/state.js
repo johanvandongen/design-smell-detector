@@ -16,6 +16,7 @@ export function createAppState() {
 		colorMap: { ...DEFAULT_COLOR_MAP },
 		colorOrder: { ...DEFAULT_COLOR_ORDER },
 		hiddenEdges: {},
+        hiddenNodes: {},
 		flip: false,
 		zoom: { value: 1 },
 		expandedNodesIdx: [],

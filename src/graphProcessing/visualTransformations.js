@@ -1,6 +1,6 @@
 import { hslString, roleStereotypeColors, whiten } from "../utilities/colors.js";
 import { $all } from "../utilities/shorthands.js";
-import { addScratch, counterToPercentage, cumulative, nodeHasLabel, isPureContainer, repeatMiddle, edgeHasLabel } from "../utilities/utils.js";
+import { addScratch, counterToPercentage, cumulative, nodeHasLabel, isPureContainer, repeatMiddle, edgeHasLabel, nodeHasKind } from "../utilities/utils.js";
 
 export const recolorContainers = function (pCy) {
 	const max_pkg_depth = Math.max(...pCy.nodes(isPureContainer).map((n) => n.ancestors().length));
@@ -153,10 +153,27 @@ export const setRsStyles = function (pCy) {
 	});
 }
 
+export const setServiceStyles = function (pCy) {
+    const service_nodes = pCy.nodes(n => nodeHasLabel(n, 'Service'));
+	service_nodes.forEach((clasz) => {
+        addScratch(clasz, 'style_default', {
+			'border-color': 'blue',
+		});
+	})
+    const smell_nodes = pCy.nodes(n => nodeHasLabel(n, 'Smell'));
+	smell_nodes.forEach((clasz) => {
+        addScratch(clasz, 'style_default', {
+			'border-color': 'red',
+		});
+	})
+}
+
 export const removeExtraNodes = function (pCy) {
 	const extras = pCy.nodes(n => 
 		!nodeHasLabel(n, "Scope") && 
 		!nodeHasLabel(n, "Type") && 
+        !nodeHasKind(n, "field") &&
+        !nodeHasLabel(n, "Operation") &&
 		!nodeHasLabel(n, "Primitive"));
 	extras.remove();
 };

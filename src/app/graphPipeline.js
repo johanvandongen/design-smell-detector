@@ -17,6 +17,7 @@ import {
 	removeExtraNodes,
 	setLayerStyles,
 	setRsStyles,
+    setServiceStyles,
 } from '../graphProcessing/visualTransformations.js';
 import {
 	addScratch,
@@ -45,6 +46,11 @@ const stageRemovePrimitives = tap(({ cy }) => removePrimitives(cy));
 const stageAdoptOrphans = tap(({ cy }) => adoptOrphans(cy));
 const stageCollectRoleStereotypes = tap(({ cy }) => collectRoleStereotypes(cy));
 const stageSetParents = tap(({ cy, state }) => setParents(cy, state.parentRel, false));
+const stageSetParentsMethods = tap(({ cy, state }) => setParents(cy, 'encapsulates', false));
+const stageSetParentsFields = tap(({ cy, state }) => setParents(cy, 'encapsulates', false));
+const stageDetectServiceNodes = tap(({ cy, state }) => detectServiceNodes(cy, state));
+const stageDetectSmellNodes = tap(({ cy, state }) => detectSmellNodes(cy, state));
+const stageRecommendRafctorings = tap(({ cy, state }) => recommendRafctorings(cy, state));
 const stageSetStyleClasses = tap(({ cy }) => setStyleClasses(cy));
 const stageAggregateLayers = tap(({ cy }) => aggregateLayers(cy));
 
@@ -58,6 +64,81 @@ const stageAdjustEdgeWidths = tap(({ cy }) => adjustEdgeWidths(cy));
 // Deprecated legacy/manual path. Keep these stage wrappers for quick rollback only.
 const stageSetLayerStyles = tap(({ cy, state }) => setLayerStyles(cy, state.layers, state.layerColors));
 const stageSetRsStyles = tap(({ cy }) => setRsStyles(cy));
+const stageSetServiceStyles = tap(({ cy }) => setServiceStyles(cy));
+const stageHideMethods = tap(({ cy, state }) => setHideMethods(cy, state));
+
+function detectServiceNodes(cy, state) {
+    for (const node of cy.nodes()) {
+        let hasOutgoing = node.outgoers((e) => edgeHasLabel(e, 'calls')).length > 0
+        let hasIngoing = node.incomers((e) => edgeHasLabel(e, 'calls')).length > 0
+
+        if (hasIngoing && !hasOutgoing) {
+            console.log("marking service", node.data.name)
+            node.data('labels').push("Service");
+        }
+    }
+
+}
+
+function detectSmellNodes(cy, state) {
+    // TODO move functionality here
+}
+
+function recommendRafctorings(cy, state) {
+    console.log("Recommending refactorings based on detected smells...");
+    const smellNodes = cy.nodes().filter((n) => nodeHasLabel(n, 'Smell'));
+    console.log(`Detected ${smellNodes.length} smell(s). Analyzing...`);
+
+    // Improve by creating an intermediate data structure of detailed dependencies, and suggest refactorings based ontype
+    // Edge prioritization
+    const otherSide = [];
+    for (const smellNode of smellNodes) {
+        const name = smellNode.data('name');
+
+        const outEdges = smellNode.children().outgoers('edge').filter((e) => e.target() != smellNode && nodeHasLabel(e.target(), 'Smell') || (e.target().parent() != smellNode && e.target().parent().data('labels') != undefined && nodeHasLabel(e.target().parent(), 'Smell')));
+        const inEdges = smellNode.children().incomers('edge').filter((e) => e.source() != smellNode && e.source().parent().data('labels') != undefined && nodeHasLabel(e.source().parent(), 'Smell'));
+        inEdges.push(...smellNode.incomers('edge').filter((e) => e.source() != smellNode && e.source().parent().data('labels') != undefined && nodeHasLabel(e.source().parent(), 'Smell')))
+        // console.log(name)
+        // console.log("outgoers", outEdges.map(e => e.data('label')).join(","))
+        // console.log("incomers", inEdges.map(e => e.data('label')).join(","))
+
+        const recommendations = [];
+        if (outEdges.length <= inEdges.length) {
+            recommendations.push(...outEdges.map((e) => `${e.data('label')}=${e.target().data('name')}`));
+            console.log("Refactor", name, "by removing", recommendations.join(", "));
+            for (const rec of outEdges) {
+                if (rec.data('label').startsWith("parameterizes")) {
+                    console.log(` - Extract interface for ${rec.target().data('name')} for method ${rec.source().data('properties.qualifiedName')}`);
+                }
+            }
+        } else {
+            otherSide.push(name)
+        }
+    }
+    console.log("Refactored on other side: ", otherSide.join(", "));
+
+    // Todo prepare a refactor transformation visualy and prepare json
+    // Example Cyclic dependency between Square and Unit
+    // Extract interface (eg Unit)
+    // - new interface name (IUnit)
+    // - add methods to interface (method declerations in Unit)
+    // - add Unit implements IUnit
+    // - Square that was dependend upon Unit, now needs to change all parameter/return types from Unit to IUnit
+    // -  if Square is abstract or interface, all subclasses also need to update the types (search for all Unit occurances in codebase)
+
+
+
+
+}
+
+function setHideMethods(cy) {
+    console.log("state")
+    // Can be made faster by first getting classes and then finding methods rather than the other way around,.
+    state.hiddenNodes['methods'] = cy.nodes('.Operation').filter((n) => !nodeHasLabel(n.parent(), 'Smell'));
+    state.hiddenNodes['variables'] = cy.nodes('.Variable').filter((n) => n.parent().data("labels") !== undefined && !nodeHasLabel(n.parent(), 'Smell'));
+    state.hiddenNodes['methods'].remove();
+    state.hiddenNodes['variables'].remove();
+}
 
 function hasAnyLabel(node, labels) {
 	for (const label of labels || []) {
@@ -207,6 +288,7 @@ function buildMethodListScratch(cy, layerMode, layerOrder, layerColors) {
 				const layerName = layerMode ? layerMode.applyToNode(data) : null;
 				return {
 					...data,
+                    name: 'johan',
 					color: layerColors[layerName] || fallbackColor,
 				};
 			});
@@ -274,6 +356,10 @@ export function createHeadlessPipeline({ state }) {
 		stageAdoptOrphans,
 		stageCollectRoleStereotypes,
 		stageSetParents,
+        stageSetParentsMethods,
+        stageDetectServiceNodes,
+        stageDetectSmellNodes,
+        stageRecommendRafctorings,
 		stageSetStyleClasses,
 		stageAggregateLayers
 	);
@@ -284,12 +370,14 @@ export function createVisualPipeline({ state }) {
 	const pipeline = pipe(
 		stageRecolorContainers,
 		stageCacheNodeStyles,
-		stageLiftCallsOnce,
-		stageLiftCallsOnce,
+		// stageLiftCallsOnce,
+		// stageLiftCallsOnce,
 		stageLiftConstructsOnce,
 		stageLiftConstructsOnce,
 		stageRemoveContainmentEdges,
 		stageAdjustEdgeWidths,
+        stageSetServiceStyles,
+        stageHideMethods,
 		// stageSetLayerStyles,
 		// stageSetRsStyles,
 		stageBuildColoringRegistry,

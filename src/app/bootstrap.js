@@ -1,5 +1,6 @@
 import { clearInfo } from '../uiControls/infoPanel.js';
 import { prepareGraph } from '../graphProcessing/migration.js';
+import { GraphService } from '../smell-detection/graphService.ts';
 import { augmentGraphWithDimensionMetadata, isColoringContractCompliant } from '../graphProcessing/dimensionMetadata.js';
 import { createActions } from './actions.js';
 import { createCyAdapter } from './cyAdapter.js';
@@ -55,6 +56,20 @@ export function bootstrapApp() {
 		assertPreparedGraphContract(ctx.graph, ctx.sourceName);
 	});
 
+    const stageDetectCyclicDependencies = tap((ctx) => {
+        // Convert labeled nodes and edges into sequential indices for SCC detection
+        let nodeMapping = {};
+        let k = 0;
+        for (let node of ctx.graph.abstract.elements.nodes) {
+            if (!node.data.labels.includes('Type')) continue;
+            nodeMapping[k] = node.data.id;
+            nodeMapping[node.data.id] = k;
+            k += 1;
+        }
+        let edges = ctx.graph.abstract.elements.edges.filter(edge => nodeMapping.hasOwnProperty(edge.data.source) && nodeMapping.hasOwnProperty(edge.data.target)).map(edge => [nodeMapping[edge.data.source], nodeMapping[edge.data.target]]);
+        ctx.getStronglyConnectedComponents =  GraphService.getStronglyConnectedComponents(ctx.graph.abstract.elements.nodes.length, edges);
+	});
+
 	const stageCreateHeadlessCy = async (ctx) => {
 		ctx.state.hcy = await ctx.cyAdapter.createHeadless(ctx.graph.abstract.elements);
 		return ctx;
@@ -87,6 +102,7 @@ export function bootstrapApp() {
 		stageValidateRawGraph,
 		stagePrepareGraph,
 		stageValidatePreparedGraph,
+        stageDetectCyclicDependencies,
 		stageCreateHeadlessCy,
 		stageRunHeadlessPipeline,
 		stageCreateVisualCy,
@@ -146,7 +162,7 @@ export function bootstrapApp() {
 	}
 
 	ui.on('DOMContentLoaded', document, async () => {
-		cytoscape.warnings(false);
+        cytoscape.warnings(false);
 		actions.bindWindowShortcuts();
 		bindStaticControls();
 		ui.bindTabs();

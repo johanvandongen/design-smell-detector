@@ -1,35 +1,32 @@
 # ClassViz
 
-[Demo.](https://satrio.rukmono.id/classviz/?p=jhotdraw-5.1)
 
-## Quick start with Python HTTP server
-
-Because browsers block fetches of local files for security reasons, ClassViz must be served from a local web server rather than opened directly from disk. The simplest option is Python’s built-in HTTP server:
+## Quick start
 
 1. *Clone the repository*
 
    ```bash
-   git clone https://github.com/rsatrioadi/classviz.git
-   cd classviz
+   git clone https://github.com/johanvandongen/design-smell-detector.git
+   cd design-smell-detector
    ```
 
-2. *Start a local server* using Python 3 (choose any port, e.g., 8000):
+2. *Start a local server*:
 
    ```bash
    # from the repository root
-   python3 -m http.server 8000
+   'npm run dev'
    ```
 
-   Python will host the directory at:
-   [http://localhost:8000/](http://localhost:8000/)
+   Vite will host it at:
+   [http://localhost:5173/](http://localhost:5173/)
 
-3. *Open the application* by visiting `http://localhost:8000/` in your browser. You can then either:
+3. *Open the application* by visiting `http://localhost:5173/` in your browser. You can then either:
 
    * Click *Upload JSON* and select your graph file, or
    * Place your `.json` file in the `data/` directory and open:
 
      ```
-     http://localhost:8000/?p=<filename-without-extension>
+     http://localhost:5173/?p=<filename-without-extension>
      ```
 
      On load, the application fetches

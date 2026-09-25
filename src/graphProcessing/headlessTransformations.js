@@ -141,6 +141,42 @@ export const aggregateLayers = function (pCy) {
 	});
 }
 
+export const addSmellLabels = function (pCy, state) {
+    // Mark every class that is part of a SCC with the "CD-smell" label
+    let smellyNodes = new Set();
+    for (const scc of state.stronglyConnectedComponents) {
+        for (const nodeId of scc) {
+            smellyNodes.add(nodeId);
+        }
+    }
+    
+    const structures = pCy.nodes(n => nodeHasLabel(n, 'Type'));
+    structures.forEach((clasz) => {
+        if (smellyNodes.has(clasz.data('id'))) {
+            clasz.data('labels').push("CD-smell");
+        }
+    })
+
+    // Add edges between all nodes in each SCC to highlight the components better
+    for (const scc of state.stronglyConnectedComponents) {
+        for (const nodeId of scc) {
+            for (const nodeId2 of scc) {
+                if (nodeId === nodeId2) continue;
+                pCy.add({
+                    group: 'edges',
+                    data: {
+                        source: nodeId,
+                        target: nodeId2,
+                        label: 'CD-smell',
+                        interaction: 'CD-smell',
+                        properties: {}
+                    }
+                })
+            }
+        }
+    }
+}
+
 export function homogenizeDepthsOptimized(pCy, isContainment, isTreeNode, isLeaf) {
 	let dummyCount = 0;
 	const makeDummyId = prefix => `${prefix}.dummy.${++dummyCount}`;

@@ -142,6 +142,16 @@ edge[label = "calls"] {
   taxi-turn: -32px;
 }
 
+edge[label = "smell"] {
+  line-fill: linear-gradient;
+  line-gradient-stop-colors: red red;
+  line-gradient-stop-positions: 0% 100%;
+  source-arrow-shape: none;
+  target-arrow-shape: none;
+  curve-style: straight;
+  line-style: solid;
+}
+
 edge[label = "constructs"] {
   target-arrow-color: #A61340;
   line-fill: linear-gradient;

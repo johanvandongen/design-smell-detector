@@ -1,4 +1,5 @@
 import {
+    addSmellLabels,
 	aggregateLayers,
 	homogenizeDepthsOptimized,
 	setParents,
@@ -9,6 +10,7 @@ import {
 	collectRoleStereotypes,
 } from '../graphProcessing/headlessTransformations.js';
 import {
+    setSmellStyles,
 	adjustEdgeWidths,
 	cacheNodeStyles,
 	liftEdges,
@@ -47,6 +49,7 @@ const stageCollectRoleStereotypes = tap(({ cy }) => collectRoleStereotypes(cy));
 const stageSetParents = tap(({ cy, state }) => setParents(cy, state.parentRel, false));
 const stageSetStyleClasses = tap(({ cy }) => setStyleClasses(cy));
 const stageAggregateLayers = tap(({ cy }) => aggregateLayers(cy));
+const stageAddSmellLabels = tap(({ cy, state }) => {addSmellLabels(cy, state)});
 
 const stageRecolorContainers = tap(({ cy }) => recolorContainers(cy));
 const stageCacheNodeStyles = tap(({ cy }) => cacheNodeStyles(cy));
@@ -54,6 +57,7 @@ const stageLiftCallsOnce = tap(({ cy }) => liftEdges(cy, 'calls'));
 const stageLiftConstructsOnce = tap(({ cy }) => liftEdges(cy, 'constructs'));
 const stageRemoveContainmentEdges = tap(({ cy }) => removeContainmentEdges(cy));
 const stageAdjustEdgeWidths = tap(({ cy }) => adjustEdgeWidths(cy));
+const stageSetSmellStyles = tap(({ cy }) => {setSmellStyles(cy)});
 
 // Deprecated legacy/manual path. Keep these stage wrappers for quick rollback only.
 const stageSetLayerStyles = tap(({ cy, state }) => setLayerStyles(cy, state.layers, state.layerColors));
@@ -275,7 +279,8 @@ export function createHeadlessPipeline({ state }) {
 		stageCollectRoleStereotypes,
 		stageSetParents,
 		stageSetStyleClasses,
-		stageAggregateLayers
+		stageAggregateLayers,
+        stageAddSmellLabels
 	);
 	return (ctx) => pipeline({ ...ctx, state });
 }
@@ -294,7 +299,8 @@ export function createVisualPipeline({ state }) {
 		// stageSetRsStyles,
 		stageBuildColoringRegistry,
 		stageApplyLayerModeLegacy,
-		stageRemoveExtraNodes
+		stageRemoveExtraNodes,
+        stageSetSmellStyles
 	);
 	return (ctx) => pipeline({ ...ctx, state });
 }

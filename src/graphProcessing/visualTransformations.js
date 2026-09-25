@@ -103,6 +103,14 @@ export const adjustEdgeWidths = function (pCy) {
 	});
 }
 
+export const setSmellStyles = function (pCy) {
+     pCy.nodes(n => nodeHasLabel(n, 'CD-smell')).forEach((n) => {
+        addScratch(n, 'style_default', {
+            'border-color': 'red',
+        })
+    })
+}
+
 export const setLayerStyles = function (pCy, layers, layer_colors) {
 
 	// console.log(layer_colors);

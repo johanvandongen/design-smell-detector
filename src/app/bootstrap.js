@@ -59,15 +59,13 @@ export function bootstrapApp() {
     const stageDetectCyclicDependencies = tap((ctx) => {
         // Convert labeled nodes and edges into sequential indices for SCC detection
         let nodeMapping = {};
-        let k = 0;
+        let k = 1;
         for (let node of ctx.graph.abstract.elements.nodes) {
             if (!node.data.labels.includes('Type')) continue;
             nodeMapping[k] = node.data.id;
             nodeMapping[node.data.id] = k;
             k += 1;
         }
-        let edges = ctx.graph.abstract.elements.edges.filter(edge => nodeMapping.hasOwnProperty(edge.data.source) && nodeMapping.hasOwnProperty(edge.data.target)).map(edge => [nodeMapping[edge.data.source], nodeMapping[edge.data.target]]);
-        ctx.getStronglyConnectedComponents =  GraphService.getStronglyConnectedComponents(ctx.graph.abstract.elements.nodes.length, edges);
 	});
 
 	const stageCreateHeadlessCy = async (ctx) => {

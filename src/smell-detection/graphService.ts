@@ -58,6 +58,7 @@ export class GraphService {
         return adj;
     }
 
+    /** Nodes (and thus edges!) must start from index 1 and be sequential */
     public static getStronglyConnectedComponents(number_of_nodes: number, edges: [number, number][]): number[][] {
         const adj = this.createAdjacencyList(number_of_nodes + 1, edges);
         const SCCs = this.kosaraju(number_of_nodes + 1, adj);

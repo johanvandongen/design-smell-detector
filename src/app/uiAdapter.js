@@ -113,5 +113,16 @@ export function createUiAdapter() {
 					]),
 				])));
 			},
-		};
+            listCyclicDependencies(cycles) {
+                r('#menu-cycles', [
+                        h('h2', {}, ['Cyclic Dependencies']),
+                        h('ul', {}, cycles.map((cycle, idx) => 
+                            h('li', {}, [
+                                h('h3', {}, `Cycle ${idx + 1}`),
+                                h('p', {}, `${cycle.join(' -> ')}`),
+                            ])
+                        )),
+                    ]);
+            },
+        };
 	}

@@ -70,6 +70,7 @@ export function bootstrapApp() {
         const problematic_interactions = ['calls', 'holds', 'accepts'];
         let edges = ctx.graph.abstract.elements.edges.filter(edge => problematic_interactions.includes(edge.data.label) && nodeMapping.hasOwnProperty(edge.data.source) && nodeMapping.hasOwnProperty(edge.data.target)).map(edge => [nodeMapping[edge.data.source], nodeMapping[edge.data.target]]);
         const SSCs = GraphService.getStronglyConnectedComponents(ctx.graph.abstract.elements.nodes.length, edges);
+        ui.listCyclicDependencies(SSCs.map(scc => scc.map(index => nodeMapping[index])));
         
         // Convert back to original node ids
         ctx.state.stronglyConnectedComponents = SSCs.map(scc => scc.map(index => nodeMapping[index]));

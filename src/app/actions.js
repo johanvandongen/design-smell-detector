@@ -80,20 +80,20 @@ export function createActions({ state, ui }) {
 		state.cy.edges(`[label = "${name}"]`).style('curve-style', value);
 	}
 
-	function fillRelationshipToggles(pCy = state.cy) {
+	function fillRelationshipToggles(pCy = state.cy, elementId = '#reltab') {
 		const ctx = { pCy };
 		return pipe(
 			(ctxIn) => ({ ...ctxIn, edgeLabels: deriveRelationshipLabels(ctxIn.pCy.json().elements) }),
 			tap(({ edgeLabels }) => {
-				ui.renderRelationshipToggles(edgeLabels, {
-					onToggleEdge: (checkbox) => setEdgeVisibility(checkbox),
+				ui.renderRelationshipToggles(elementId, edgeLabels, {
+					onToggleEdge: (checkbox) => setEdgeVisibility(checkbox, pCy),
 					onLineBend: setLineBends,
 					onLift: (label) => liftEdges(state.cy, label),
 					onLower: (label) => lowerEdges(state.cy, label),
 				});
 			}),
 			tap(() => {
-				ui.$all('input[name="showrels"]').forEach((checkbox) => setEdgeVisibility(checkbox, state.cy));
+				ui.$all(`${elementId} input[name="showrels"]`).forEach((checkbox) => setEdgeVisibility(checkbox, pCy));
 			})
 		)(ctx);
 	}
@@ -234,12 +234,13 @@ export function createActions({ state, ui }) {
 		}
 	}
 
-	function bindCyInteractions() {
-		const cy = state.cy;
+	function bindCyInteractions(pCy = state.cy) {
+		const cy = pCy;
 		const cyDiv = ui.$('#cy');
 
 		cy.on('select', 'node', (event) => {
 			event.target.addClass('selected');
+            console.log("selected node", event.target.data())
 			displayInfo('#infobody')(event.target);
 			if (ui.$('#infobox').style.display !== 'flex') {
 				ui.$('#infobox').style.display = 'flex';
@@ -317,13 +318,13 @@ export function createActions({ state, ui }) {
 		});
 	}
 
-	function initializePostRender(statecy) {
+	function initializePostRender(statecy, elementId) {
 		ui.renderColoringModes(state.coloringModes || []);
 		applyInitialColor(statecy);
-		fillRelationshipToggles(statecy);
+		fillRelationshipToggles(statecy, elementId);
 		fillFeatureDropdown(statecy, showTrace);
 		bindGraphPanelControls();
-		bindCyInteractions();
+		bindCyInteractions(statecy);
 		state.zoom.value = statecy.zoom();
 		if (statecy.edges().length < 5000) {
 			relayout(statecy, ui.$('#selectlayout').options[ui.$('#selectlayout').selectedIndex].value);

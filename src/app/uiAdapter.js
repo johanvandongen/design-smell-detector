@@ -24,8 +24,8 @@ export function createUiAdapter() {
 				$(`[id="${selectedTab}"]`).style.display = 'block';
 			});
 		},
-			renderRelationshipToggles(edgeLabels, handlers) {
-			r('#reltab', [
+			renderRelationshipToggles(elementId, edgeLabels, handlers) {
+			r(elementId, [
 				h('thead', {}, [
 					h('tr', {}, [
 						h('th', {}, ['Edge Type']),
@@ -132,7 +132,7 @@ export function createUiAdapter() {
                             h('h3', {}, `Option ${idx + 1}`),
                             h('p', {}, `${refactoring.name} for ${refactoring.class}`),
                             h('button', {}, 'preview', {
-							click: (event) => handler(refactoring.name),
+							click: (event) => handler(refactoring),
 						})
                         ])
                     )),

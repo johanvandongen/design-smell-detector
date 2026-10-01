@@ -109,22 +109,21 @@ export function bootstrapApp() {
 		ctx.cyAdapter.batch(ctx.state.refactoringPipeline, () => {
 			refactoringPipeline({ cy: ctx.state.hcy });
 		});
-        ui.listRefactorings(state.refactorings, (classname) => previewRefactoring(ctx, classname));
+        ui.listRefactorings(state.refactorings, (refactoring) => previewRefactoring(ctx, refactoring));
 	});
 
-    const previewRefactoring = async (ctx, classname) => {
-        console.log("preview loading..", classname)
-        console.log(ctx)
+    const previewRefactoring = async (ctx, refactoring) => {
+        console.log("preview loading..", refactoring)
         const numEdges = ctx.state.hcy.edges().length;
-        const cynew = await ctx.cyAdapter.createVisual(ctx.ui.$('#cypreview'), ctx.state.hcy.json().elements, ctx.style, numEdges > 5000);
+        const cynew = await ctx.cyAdapter.createVisual(ctx.ui.$('#cypreview'), ctx.state.cy.json().elements, ctx.style, numEdges > 5000);
         ctx.cyAdapter.batch(cynew, () => {
 			visualPipeline({ cy: cynew });
 		});
-        ctx.actions.initializePostRender(cynew);
+        ctx.actions.initializePostRender(cynew, "#reltab2");
     }
 
 	const stageRunPostRender = tap((ctx) => {
-		ctx.actions.initializePostRender(state.cy);
+		ctx.actions.initializePostRender(state.cy, '#reltab');
 	});
 
 	const initializeGraph = pipeAsync(
@@ -153,7 +152,7 @@ export function bootstrapApp() {
 
 	const initFromPayload = async ({ rawGraph, style, sourceName }) => {
 		await initializeGraph({ rawGraph, style, sourceName, state, ui, cyAdapter, actions });
-        await initializeGraph({ rawGraph, style, sourceName, state, ui, cyAdapter, actions });
+        // await initializeGraph({ rawGraph, style, sourceName, state, ui, cyAdapter, actions });
 	};
 
 	const initFromQueryParam = async (fileName) => {

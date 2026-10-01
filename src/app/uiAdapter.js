@@ -124,5 +124,19 @@ export function createUiAdapter() {
                         )),
                     ]);
             },
+            listRefactorings(refactorings, handler) {
+                r('#menu-refactor', [
+                    h('h2', {}, ['Refactoring Opportunities']),
+                    h('ul', {}, refactorings.map((refactoring, idx) => 
+                        h('li', {}, [
+                            h('h3', {}, `Option ${idx + 1}`),
+                            h('p', {}, `${refactoring.name} for ${refactoring.class}`),
+                            h('button', {}, 'preview', {
+							click: (event) => handler(refactoring.name),
+						})
+                        ])
+                    )),
+                ]);
+            }
         };
 	}

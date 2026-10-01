@@ -5,7 +5,7 @@ import { augmentGraphWithDimensionMetadata, isColoringContractCompliant } from '
 import { createActions } from './actions.js';
 import { createCyAdapter } from './cyAdapter.js';
 import { assertPreparedGraphContract, assertRawGraphContract } from './contracts.js';
-import { createHeadlessPipeline, createVisualPipeline } from './graphPipeline.js';
+import { createHeadlessPipeline, createVisualPipeline, createRefactoringPipeline } from './graphPipeline.js';
 import { createAppState, installWindowStateShim } from './state.js';
 import { createUiAdapter } from './uiAdapter.js';
 import { tap } from '../composing.js';
@@ -26,6 +26,7 @@ export function bootstrapApp() {
 	const actions = createActions({ state, ui });
 	const headlessPipeline = createHeadlessPipeline({ state });
 	const visualPipeline = createVisualPipeline({ state });
+    const refactoringPipeline = createRefactoringPipeline({ state });
 	installWindowStateShim(state);
     Split(['#cy', '#cypreview'])
 
@@ -99,8 +100,31 @@ export function bootstrapApp() {
 		});
 	});
 
+    const stageCreateRefactoringPipeline = async (ctx) => {
+		ctx.state.refactoringPipeline = await ctx.cyAdapter.createHeadless(ctx.graph.abstract.elements);
+		return ctx;
+	};
+
+    const stageRunRefactoringPipeline = tap((ctx) => {
+		ctx.cyAdapter.batch(ctx.state.refactoringPipeline, () => {
+			refactoringPipeline({ cy: ctx.state.hcy });
+		});
+        ui.listRefactorings(state.refactorings, (classname) => previewRefactoring(ctx, classname));
+	});
+
+    const previewRefactoring = async (ctx, classname) => {
+        console.log("preview loading..", classname)
+        console.log(ctx)
+        const numEdges = ctx.state.hcy.edges().length;
+        const cynew = await ctx.cyAdapter.createVisual(ctx.ui.$('#cypreview'), ctx.state.hcy.json().elements, ctx.style, numEdges > 5000);
+        ctx.cyAdapter.batch(cynew, () => {
+			visualPipeline({ cy: cynew });
+		});
+        ctx.actions.initializePostRender(cynew);
+    }
+
 	const stageRunPostRender = tap((ctx) => {
-		ctx.actions.initializePostRender();
+		ctx.actions.initializePostRender(state.cy);
 	});
 
 	const initializeGraph = pipeAsync(
@@ -113,6 +137,8 @@ export function bootstrapApp() {
 		stageRunHeadlessPipeline,
 		stageCreateVisualCy,
 		stageRunVisualPipeline,
+        stageCreateRefactoringPipeline,
+        stageRunRefactoringPipeline,
 		stageRunPostRender
 	);
 
@@ -127,6 +153,7 @@ export function bootstrapApp() {
 
 	const initFromPayload = async ({ rawGraph, style, sourceName }) => {
 		await initializeGraph({ rawGraph, style, sourceName, state, ui, cyAdapter, actions });
+        await initializeGraph({ rawGraph, style, sourceName, state, ui, cyAdapter, actions });
 	};
 
 	const initFromQueryParam = async (fileName) => {

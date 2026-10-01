@@ -305,6 +305,44 @@ export function createVisualPipeline({ state }) {
 	return (ctx) => pipeline({ ...ctx, state });
 }
 
+
+const stageSuggestRefactorings = tap(({ cy, state }) => {
+    const refactorings = [];
+    // Get all dependency egdes between classes in scc for case distinction
+    const scc = state.stronglyConnectedComponents[0];
+    const node1Id = scc[0]
+    console.log("node1", node1Id);
+    const node1 = cy.getElementById(node1Id);
+    console.log(node1.data());
+
+    // Find all edges in scc, and make suitable data structure for furthe processing
+    const edgesOut = node1.outgoers((e) => {
+        return scc.includes(e.target().id());
+    })
+    const edgesIn = node1.incomers((e) => {
+        return scc.includes(e.source().id());
+    })
+    console.log(edgesOut.data());
+    console.log(edgesIn.data());
+
+    // Case distinction on edges
+
+    // Suggest refactorings based on edges
+    refactorings.push(...scc.map((node) => ({name: "Extract Interface", class: node})))
+    state.refactorings = refactorings;
+});
+
+export function createRefactoringPipeline({ state }) {
+    const pipeline = pipe(
+        stageSuggestRefactorings
+    );
+    return (ctx) => pipeline({ ...ctx, state });
+}
+
+export function runRefactoringPipeline(cy, state) {
+    return createRefactoringPipeline({ state })({ cy });
+}
+
 export function runHeadlessPipeline(headlessCy, state) {
 	return createHeadlessPipeline({ state })({ cy: headlessCy });
 }

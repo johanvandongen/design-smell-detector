@@ -24,8 +24,8 @@ export function createUiAdapter() {
 				$(`[id="${selectedTab}"]`).style.display = 'block';
 			});
 		},
-			renderRelationshipToggles(edgeLabels, handlers) {
-			r('#reltab', [
+			renderRelationshipToggles(elementId, edgeLabels, handlers) {
+			r(elementId, [
 				h('thead', {}, [
 					h('tr', {}, [
 						h('th', {}, ['Edge Type']),
@@ -113,5 +113,30 @@ export function createUiAdapter() {
 					]),
 				])));
 			},
-		};
+            listCyclicDependencies(cycles) {
+                r('#menu-cycles', [
+                        h('h2', {}, ['Cyclic Dependencies']),
+                        h('ul', {}, cycles.map((cycle, idx) => 
+                            h('li', {}, [
+                                h('h3', {}, `Cycle ${idx + 1}`),
+                                h('p', {}, `${cycle.join(' -> ')}`),
+                            ])
+                        )),
+                    ]);
+            },
+            listRefactorings(refactorings, handler) {
+                r('#menu-refactor', [
+                    h('h2', {}, ['Refactoring Opportunities']),
+                    h('ul', {}, refactorings.map((refactoring, idx) => 
+                        h('li', {}, [
+                            h('h3', {}, `Option ${idx + 1}`),
+                            h('p', {}, `${refactoring.name} for ${refactoring.class}`),
+                            h('button', {}, 'preview', {
+							click: (event) => handler(refactoring),
+						})
+                        ])
+                    )),
+                ]);
+            }
+        };
 	}

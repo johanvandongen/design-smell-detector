@@ -109,6 +109,13 @@
                 <button class="sidebar" id="collapseEdges">Collapse Edges</button>
             </div> -->
           </div>
+
+          <div class="menu" id="menu-cycles">
+            <h2>Cyclic Dependencies</h2>
+          </div>
+          <div class="menu" id="menu-refactor">
+            <h2>Refactoring Opportunities</h2>
+          </div>
     
           <div class="menu" id="menu-nodes">
             <h2>Nodes</h2>
@@ -150,6 +157,15 @@
           <div class="menu" id="menu-edges">
             <h2>Edges</h2>
             <table style="width: 100%; text-align: left" id="reltab">
+              <thead>
+                <th>Edge Type</th>
+                <th>└</th>
+                <th>╰</th>
+                <th>Action</th>
+              </thead>
+              <!-- relationship types here will be loaded from dataset -->
+            </table>
+            <table style="width: 100%; text-align: left" id="reltab2">
               <thead>
                 <th>Edge Type</th>
                 <th>└</th>

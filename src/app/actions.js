@@ -57,12 +57,12 @@ export function createActions({ state, ui }) {
 		state.flip = !state.flip;
 	}
 
-	function setEdgeVisibility(checkbox) {
-		if (!state.cy) return;
+	function setEdgeVisibility(checkbox, pCy=state.cy) {
+		if (!pCy) return;
 		const updateHiddenEdges = (hiddenEdges) => {
 			const next = clone(hiddenEdges || {});
 			if (!checkbox.checked) {
-				next[checkbox.value] = state.cy.edges(`[label = "${checkbox.value}"]`);
+				next[checkbox.value] = pCy.edges(`[label = "${checkbox.value}"]`);
 				next[checkbox.value].remove();
 				return next;
 			}
@@ -80,20 +80,20 @@ export function createActions({ state, ui }) {
 		state.cy.edges(`[label = "${name}"]`).style('curve-style', value);
 	}
 
-	function fillRelationshipToggles(pCy = state.cy) {
+	function fillRelationshipToggles(pCy = state.cy, elementId = '#reltab') {
 		const ctx = { pCy };
 		return pipe(
 			(ctxIn) => ({ ...ctxIn, edgeLabels: deriveRelationshipLabels(ctxIn.pCy.json().elements) }),
 			tap(({ edgeLabels }) => {
-				ui.renderRelationshipToggles(edgeLabels, {
-					onToggleEdge: setEdgeVisibility,
+				ui.renderRelationshipToggles(elementId, edgeLabels, {
+					onToggleEdge: (checkbox) => setEdgeVisibility(checkbox, pCy),
 					onLineBend: setLineBends,
 					onLift: (label) => liftEdges(state.cy, label),
 					onLower: (label) => lowerEdges(state.cy, label),
 				});
 			}),
 			tap(() => {
-				ui.$all('input[name="showrels"]').forEach(setEdgeVisibility);
+				ui.$all(`${elementId} input[name="showrels"]`).forEach((checkbox) => setEdgeVisibility(checkbox, pCy));
 			})
 		)(ctx);
 	}
@@ -224,22 +224,23 @@ export function createActions({ state, ui }) {
 		)(bugContext);
 	}
 
-	function bindGraphPanelControls() {
-		ui.on('click', ui.$('#btn-reset'), () => highlight(state.cy, ''));
-		ui.on('click', ui.$('#btn-relayout'), () => relayout(state.cy, ui.$('#selectlayout').options[ui.$('#selectlayout').selectedIndex].value));
-		ui.on('click', ui.$('#btn-highlight'), () => highlight(state.cy, ui.$('#highlight').value));
+	function bindGraphPanelControls(pCy = state.cy) {
+		ui.on('click', ui.$('#btn-reset'), () => highlight(pCy, ''));
+		ui.on('click', ui.$('#btn-relayout'), () => relayout(pCy, ui.$('#selectlayout').options[ui.$('#selectlayout').selectedIndex].value));
+		ui.on('click', ui.$('#btn-highlight'), () => highlight(pCy, ui.$('#highlight').value));
 		const coloringInputs = ui.$all('input[name="coloring"]');
 		if (coloringInputs.length > 0) {
 			ui.on('change', coloringInputs, (event) => colorNodes(event));
 		}
 	}
 
-	function bindCyInteractions() {
-		const cy = state.cy;
+	function bindCyInteractions(pCy = state.cy) {
+		const cy = pCy;
 		const cyDiv = ui.$('#cy');
 
 		cy.on('select', 'node', (event) => {
 			event.target.addClass('selected');
+            console.log("selected node", event.target.data())
 			displayInfo('#infobody')(event.target);
 			if (ui.$('#infobox').style.display !== 'flex') {
 				ui.$('#infobox').style.display = 'flex';
@@ -317,16 +318,16 @@ export function createActions({ state, ui }) {
 		});
 	}
 
-	function initializePostRender() {
+	function initializePostRender(statecy, elementId) {
 		ui.renderColoringModes(state.coloringModes || []);
-		applyInitialColor(state.cy);
-		fillRelationshipToggles(state.cy);
-		fillFeatureDropdown(state.cy, showTrace);
-		bindGraphPanelControls();
-		bindCyInteractions();
-		state.zoom.value = state.cy.zoom();
-		if (state.cy.edges().length < 5000) {
-			relayout(state.cy, ui.$('#selectlayout').options[ui.$('#selectlayout').selectedIndex].value);
+		applyInitialColor(statecy);
+		fillRelationshipToggles(statecy, elementId);
+		fillFeatureDropdown(statecy, showTrace);
+		bindGraphPanelControls(statecy);
+		bindCyInteractions(statecy);
+		state.zoom.value = statecy.zoom();
+		if (statecy.edges().length < 5000) {
+			relayout(statecy, ui.$('#selectlayout').options[ui.$('#selectlayout').selectedIndex].value);
 		}
 	}
 

@@ -1,4 +1,5 @@
 import {
+    addSmellLabels,
 	aggregateLayers,
 	homogenizeDepthsOptimized,
 	setParents,
@@ -9,6 +10,7 @@ import {
 	collectRoleStereotypes,
 } from '../graphProcessing/headlessTransformations.js';
 import {
+    setSmellStyles,
 	adjustEdgeWidths,
 	cacheNodeStyles,
 	liftEdges,
@@ -47,6 +49,7 @@ const stageCollectRoleStereotypes = tap(({ cy }) => collectRoleStereotypes(cy));
 const stageSetParents = tap(({ cy, state }) => setParents(cy, state.parentRel, false));
 const stageSetStyleClasses = tap(({ cy }) => setStyleClasses(cy));
 const stageAggregateLayers = tap(({ cy }) => aggregateLayers(cy));
+const stageAddSmellLabels = tap(({ cy, state }) => {addSmellLabels(cy, state)});
 
 const stageRecolorContainers = tap(({ cy }) => recolorContainers(cy));
 const stageCacheNodeStyles = tap(({ cy }) => cacheNodeStyles(cy));
@@ -54,6 +57,7 @@ const stageLiftCallsOnce = tap(({ cy }) => liftEdges(cy, 'calls'));
 const stageLiftConstructsOnce = tap(({ cy }) => liftEdges(cy, 'constructs'));
 const stageRemoveContainmentEdges = tap(({ cy }) => removeContainmentEdges(cy));
 const stageAdjustEdgeWidths = tap(({ cy }) => adjustEdgeWidths(cy));
+const stageSetSmellStyles = tap(({ cy }) => {setSmellStyles(cy)});
 
 // Deprecated legacy/manual path. Keep these stage wrappers for quick rollback only.
 const stageSetLayerStyles = tap(({ cy, state }) => setLayerStyles(cy, state.layers, state.layerColors));
@@ -275,7 +279,8 @@ export function createHeadlessPipeline({ state }) {
 		stageCollectRoleStereotypes,
 		stageSetParents,
 		stageSetStyleClasses,
-		stageAggregateLayers
+		stageAggregateLayers,
+        stageAddSmellLabels
 	);
 	return (ctx) => pipeline({ ...ctx, state });
 }
@@ -294,9 +299,48 @@ export function createVisualPipeline({ state }) {
 		// stageSetRsStyles,
 		stageBuildColoringRegistry,
 		stageApplyLayerModeLegacy,
-		stageRemoveExtraNodes
+		stageRemoveExtraNodes,
+        stageSetSmellStyles
 	);
 	return (ctx) => pipeline({ ...ctx, state });
+}
+
+
+const stageSuggestRefactorings = tap(({ cy, state }) => {
+    const refactorings = [];
+    // Get all dependency egdes between classes in scc for case distinction
+    const scc = state.stronglyConnectedComponents[0];
+    const node1Id = scc[0]
+    console.log("node1", node1Id);
+    const node1 = cy.getElementById(node1Id);
+    console.log(node1.data());
+
+    // Find all edges in scc, and make suitable data structure for furthe processing
+    const edgesOut = node1.outgoers((e) => {
+        return scc.includes(e.target().id());
+    })
+    const edgesIn = node1.incomers((e) => {
+        return scc.includes(e.source().id());
+    })
+    console.log(edgesOut.data());
+    console.log(edgesIn.data());
+
+    // Case distinction on edges
+
+    // Suggest refactorings based on edges
+    refactorings.push(...scc.map((node) => ({name: "Extract Interface", class: node})))
+    state.refactorings = refactorings;
+});
+
+export function createRefactoringPipeline({ state }) {
+    const pipeline = pipe(
+        stageSuggestRefactorings
+    );
+    return (ctx) => pipeline({ ...ctx, state });
+}
+
+export function runRefactoringPipeline(cy, state) {
+    return createRefactoringPipeline({ state })({ cy });
 }
 
 export function runHeadlessPipeline(headlessCy, state) {

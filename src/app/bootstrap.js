@@ -116,6 +116,34 @@ export function bootstrapApp() {
         console.log("preview loading..", refactoring)
         const numEdges = ctx.state.hcy.edges().length;
         const cynew = await ctx.cyAdapter.createVisual(ctx.ui.$('#cypreview'), ctx.state.cy.json().elements, ctx.style, numEdges > 5000);
+        
+        const nodeToRefactor = cynew.getElementById(refactoring.class)
+        const interfaceName = "I" + nodeToRefactor.data("label")
+        const nodes = cynew.add([
+            {
+                group: 'nodes',
+                data: { id: interfaceName, label: interfaceName,  name: interfaceName, labels: ["Type"], name: interfaceName, properties: { "type": "interface", "kind": "class", "simpleName": "Int" } },
+            }, 
+            {
+                group: 'edges',
+                data: { source: nodeToRefactor.id(), target: interfaceName, label: 'myInterface' },
+            }
+        ]);
+
+        cynew.getElementById(interfaceName).move({ parent: nodeToRefactor.parent().id() });
+
+        nodes.forEach((ele) => {
+		if (ele.data('label')) {
+			ele.addClass(ele.data('label'))
+		}
+		if (ele.data('labels')) {
+			ele.data('labels').forEach(label => ele.addClass(label));
+		}
+        });
+
+        // ctx.cyAdapter.batch(cynew, () => {
+		// 	headlessPipeline({ cy: cynew });
+		// });
         ctx.cyAdapter.batch(cynew, () => {
 			visualPipeline({ cy: cynew });
 		});

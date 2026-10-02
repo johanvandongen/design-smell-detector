@@ -224,10 +224,10 @@ export function createActions({ state, ui }) {
 		)(bugContext);
 	}
 
-	function bindGraphPanelControls() {
-		ui.on('click', ui.$('#btn-reset'), () => highlight(state.cy, ''));
-		ui.on('click', ui.$('#btn-relayout'), () => relayout(state.cy, ui.$('#selectlayout').options[ui.$('#selectlayout').selectedIndex].value));
-		ui.on('click', ui.$('#btn-highlight'), () => highlight(state.cy, ui.$('#highlight').value));
+	function bindGraphPanelControls(pCy = state.cy) {
+		ui.on('click', ui.$('#btn-reset'), () => highlight(pCy, ''));
+		ui.on('click', ui.$('#btn-relayout'), () => relayout(pCy, ui.$('#selectlayout').options[ui.$('#selectlayout').selectedIndex].value));
+		ui.on('click', ui.$('#btn-highlight'), () => highlight(pCy, ui.$('#highlight').value));
 		const coloringInputs = ui.$all('input[name="coloring"]');
 		if (coloringInputs.length > 0) {
 			ui.on('change', coloringInputs, (event) => colorNodes(event));
@@ -323,7 +323,7 @@ export function createActions({ state, ui }) {
 		applyInitialColor(statecy);
 		fillRelationshipToggles(statecy, elementId);
 		fillFeatureDropdown(statecy, showTrace);
-		bindGraphPanelControls();
+		bindGraphPanelControls(statecy);
 		bindCyInteractions(statecy);
 		state.zoom.value = statecy.zoom();
 		if (statecy.edges().length < 5000) {

@@ -1,10 +1,9 @@
 import { clearInfo } from '../uiControls/infoPanel.js';
-import { prepareGraph } from '../graphProcessing/migration.js';
 import { GraphService } from '../smell-detection/graphService.ts';
+import { GraphPreprocessor } from '../graphPreProcessing/graphPreprocessor.ts';
 import { augmentGraphWithDimensionMetadata, isColoringContractCompliant } from '../graphProcessing/dimensionMetadata.js';
 import { createActions } from './actions.js';
 import { createCyAdapter } from './cyAdapter.js';
-import { assertPreparedGraphContract, assertRawGraphContract } from './contracts.js';
 import { createHeadlessPipeline, createVisualPipeline, createRefactoringPipeline } from './graphPipeline.js';
 import { createAppState, installWindowStateShim } from './state.js';
 import { createUiAdapter } from './uiAdapter.js';
@@ -24,6 +23,7 @@ export function bootstrapApp() {
 	const ui = createUiAdapter();
 	const cyAdapter = createCyAdapter();
 	const actions = createActions({ state, ui });
+    const graphPreprocessor = new GraphPreprocessor();
 	const headlessPipeline = createHeadlessPipeline({ state });
 	const visualPipeline = createVisualPipeline({ state });
     const refactoringPipeline = createRefactoringPipeline({ state });
@@ -44,17 +44,9 @@ export function bootstrapApp() {
 		}];
 	});
 
-	const stageValidateRawGraph = tap((ctx) => {
-		assertRawGraphContract(ctx.rawGraph, ctx.sourceName);
-	});
-
 	const stagePrepareGraph = tap((ctx) => {
-		ctx.graph = prepareGraph(ctx.rawGraph);
+        ctx.graph = graphPreprocessor.prepareGraph(ctx.rawGraph, ctx.sourceName);
 		ctx.state.coloringMeta = ctx.graph.coloringMeta || { nodes: [], edges: [] };
-	});
-
-	const stageValidatePreparedGraph = tap((ctx) => {
-		assertPreparedGraphContract(ctx.graph, ctx.sourceName);
 	});
 
     const stageDetectCyclicDependencies = tap((ctx) => {
@@ -156,9 +148,7 @@ export function bootstrapApp() {
 
 	const initializeGraph = pipeAsync(
 		stageResetRuntimeState,
-		stageValidateRawGraph,
 		stagePrepareGraph,
-		stageValidatePreparedGraph,
         stageDetectCyclicDependencies,
 		stageCreateHeadlessCy,
 		stageRunHeadlessPipeline,

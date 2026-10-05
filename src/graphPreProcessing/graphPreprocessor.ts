@@ -53,7 +53,7 @@ export interface GraphData {
 /**
  * This class is responsible for preprocessing the graph data before it is used in the application. 
  * It ensures that the graph data adheres to the expected contract, upgrades older schema versions to the latest version, 
- * and prepares the graph for further processing.
+ * and makes the uploaded graph richer with extra added fields.
  */
 export class GraphPreprocessor {
 
@@ -72,9 +72,9 @@ export class GraphPreprocessor {
         const normalizedGraph = schemaVersion.startsWith('2.0') ? originalGraph : this.upgradeV1ToV2(originalGraph);
 
         // TODO Consider removing old schema version support, since it they cant be abstracted anyway
-        const abstractGraph = (schemaVersion.startsWith('2.0') || schemaVersion.startsWith('1.2')) ?
+        const abstractGraph: RawGraphData = (schemaVersion.startsWith('2.0') || schemaVersion.startsWith('1.2')) ?
                 this.graphAbstractizer.abstractizeV2(normalizedGraph) : normalizedGraph;
-        const abstractGraphWithExtraFields = this.addFieldsToAbstractGraph(abstractGraph);
+        const abstractGraphWithExtraFields: GraphData = this.addFieldsToAbstractGraph(abstractGraph);
         
         const graph = {
             original: originalGraph,

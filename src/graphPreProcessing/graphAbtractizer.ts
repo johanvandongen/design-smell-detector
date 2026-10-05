@@ -1,9 +1,9 @@
-import { EdgeDataDefinition, NodeDataDefinition } from 'cytoscape';
-import { GraphData, NodeData, EdgeData, RawGraphData, RawNodeData, RawEdgeData } from '././graphPreprocessor';
+import { RawGraphData, RawNodeData, RawEdgeData } from '././graphPreprocessor';
 
 /**
- * This class is responsible for abstracting the graph data to a higher-level representation.
+ * This class is responsible for abstracting the graph data.
  * It creates extra edges inferred from existing relationships.
+ * For example if a class encapsulates a method, and a method invokes another class then we can infer that the first class calls the second class.
  */
 export class GraphAbtractizer {
 

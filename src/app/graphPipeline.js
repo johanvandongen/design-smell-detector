@@ -32,6 +32,7 @@ import {
 import { deriveColoringModes } from './pure.js';
 import { hslString, whiten } from '../utilities/colors.js';
 import { pipe, tap } from '../composing.js';
+import { RefactorEngine } from '../refactoring/refactorEngine.ts';
 
 const stageHomogenizeDepths = tap(({ cy }) => {
 	homogenizeDepthsOptimized(
@@ -47,6 +48,7 @@ const stageRemovePrimitives = tap(({ cy }) => removePrimitives(cy));
 const stageAdoptOrphans = tap(({ cy }) => adoptOrphans(cy));
 const stageCollectRoleStereotypes = tap(({ cy }) => collectRoleStereotypes(cy));
 const stageSetParents = tap(({ cy, state }) => setParents(cy, state.parentRel, false));
+const stageSetParentsEncapsulates = tap(({ cy, state }) => setParents(cy, 'encapsulates', false));
 const stageSetStyleClasses = tap(({ cy }) => setStyleClasses(cy));
 const stageAggregateLayers = tap(({ cy }) => aggregateLayers(cy));
 const stageAddSmellLabels = tap(({ cy, state }) => {addSmellLabels(cy, state)});
@@ -58,6 +60,7 @@ const stageLiftConstructsOnce = tap(({ cy }) => liftEdges(cy, 'constructs'));
 const stageRemoveContainmentEdges = tap(({ cy }) => removeContainmentEdges(cy));
 const stageAdjustEdgeWidths = tap(({ cy }) => adjustEdgeWidths(cy));
 const stageSetSmellStyles = tap(({ cy }) => {setSmellStyles(cy)});
+const stageHideMethods = tap(({ cy, state }) => setHideMethods(cy, state));
 
 // Deprecated legacy/manual path. Keep these stage wrappers for quick rollback only.
 const stageSetLayerStyles = tap(({ cy, state }) => setLayerStyles(cy, state.layers, state.layerColors));
@@ -268,6 +271,15 @@ const stageBuildColoringRegistry = tap(({ cy, state }) => {
 	}
 });
 
+function setHideMethods(cy, state) {
+    console.log("state", state)
+    // Can be made faster by first getting classes and then finding methods rather than the other way around,.
+    state.hiddenNodes['methods'] = cy.nodes('.Operation').filter((n) => !nodeHasLabel(n.parent(), 'CD-smell'));
+    state.hiddenNodes['variables'] = cy.nodes('.Variable').filter((n) => n.parent().data("labels") !== undefined && !nodeHasLabel(n.parent(), 'CD-smell'));
+    state.hiddenNodes['methods'].remove();
+    state.hiddenNodes['variables'].remove();
+}
+
 const stageRemoveExtraNodes = tap(({ cy }) => removeExtraNodes(cy));
 
 export function createHeadlessPipeline({ state }) {
@@ -278,6 +290,7 @@ export function createHeadlessPipeline({ state }) {
 		stageAdoptOrphans,
 		stageCollectRoleStereotypes,
 		stageSetParents,
+        stageSetParentsEncapsulates,
 		stageSetStyleClasses,
 		stageAggregateLayers,
         stageAddSmellLabels
@@ -300,7 +313,8 @@ export function createVisualPipeline({ state }) {
 		stageBuildColoringRegistry,
 		stageApplyLayerModeLegacy,
 		stageRemoveExtraNodes,
-        stageSetSmellStyles
+        stageSetSmellStyles,
+        stageHideMethods
 	);
 	return (ctx) => pipeline({ ...ctx, state });
 }

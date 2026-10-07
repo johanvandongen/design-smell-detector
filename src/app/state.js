@@ -22,6 +22,7 @@ export function createAppState() {
 		collapsedNodes: [],
 		parentRel: PARENT_REL,
         stronglyConnectedComponents: [],
+        hiddenNodes: {},
         refactorings: [],
 	};
 }

@@ -1,6 +1,6 @@
 import { hslString, roleStereotypeColors, whiten } from "../utilities/colors.js";
 import { $all } from "../utilities/shorthands.js";
-import { addScratch, counterToPercentage, cumulative, nodeHasLabel, isPureContainer, repeatMiddle, edgeHasLabel } from "../utilities/utils.js";
+import { addScratch, counterToPercentage, cumulative, nodeHasLabel, nodeHasKind, isPureContainer, repeatMiddle, edgeHasLabel } from "../utilities/utils.js";
 
 export const recolorContainers = function (pCy) {
 	const max_pkg_depth = Math.max(...pCy.nodes(isPureContainer).map((n) => n.ancestors().length));
@@ -165,6 +165,8 @@ export const removeExtraNodes = function (pCy) {
 	const extras = pCy.nodes(n => 
 		!nodeHasLabel(n, "Scope") && 
 		!nodeHasLabel(n, "Type") && 
+        !nodeHasLabel(n, "Operation") &&
+        !nodeHasKind(n, "field") &&
 		!nodeHasLabel(n, "Primitive"));
 	extras.remove();
 };

@@ -169,6 +169,10 @@ export class GraphAbtractizer {
             return path;
         }
 
+        const parameterizes = compose(invert(edges['parameterizes']) || [], edges['typed'] || [], "parameterizes").filter(
+		    (edge) => edge.source !== edge.target
+	    );
+
         /**
          * Identify top-level packages and remove them from "contains" if needed
          */
@@ -243,7 +247,7 @@ export class GraphAbtractizer {
          * Build the "abstract" set of nodes (remove packages to remove)
          */
         const abstractNodes = filterNodesByIds(
-            filterNodesByLabels(nodes, ["Scope", "Type", "Problem", "Operation", "Category"]),
+            filterNodesByLabels(nodes, ["Scope", "Type", "Problem", "Operation", "Category", "Variable"]),
             packagesToRemove
         );
 
@@ -304,6 +308,11 @@ export class GraphAbtractizer {
             holds: holds || [],
             accepts: accepts || [],
             returns: returns || [],
+
+            invokes: edges['invokes'] || [],
+            rawReturns: edges['returns'] || [],
+            typed: edges['typed'] || [],
+            parameterizes: parameterizes || [],
 
             implements: edges['implements'] || [],
             succeeds: edges['succeeds'] || [],

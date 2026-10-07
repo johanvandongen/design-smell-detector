@@ -17,5 +17,9 @@
   "main": "script.js",
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "cytoscape": "^3.34.3",
+    "cytoscape-klay": "^3.1.4"
+  }
 }

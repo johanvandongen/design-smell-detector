@@ -109,7 +109,7 @@ export function bootstrapApp() {
         const numEdges = ctx.state.hcy.edges().length;
         const cynew = await ctx.cyAdapter.createVisual(ctx.ui.$('#cypreview'), ctx.state.cy.json().elements, ctx.style, numEdges > 5000);
         
-        const nodeToRefactor = cynew.getElementById(refactoring.class)
+        const nodeToRefactor = cynew.getElementById(refactoring.targetClass)
         const interfaceName = "I" + nodeToRefactor.data("label")
         const nodes = cynew.add([
             {

@@ -130,7 +130,7 @@ export function createUiAdapter() {
                     h('ul', {}, refactorings.map((refactoring, idx) => 
                         h('li', {}, [
                             h('h3', {}, `Option ${idx + 1}`),
-                            h('p', {}, `${refactoring.name} for ${refactoring.class}`),
+                            h('p', {}, `${refactoring.name} for ${refactoring.targetClass}`),
                             h('button', {}, 'preview', {
 							click: (event) => handler(refactoring),
 						})

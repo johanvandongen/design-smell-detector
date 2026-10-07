@@ -46,6 +46,7 @@ export function getScratch(ele, key) {
 
 export const nodeHasLabel = (n, x) => n.data('labels').includes(x);
 export const edgeHasLabel = (e, x) => e.data('label') === x;
+export const nodeHasKind = (n, x) => n.data("properties.kind") === x;
 
 export function arrayIntersection(arr1, arr2) {
 	const set2 = new Set(arr2);

@@ -9,6 +9,7 @@ import { createAppState, installWindowStateShim } from './state.js';
 import { createUiAdapter } from './uiAdapter.js';
 import { tap } from '../composing.js';
 import { DEFAULT_COLOR_MAP, DEFAULT_COLOR_ORDER } from './constants.js';
+import { nodeHasKind, edgeHasLabel } from '../utilities/utils.js';
 
 const pipeAsync = (...fns) => async (x) => {
 	let value = x;
@@ -105,41 +106,109 @@ export function bootstrapApp() {
 	});
 
     const previewRefactoring = async (ctx, refactoring) => {
-        console.log("preview loading..", refactoring)
+        // Copy original graph including the hidden edges
+        const elements = {
+            nodes: ctx.state.cy.nodes().jsons(),
+            edges: [
+                ...ctx.state.cy.edges().jsons(),
+                ...Object.values(ctx.state.hiddenEdges ?? {})
+                .filter(Boolean)
+                .flatMap(edges => edges.jsons())
+            ]
+        };
         const numEdges = ctx.state.hcy.edges().length;
-        const cynew = await ctx.cyAdapter.createVisual(ctx.ui.$('#cypreview'), ctx.state.cy.json().elements, ctx.style, numEdges > 5000);
+        const cynew = await ctx.cyAdapter.createVisual(ctx.ui.$('#cypreview'), elements, ctx.style, numEdges > 5000);
         
+        // Add nodes
         const nodeToRefactor = cynew.getElementById(refactoring.targetClass)
+        nodeToRefactor.data("labels").push("Modified")
         const interfaceName = "I" + nodeToRefactor.data("label")
         const nodes = cynew.add([
             {
                 group: 'nodes',
-                data: { id: interfaceName, label: interfaceName,  name: interfaceName, labels: ["Type"], name: interfaceName, properties: { "type": "interface", "kind": "class", "simpleName": "Int" } },
+                data: { id: interfaceName, label: interfaceName,  name: interfaceName, labels: ["Type", "New"], name: interfaceName, properties: { "type": "interface", "kind": "class", "simpleName": "Int" } },
             }, 
             {
                 group: 'edges',
-                data: { source: nodeToRefactor.id(), target: interfaceName, label: 'myInterface' },
+                data: { source: nodeToRefactor.id(), target: interfaceName, label: 'myInterface', labels: ["New"] },
             }
         ]);
+        
+        const newInterface = cynew.getElementById(interfaceName)
+        newInterface.move({ parent: nodeToRefactor.parent().id() });
+        const originalClassMethods = nodeToRefactor.children().filter((child) => nodeHasKind(child, "method"));
+        const newMethods = cynew.add(originalClassMethods.map((node) => 
+            {
+                const newId = interfaceName + node.id();
+                const label = node.data("label")
+                return {
+                    group: 'nodes',
+                    data: { id: newId, label: label,  name: label, labels: ["Operation", "New"], properties: { "kind": "method", "simpleName": label } },
+                }
+            }, 
+        ));
+        newMethods.move({parent: newInterface.id()});
 
-        cynew.getElementById(interfaceName).move({ parent: nodeToRefactor.parent().id() });
+        // Modify edges
+        // TODO can be made easier if refactoring object contains list of nodes to refactor (i.e. make object more clear)
 
+        const replaceEdges = (node, label) => {
+            node.outgoers().filter((e) => edgeHasLabel(e, label)).forEach((edge) => {
+                // Replace original edge to new target.
+                cynew.add([
+                    {
+                        group: 'edges',
+                        data: { source: edge.source().id(), target: interfaceName, label: label, labels: ["New"] },
+                    }
+                ]);
+                edge.remove();
+            });
+        }
+        const sourceClass = cynew.getElementById(refactoring.sourceClass)
+        sourceClass.children().forEach((child) => {
+            if (nodeHasKind(child, "field")) {
+                replaceEdges(child, "typed")
+            }
+            if (nodeHasKind(child, "method")) {
+                replaceEdges(child, "returns")
+                replaceEdges(child, "parameterizes")
+            }
+        })
+
+        
         nodes.forEach((ele) => {
-		if (ele.data('label')) {
-			ele.addClass(ele.data('label'))
-		}
-		if (ele.data('labels')) {
-			ele.data('labels').forEach(label => ele.addClass(label));
-		}
+            if (ele.data('label')) {
+                ele.addClass(ele.data('label'))
+            }
+            if (ele.data('labels')) {
+                ele.data('labels').forEach(label => ele.addClass(label));
+            }
         });
-
-        // ctx.cyAdapter.batch(cynew, () => {
-		// 	headlessPipeline({ cy: cynew });
-		// });
+        
+        // post render and zoom in to added nodes
+        // Run visual pipeline again (after copying) since ele.style() is not serialized
         ctx.cyAdapter.batch(cynew, () => {
 			visualPipeline({ cy: cynew });
 		});
-        ctx.actions.initializePostRender(cynew, "#reltab2");
+        
+        // shallow clone, error prone
+        const statePreview = {
+            ...ctx.state,
+            hiddenEdges: {}
+        };
+        const actionsPreview = createActions({state:statePreview, ui})
+        console.log(statePreview)
+        actionsPreview.initializePostRender(cynew, "#reltab2");
+        cynew.once('layoutstop', () => {
+            const node = cynew.getElementById(newInterface.id());
+
+            cynew.animate({
+                zoom: 0.8,
+                center: {
+                    eles: node
+                }
+            });
+        });
     }
 
 	const stageRunPostRender = tap((ctx) => {

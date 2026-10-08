@@ -152,6 +152,18 @@ edge[label = "encloses"] {
   taxi-turn: -32px;
 }
 
+edge[label = "typed"] {
+  source-arrow-color: #000080;
+  line-fill: linear-gradient;
+  line-gradient-stop-colors: #CCFF66 #000080;
+  line-gradient-stop-positions: 0% 100%;
+  source-arrow-shape: none;
+  target-arrow-shape: triangle;
+  line-style: dashed;
+  taxi-direction: leftward;
+  taxi-turn: -32px;
+}
+
 edge[label = "calls"] {
   source-arrow-color: #000080;
   line-fill: linear-gradient;

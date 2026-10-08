@@ -82,7 +82,7 @@ export class RefactorEngine {
                         if (targetKind !== "Interface" && scc.includes(target.id())) {
                             refactorings.push({
                                 name: `Extract Interface`,
-                                sourceClass: currtentClass.data("name"),
+                                sourceClass: currtentClass.id(),
                                 targetClass: target.id(),
                                 description: `Field Declaration ${child.data("name")}`
                             });
@@ -99,7 +99,7 @@ export class RefactorEngine {
                         if (targetKind !== "Interface" && scc.includes(target.id())) {
                             refactorings.push({
                                 name: `Extract Interface`,
-                                sourceClass: currtentClass.data("name"),
+                                sourceClass: currtentClass.id(),
                                 targetClass: target.id(),
                                 description: `Method return type ${child.data("name")}`
                             });
@@ -116,7 +116,7 @@ export class RefactorEngine {
                         if (targetKind !== "Interface" && scc.includes(target.id())) {
                             refactorings.push({
                                 name: `Extract Interface`,
-                                sourceClass: currtentClass.data("name"),
+                                sourceClass: currtentClass.id(),
                                 targetClass: target.id(),
                                 description: `Method return type ${child.data("name")}`
                             });

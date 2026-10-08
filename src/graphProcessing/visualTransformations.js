@@ -104,61 +104,6 @@ export const adjustEdgeWidths = function (pCy) {
 }
 
 export const setSmellStyles = function (pCy) {
-     pCy.nodes(n => nodeHasLabel(n, 'CD-smell')).forEach((n) => {
-        addScratch(n, 'style_default', {
-            'border-color': 'red',
-        })
-    })
-}
-
-export const setLayerStyles = function (pCy, layers, layer_colors) {
-
-	// console.log(layer_colors);
-	pCy.nodes(".Scope, .Type").forEach(n => {
-		if (Object.keys({ ...n.data("properties.layers") }).length > 0) {
-			const layer_percentages = counterToPercentage({ ...n.data("properties.layers") });
-			const style = {
-				'border-color': "grey",
-				// 'background-color': null,
-				'background-fill': 'linear-gradient',
-				'background-gradient-stop-positions': repeatMiddle(cumulative(layers.map(l => Math.floor(layer_percentages[l] * 100) || 0))).map(p => `${p}`).join(" "),
-			};
-			if (isPureContainer(n)) {
-				style['background-gradient-direction'] = "to-bottom-right";
-				style['background-gradient-stop-colors'] = layers.map(l => layer_colors[l]).map((c) => hslString(whiten(c, 0.8))).map(c => `${c} ${c}`).join(" ");
-			} else {
-				style['background-gradient-direction'] = "to-right";
-				style['background-gradient-stop-colors'] = layers.map(l => layer_colors[l]).map((c) => hslString(whiten(c, 0.5))).map(c => `${c} ${c}`).join(" ");
-			}
-			// console.log(cy.$(`[id="${n.id()}"]`).id(), style);
-			addScratch(n, 'style_layer', style);
-			// cy.$(`[id="${n.id()}"]`).style(style);
-		}
-	});
-	const structures = pCy.nodes(n => nodeHasLabel(n, 'Type'));
-	structures.forEach((clasz) => {
-		const methods = clasz.outgoers(e => edgeHasLabel(e, "encapsulates"))
-			.targets(n => nodeHasLabel(n, 'Operation'))
-			.map(m => ({ ...m.data(), color: layer_colors[m.data('properties.layer')] }));
-		methods.sort((a, b) => a.properties['simpleName'].localeCompare(b.properties['simpleName']));
-		methods.sort((a, b) => layers.indexOf(a.properties['layer']) - layers.indexOf(b.properties['layer']));
-
-		addScratch(clasz, 'methods', methods);
-	});
-}
-
-export const setRsStyles = function (pCy) {
-
-	const structures = pCy.nodes(n => nodeHasLabel(n, 'Type'));
-	structures.forEach((clasz) => {
-		if (clasz.data('properties.roleStereotype')) {
-			addScratch(clasz, 'style_rs', {
-				'border-color': hslString(roleStereotypeColors[clasz.data('properties.roleStereotype'	)] || roleStereotypeColors['-']),
-				'background-fill': "solid",
-				'background-color': hslString(whiten(roleStereotypeColors[clasz.data('properties.roleStereotype')] || roleStereotypeColors['-'], 0.75)),
-			});
-		}
-	});
 }
 
 export const removeExtraNodes = function (pCy) {

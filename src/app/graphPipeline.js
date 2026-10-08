@@ -17,8 +17,6 @@ import {
 	recolorContainers,
 	removeContainmentEdges,
 	removeExtraNodes,
-	setLayerStyles,
-	setRsStyles,
 } from '../graphProcessing/visualTransformations.js';
 import {
 	addScratch,
@@ -61,10 +59,6 @@ const stageRemoveContainmentEdges = tap(({ cy }) => removeContainmentEdges(cy));
 const stageAdjustEdgeWidths = tap(({ cy }) => adjustEdgeWidths(cy));
 const stageSetSmellStyles = tap(({ cy }) => {setSmellStyles(cy)});
 const stageHideMethods = tap(({ cy, state }) => setHideMethods(cy, state));
-
-// Deprecated legacy/manual path. Keep these stage wrappers for quick rollback only.
-const stageSetLayerStyles = tap(({ cy, state }) => setLayerStyles(cy, state.layers, state.layerColors));
-const stageSetRsStyles = tap(({ cy }) => setRsStyles(cy));
 
 function hasAnyLabel(node, labels) {
 	for (const label of labels || []) {
@@ -308,8 +302,6 @@ export function createVisualPipeline({ state }) {
 		stageLiftConstructsOnce,
 		stageRemoveContainmentEdges,
 		stageAdjustEdgeWidths,
-		// stageSetLayerStyles,
-		// stageSetRsStyles,
 		stageBuildColoringRegistry,
 		stageApplyLayerModeLegacy,
 		stageRemoveExtraNodes,

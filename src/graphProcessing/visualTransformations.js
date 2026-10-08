@@ -19,9 +19,22 @@ export const recolorContainers = function (pCy) {
 export const cacheNodeStyles = function (pCy) {
 	pCy.nodes().forEach((n) => {
 		const style = n.style();
+        let borderColor = style['border-color'];
+        if (nodeHasLabel(n, "CD-smell")) {
+            borderColor = "red";
+        }
+        if (nodeHasLabel(n, "New")) {
+            borderColor = "green";
+        }
+        if (nodeHasLabel(n, "Modified")) {
+            borderColor = "orange"
+        }
+        if (nodeHasLabel(n, "Removed")) {
+            borderColor = "red"
+        }
 		addScratch(n, 'style_default', {
 			'color': style['color'],
-			'border-color': style['border-color'],
+			'border-color': borderColor,
 			'background-color': style['background-color'],
 			'background-fill': style['background-fill']
 		});
@@ -103,7 +116,13 @@ export const adjustEdgeWidths = function (pCy) {
 	});
 }
 
+// Deprecated cacheNodeStyles no colors smell labels
 export const setSmellStyles = function (pCy) {
+    //  pCy.nodes(n => nodeHasLabel(n, 'CD-smell')).forEach((n) => {
+    //     addScratch(n, 'style_default', {
+    //         'border-color': 'red',
+    //     })
+    // })
 }
 
 export const removeExtraNodes = function (pCy) {

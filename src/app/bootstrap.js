@@ -10,6 +10,7 @@ import { createUiAdapter } from './uiAdapter.js';
 import { tap } from '../composing.js';
 import { DEFAULT_COLOR_MAP, DEFAULT_COLOR_ORDER } from './constants.js';
 import { nodeHasKind, edgeHasLabel } from '../utilities/utils.js';
+import { ExtractInterfacetrategy } from '../refactoring/extractInterfaceStrategy.ts';
 
 const pipeAsync = (...fns) => async (x) => {
 	let value = x;
@@ -119,71 +120,18 @@ export function bootstrapApp() {
         const numEdges = ctx.state.hcy.edges().length;
         const cynew = await ctx.cyAdapter.createVisual(ctx.ui.$('#cypreview'), elements, ctx.style, numEdges > 5000);
         
-        // Add nodes
-        const nodeToRefactor = cynew.getElementById(refactoring.targetClass)
-        nodeToRefactor.data("labels").push("Modified")
-        const interfaceName = "I" + nodeToRefactor.data("label")
-        const nodes = cynew.add([
-            {
-                group: 'nodes',
-                data: { id: interfaceName, label: interfaceName,  name: interfaceName, labels: ["Type", "New"], name: interfaceName, properties: { "type": "interface", "kind": "class", "simpleName": "Int" } },
-            }, 
-            {
-                group: 'edges',
-                data: { source: nodeToRefactor.id(), target: interfaceName, label: 'myInterface', labels: ["New"] },
-            }
-        ]);
-        
-        const newInterface = cynew.getElementById(interfaceName)
-        newInterface.move({ parent: nodeToRefactor.parent().id() });
-        const originalClassMethods = nodeToRefactor.children().filter((child) => nodeHasKind(child, "method"));
-        const newMethods = cynew.add(originalClassMethods.map((node) => 
-            {
-                const newId = interfaceName + node.id();
-                const label = node.data("label")
-                return {
-                    group: 'nodes',
-                    data: { id: newId, label: label,  name: label, labels: ["Operation", "New"], properties: { "kind": "method", "simpleName": label } },
-                }
-            }, 
-        ));
-        newMethods.move({parent: newInterface.id()});
+        const strat = new ExtractInterfacetrategy(refactoring.targetClass);
+        const focusId = strat.apply(cynew);
 
-        // Modify edges
-        // TODO can be made easier if refactoring object contains list of nodes to refactor (i.e. make object more clear)
-
-        const replaceEdges = (node, label) => {
-            node.outgoers().filter((e) => edgeHasLabel(e, label)).forEach((edge) => {
-                // Replace original edge to new target.
-                cynew.add([
-                    {
-                        group: 'edges',
-                        data: { source: edge.source().id(), target: interfaceName, label: label, labels: ["New"] },
+        cynew.$().forEach((ele) => {
+            if (ele.data("labels")) {
+                ele.data("labels").forEach((label) => {
+                    if (!ele.classes().includes(label) && label === "Type") {
+                        ele.addClass(label)
                     }
-                ]);
-                edge.remove();
-            });
-        }
-        const sourceClass = cynew.getElementById(refactoring.sourceClass)
-        sourceClass.children().forEach((child) => {
-            if (nodeHasKind(child, "field")) {
-                replaceEdges(child, "typed")
-            }
-            if (nodeHasKind(child, "method")) {
-                replaceEdges(child, "returns")
-                replaceEdges(child, "parameterizes")
+                })
             }
         })
-
-        
-        nodes.forEach((ele) => {
-            if (ele.data('label')) {
-                ele.addClass(ele.data('label'))
-            }
-            if (ele.data('labels')) {
-                ele.data('labels').forEach(label => ele.addClass(label));
-            }
-        });
         
         // post render and zoom in to added nodes
         // Run visual pipeline again (after copying) since ele.style() is not serialized
@@ -200,7 +148,7 @@ export function bootstrapApp() {
         console.log(statePreview)
         actionsPreview.initializePostRender(cynew, "#reltab2");
         cynew.once('layoutstop', () => {
-            const node = cynew.getElementById(newInterface.id());
+            const node = cynew.getElementById(focusId);
 
             cynew.animate({
                 zoom: 0.8,

@@ -117,11 +117,16 @@ export function createUiAdapter() {
                 r('#menu-cycles', [
                         h('h2', {}, ['Cyclic Dependencies']),
                         h('ul', {}, cycles.map((cycle, idx) => 
-                            h('li', {}, [
+                            h('li', {class: 'selectable-list-item'}, [
                                 h('h3', {}, `Cycle ${idx + 1}`),
                                 h('p', {}, `${cycle.join(' -> ')}`),
                                 h('button', {}, 'Inspect', {
-                                    click: (event) => handler(idx)
+                                    click: (event) => {
+                                        const item = event.currentTarget.closest('li');
+                                        item.parentElement.querySelectorAll('#menu-cycles .selectable-list-item.active').forEach((el) => el.classList.remove('active'));
+                                        item.classList.add('active')
+                                        handler(idx)
+                                    }
                                 })
                             ])
                         )),
@@ -130,10 +135,14 @@ export function createUiAdapter() {
             listScopes(scopes, defaultSelected, exit, selectScope) {
                 r("#menu-scope", [
                     h('h2', {}, ['Scopes']),
-                    h('button', {}, 'Exit inspect', {
-                        click: (event) => exit()
+                    h('p', {}, 'Cyclic dependency edge scope'),
+                    h('button', {}, 'Exit CD inspection mode', {
+                        click: (event) => {
+                            document.querySelectorAll('#menu-cycles .selectable-list-item.active').forEach((el) => el.classList.remove('active'));
+                            exit()
+                        }
                     }),
-                    h('div', {}, scopes.map((scope) => 
+                    h('div', {class: 'edge-scopes'}, scopes.map((scope) => 
                         h('label', {}, [
 							h('input', {
 								type: 'checkbox',
@@ -158,11 +167,16 @@ export function createUiAdapter() {
                 r('#menu-refactor', [
                     h('h2', {}, ['Refactoring Opportunities']),
                     h('ul', {}, refactorings.map((refactoring, idx) => 
-                        h('li', {}, [
+                        h('li', {class: 'selectable-list-item'}, [
                             h('h3', {}, `Option ${idx + 1}`),
                             h('p', {}, `${refactoring.name} for ${refactoring.targetClass}`),
                             h('button', {}, 'preview', {
-							click: (event) => handler(refactoring),
+							click: (event) => {
+                                const item = event.currentTarget.closest('li');
+                                item.parentElement.querySelectorAll('#menu-refactor .selectable-list-item.active').forEach((el) => el.classList.remove('active'));
+                                item.classList.add('active')
+                                handler(refactoring)
+                            },
 						})
                         ])
                     )),

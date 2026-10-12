@@ -48,6 +48,25 @@ node.Type {
   text-border-color: grey;
 }
 
+node.Type.Expanded {
+  text-valign: top;
+  text-margin-y: -8px;
+  text-background-color: #ececec;
+  text-background-shape: rectangle;
+  text-background-padding: 8;
+  text-background-opacity: 1;
+  text-border-color: grey;
+  text-border-width: 3;
+  text-border-opacity: 1;
+}
+
+node.Type.Expanded.New {
+  text-border-color: green;
+}
+node.Type.Expanded.Modified {
+  text-border-color: orange;
+}
+
 node[labels.1 = "vulnerable"]{
   border-color: #ff0000;
   border-width: 4;
@@ -153,6 +172,17 @@ edge[label = "encloses"] {
 }
 
 edge[label = "typed"] {
+  source-arrow-color: #000080;
+  line-fill: linear-gradient;
+  line-gradient-stop-colors: #CCFF66 #000080;
+  line-gradient-stop-positions: 0% 100%;
+  source-arrow-shape: none;
+  target-arrow-shape: triangle;
+  line-style: dashed;
+  taxi-direction: leftward;
+  taxi-turn: -32px;
+}
+edge[label = "parameterizes"] {
   source-arrow-color: #000080;
   line-fill: linear-gradient;
   line-gradient-stop-colors: #CCFF66 #000080;

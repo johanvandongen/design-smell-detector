@@ -154,6 +154,7 @@ export const addSmellLabels = function (pCy, state) {
     structures.forEach((clasz) => {
         if (smellyNodes.has(clasz.data('id'))) {
             clasz.data('labels').push("CD-smell");
+            clasz.data('labels').push("Expanded");
         }
     })
 

@@ -363,3 +363,23 @@ ul.tabs {
   display: none;
   pointer-events: none;
 }
+
+.selectable-list-item {
+    border: 1px solid #ddd;
+    border-left: 4px solid transparent;
+    border-radius: 6px;
+    padding: 12px;
+    background-color: white;
+    transition: background-color 0.15s ease;
+}
+
+.selectable-list-item.active {
+    background-color: #e8f5e9;
+    border-color: #a5d6a7;
+    border-left-color: #388e3c;
+}
+
+.edge-scopes {
+    display: flex;
+    flex-direction: column;
+}

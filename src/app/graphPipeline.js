@@ -285,9 +285,9 @@ export function createHeadlessPipeline({ state }) {
 		stageCollectRoleStereotypes,
 		stageSetParents,
         stageSetParentsEncapsulates,
+        stageAddSmellLabels,
 		stageSetStyleClasses,
-		stageAggregateLayers,
-        stageAddSmellLabels
+		stageAggregateLayers
 	);
 	return (ctx) => pipeline({ ...ctx, state });
 }

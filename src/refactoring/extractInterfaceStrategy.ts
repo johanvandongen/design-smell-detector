@@ -51,6 +51,8 @@ export class ExtractInterfacetrategy {
                             data: { source: edge.source().id(), target: interfaceName, label: edge.data("label"), labels: ["New"] },
                         }
                     ]);
+                    edge.source().data("labels").push("Modified")
+                    edge.target().data("labels").push("Modified")
                     edge.remove();
                 }
             }

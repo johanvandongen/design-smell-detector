@@ -171,11 +171,17 @@ export function bootstrapApp() {
         cynew.$().forEach((ele) => {
             if (ele.data("labels")) {
                 ele.data("labels").forEach((label) => {
-                    if (!ele.classes().includes(label) && label === "Type") {
+                    if (!ele.classes().includes(label) && label === "Type" || label === "New" || label === "Modified") {
                         ele.addClass(label)
                     }
                 })
             }
+        })
+        cynew.$('.New').forEach((ele) => {
+            ele.addClass("Expanded")
+        })
+        cynew.$('.Modified').forEach((ele) => {
+            ele.addClass("Expanded")
         })
         
         // post render and zoom in to added nodes

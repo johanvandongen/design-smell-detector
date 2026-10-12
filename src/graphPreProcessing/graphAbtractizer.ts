@@ -101,7 +101,7 @@ export class GraphAbtractizer {
         const accepts = compose(edges['encapsulates'] || [], compose(invert(edges['parameterizes'] || []), edges['typed'] || []), "accepts").filter(
             (edge) => edge.source !== edge.target
         );
-        const returns = compose(edges['encapsulates'] || [], edges['returns'] || [], "returns").filter(
+        const returns = compose(edges['encapsulates'] || [], edges['returns'] || [], "returns(cls)").filter(
             (edge) => edge.source !== edge.target
         );
 

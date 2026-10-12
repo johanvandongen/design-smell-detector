@@ -11,6 +11,7 @@ import { tap } from '../composing.js';
 import { DEFAULT_COLOR_MAP, DEFAULT_COLOR_ORDER } from './constants.js';
 import { nodeHasKind, edgeHasLabel } from '../utilities/utils.js';
 import { ExtractInterfacetrategy } from '../refactoring/extractInterfaceStrategy.ts';
+import { relayout } from '../uiControls/graphPanel.js';
 
 const pipeAsync = (...fns) => async (x) => {
 	let value = x;
@@ -51,6 +52,50 @@ export function bootstrapApp() {
 		ctx.state.coloringMeta = ctx.graph.coloringMeta || { nodes: [], edges: [] };
 	});
 
+    const inspectCD = (ctx, idx) => {
+        const scc = ctx.state.stronglyConnectedComponents[idx]
+
+        // Zoom in to SCC
+        ctx.state.cy.animate({
+            zoom: 0.5,
+            center: {
+                eles: ctx.state.cy.getElementById(scc[0])
+            }
+        });
+
+        const nodes = scc;
+
+        scc.forEach((id) => {
+            ctx.state.cy.getElementById(id).children().forEach((child) => {
+                nodes.push(child.id())
+            })
+        })
+        ctx.state.inspectSCC = {
+            index: idx,
+            hiddenEdges: {},
+            scopes: new Set(["Inside"]),
+            nodes: nodes
+        }
+
+        const selectScope = (target) => {
+            const scope = target.value
+            if (target.checked) {
+                ctx.state.inspectSCC.scopes.add(scope)
+            } else {
+                ctx.state.inspectSCC.scopes.delete(scope)
+            }
+
+            // Show edges based on scope
+        }
+
+        // Add scope UI and execute scope filters
+        ui.listScopes(["Inside", "Boundary", "Outside"], ctx.state.inspectSCC.scopes, () => {ctx.state.inspectSCC = null, relayout(ctx.state.cy, 'klay'), ui.removeScopes()}, selectScope)
+        const defaultInspectEdges = {"returns": true, "parameterizes": true, "calls": false, "typed": true}
+        for (const [key, value] of Object.entries(defaultInspectEdges)) {
+            ctx.actions.setEdgeVisibilityViaRelation(key, value, ctx.state.cy, ui.$all(`#reltab input[name="showrels"]`))
+        }
+    }
+    
     const stageDetectCyclicDependencies = tap((ctx) => {
         // Convert labeled nodes and edges into sequential indices for SCC detection
         let nodeMapping = {};
@@ -65,7 +110,7 @@ export function bootstrapApp() {
         const problematic_interactions = ['calls', 'holds', 'accepts'];
         let edges = ctx.graph.abstract.elements.edges.filter(edge => problematic_interactions.includes(edge.data.label) && nodeMapping.hasOwnProperty(edge.data.source) && nodeMapping.hasOwnProperty(edge.data.target)).map(edge => [nodeMapping[edge.data.source], nodeMapping[edge.data.target]]);
         const SSCs = GraphService.getStronglyConnectedComponents(ctx.graph.abstract.elements.nodes.length, edges);
-        ui.listCyclicDependencies(SSCs.map(scc => scc.map(index => nodeMapping[index])));
+        ui.listCyclicDependencies(SSCs.map(scc => scc.map(index => nodeMapping[index])), (idx) => inspectCD(ctx, idx));
         
         // Convert back to original node ids
         ctx.state.stronglyConnectedComponents = SSCs.map(scc => scc.map(index => nodeMapping[index]));

@@ -113,16 +113,46 @@ export function createUiAdapter() {
 					]),
 				])));
 			},
-            listCyclicDependencies(cycles) {
+            listCyclicDependencies(cycles, handler) {
                 r('#menu-cycles', [
                         h('h2', {}, ['Cyclic Dependencies']),
                         h('ul', {}, cycles.map((cycle, idx) => 
                             h('li', {}, [
                                 h('h3', {}, `Cycle ${idx + 1}`),
                                 h('p', {}, `${cycle.join(' -> ')}`),
+                                h('button', {}, 'Inspect', {
+                                    click: (event) => handler(idx)
+                                })
                             ])
                         )),
                     ]);
+            },
+            listScopes(scopes, defaultSelected, exit, selectScope) {
+                r("#menu-scope", [
+                    h('h2', {}, ['Scopes']),
+                    h('button', {}, 'Exit inspect', {
+                        click: (event) => exit()
+                    }),
+                    h('div', {}, scopes.map((scope) => 
+                        h('label', {}, [
+							h('input', {
+								type: 'checkbox',
+								id: `scope-${scope}`,
+								name: 'scope',
+								value: scope,
+								class: 'scope-input',
+							}, [], {
+								change: (event) => selectScope(event.target),
+							}, (e) => {
+								e.checked = defaultSelected.has(scope);
+							}),
+							scope,
+						]),
+                    ))
+                ])
+            },
+            removeScopes() {
+                r("#menu-scope", [])
             },
             listRefactorings(refactorings, handler) {
                 r('#menu-refactor', [

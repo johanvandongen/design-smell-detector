@@ -24,6 +24,7 @@ export function createAppState() {
         stronglyConnectedComponents: [],
         hiddenNodes: {},
         refactorings: [],
+        inspectSCC: null,
 	};
 }
 

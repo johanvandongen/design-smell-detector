@@ -57,23 +57,56 @@ export function createActions({ state, ui }) {
 		state.flip = !state.flip;
 	}
 
-	function setEdgeVisibility(checkbox, pCy=state.cy) {
-		if (!pCy) return;
-		const updateHiddenEdges = (hiddenEdges) => {
-			const next = clone(hiddenEdges || {});
-			if (!checkbox.checked) {
-				next[checkbox.value] = pCy.edges(`[label = "${checkbox.value}"]`);
-				next[checkbox.value].remove();
-				return next;
-			}
-			if (next[checkbox.value]) {
-				next[checkbox.value].restore();
-				next[checkbox.value] = null;
-			}
-			return next;
-		};
-		mutateState((s) => over(hiddenEdgesLens, updateHiddenEdges, s));
-	}
+	function setEdgeVisibilityViaCheckbox(checkbox, pCy=state.cy) {
+        setEdgeVisibility(checkbox.value, checkbox.checked, pCy)
+    }
+
+    /** Checkboxes required so ui elements are in sync with rendered graph */
+    function setEdgeVisibilityViaRelation(relation, visibility, pCy=state.cy, checkboxes) {
+        setEdgeVisibility(relation, visibility, pCy);
+        checkboxes.forEach((checkbox) => {
+            if (checkbox.value === relation) {
+                checkbox.checked = visibility;
+            }
+        });
+    }
+    
+    /** visibiliy: true if you want visible, false otherwise */
+    function setEdgeVisibility(relation, visibility, pCy=state.cy) {
+        // TODO investigate why remove and restore is ussed instead of using display hidden
+        // Right now hiddenEdges, is not hidden, but just a lookup table for all edges. Maybe
+        // restore/remove was used to free up space?
+        if (state.inspectSCC || true) {
+            const updateHiddenEdges = (hiddenEdges) => {
+                const next = clone(hiddenEdges || {});
+                if (!visibility) {
+                    next[relation] = pCy.edges(`[label = "${relation}"]`).union(next[relation]); // Ugly way (quick fix) to have next[checkbox.value] be always have all the original edges, better to set it once and then never change it
+                    next[relation].remove();
+                    return next;
+                }
+                if (next[relation]) {
+                    if (state.inspectSCC) {
+                        // Only restore edges that fit the current scope.
+                        const scc = state.stronglyConnectedComponents[state.inspectSCC.index]
+                        const scopes = state.inspectSCC.scopes;
+                        const sccNodeIds = state.inspectSCC.nodes;
+                        const outsideEdges = (edge) => !sccNodeIds.includes(edge.source().id()) && !sccNodeIds.includes(edge.target().id());
+                        const insideEdges = (edge) => sccNodeIds.includes(edge.source().id()) && sccNodeIds.includes(edge.target().id());
+                        const boundaryEdges = (edge) => sccNodeIds.includes(edge.source().id()) != sccNodeIds.includes(edge.target().id());
+                        const edgeScope = (edge) => (scopes.has("Outside") && outsideEdges(edge)) || (scopes.has("Inside") && insideEdges(edge)) || (scopes.has("Boundary") && boundaryEdges(edge))
+                        const edgesToRestore = next[relation].edges().filter((edge) => edge.source().id() !== undefined && edge.target().id !== undefined  && edge.data("label") === relation && edgeScope(edge))
+                        edgesToRestore.restore();
+                    } else {
+                        next[relation].restore();
+                        next[relation] = null;
+                    }
+                }
+                return next;
+            };
+            mutateState((s) => over(hiddenEdgesLens, updateHiddenEdges, s));
+            return;
+        }
+    }
 
 	function setLineBends({ checked, name, value }) {
 		if (!state.cy || !checked) return;
@@ -86,14 +119,14 @@ export function createActions({ state, ui }) {
 			(ctxIn) => ({ ...ctxIn, edgeLabels: deriveRelationshipLabels(ctxIn.pCy.json().elements) }),
 			tap(({ edgeLabels }) => {
 				ui.renderRelationshipToggles(elementId, edgeLabels, {
-					onToggleEdge: (checkbox) => setEdgeVisibility(checkbox, pCy),
+					onToggleEdge: (checkbox) => setEdgeVisibilityViaCheckbox(checkbox, pCy),
 					onLineBend: setLineBends,
 					onLift: (label) => liftEdges(state.cy, label),
 					onLower: (label) => lowerEdges(state.cy, label),
 				});
 			}),
 			tap(() => {
-				ui.$all(`${elementId} input[name="showrels"]`).forEach((checkbox) => setEdgeVisibility(checkbox, pCy));
+				ui.$all(`${elementId} input[name="showrels"]`).forEach((checkbox) => setEdgeVisibilityViaCheckbox(checkbox, pCy));
 			})
 		)(ctx);
 	}
@@ -389,6 +422,7 @@ export function createActions({ state, ui }) {
 		colorNodes,
 		toggleVisibility,
 		setEdgeVisibility,
+        setEdgeVisibilityViaRelation,
 		setLineBends,
 		fillRelationshipToggles,
 		showTrace,

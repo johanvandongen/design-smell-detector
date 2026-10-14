@@ -1,6 +1,22 @@
 import cytoscape from "cytoscape";
 // @ts-ignore
 import { nodeHasKind, edgeHasLabel } from '../utilities/utils.js';
+import { EdgeData, NodeData } from "../graphPreProcessing/graphPreprocessor.js";
+
+export interface RefactoringChangeSet {
+    addedNodes: NodeData[];
+    addedEdges: EdgeData[];
+
+    removeEdgeIds: string[];
+
+    updatedNodes: EdgeUpdate[];
+    focus: string;
+}
+
+interface EdgeUpdate {
+    id: string;
+    newLabel: string;
+}
 
 export class ExtractInterfacetrategy {
     private targetClass: string;
@@ -9,55 +25,65 @@ export class ExtractInterfacetrategy {
         this.targetClass = targetClass
     }
     
-    /** Applies the refactoring and returns the id of the node to focus zoom in on */
-    apply(cynew: cytoscape.Core): string {
-        const nodeToRefactor = cynew.getElementById(this.targetClass)
-        nodeToRefactor.data("labels").push("Modified")
-        const interfaceName = "I" + nodeToRefactor.data("label")
-        cynew.add([
-            {
-                group: 'nodes',
-                data: { id: interfaceName, label: interfaceName,  name: interfaceName, labels: ["Type", "New"], properties: { "type": "interface", "kind": "class", "simpleName": "Int" } },
-            }, 
-            {
-                group: 'edges',
-                data: { source: nodeToRefactor.id(), target: interfaceName, label: 'myInterface', labels: ["New"] },
-            }
-        ]);
+    /** 
+     * @param cy a source of truth graph with all original edges and nodes which queryable
+     * Applies the refactoring and returns a changeset 
+     * */
+    apply(cy: cytoscape.Core): RefactoringChangeSet {
+        
+        const targetNode = cy.getElementById(this.targetClass) // target node is the class which we want an interface for
+        targetNode.data("labels").push("Modified")
+
+        const newInterfaceId = "I" + targetNode.data("label") + "<<Interface>>"
+        
+        const refactoringChangeSet: RefactoringChangeSet = {
+            addedNodes: [], addedEdges: [], updatedNodes: [],
+            removeEdgeIds: [], focus: newInterfaceId
+        };
+
+        refactoringChangeSet.addedNodes.push({parent: targetNode.parent().first().id(), id: newInterfaceId, label: newInterfaceId,  name: newInterfaceId, labels: ["Type", "New"], properties: { "type": "interface", "kind": "class", "simpleName": "Int", "name": "name", "shortname": "name"}})
+        refactoringChangeSet.addedEdges.push({
+            source: targetNode.id(), target: newInterfaceId, label: 'myInterface', labels: ["New"],
+            interaction: "",
+            group: ""
+        })
         
         // Add original methods to interface
-        const newInterface = cynew.getElementById(interfaceName)
-        newInterface.move({ parent: nodeToRefactor.parent().first().id() });
-        const originalClassMethods = nodeToRefactor.children().filter((child) => nodeHasKind(child, "method"));
-        const newMethods = cynew.add(originalClassMethods.map((node) => 
+        const originalClassMethods = targetNode.children().filter((child) => nodeHasKind(child, "method"));
+        originalClassMethods.forEach((node) => 
             {
-                const newId = interfaceName + node.id();
+                const newId = newInterfaceId + node.id();
                 const label = node.data("label")
-                return {
-                    group: 'nodes',
-                    data: { id: newId, label: label,  name: label, labels: ["Operation", "New"], properties: { "kind": "method", "simpleName": label } },
-                }
-            }, 
-        ));
-        newMethods.move({parent: newInterface.id()});
+                refactoringChangeSet.addedNodes.push({ parent: newInterfaceId, id: newId, label: label,  name: label, labels: ["Operation", "New"], properties: {
+                    "kind": "method", "simpleName": label,
+                    name: "",
+                    shortname: ""
+                } })
+            });
 
-        // Modify edges
-        nodeToRefactor.incomers().forEach((edge) => {
+        // Modify edges (redirect edges to interface)
+        targetNode.incomers().forEach((edge) => {
             if (edge.source().id()) {
                 if (edgeHasLabel(edge, "typed") || edgeHasLabel(edge, "returns") || edgeHasLabel(edge, "parameterizes")) {
-                    cynew.add([
-                        {
-                            group: 'edges',
-                            data: { source: edge.source().id(), target: interfaceName, label: edge.data("label"), labels: ["New"] },
-                        }
-                    ]);
-                    edge.source().data("labels").push("Modified")
-                    edge.target().data("labels").push("Modified")
-                    edge.remove();
+                    refactoringChangeSet.addedEdges.push({
+                        source: edge.source().id(), target: newInterfaceId, label: edge.data("label"), labels: ["New"],
+                        interaction: "",
+                        group: ""
+                    })
+                    refactoringChangeSet.updatedNodes.push({
+                        id: edge.source().id(),
+                        newLabel: "Modified"
+                    })
+                    refactoringChangeSet.updatedNodes.push({
+                        id: edge.target().id(),
+                        newLabel: "Modified"
+                    })
+                    refactoringChangeSet.removeEdgeIds.push(edge.id());
                 }
             }
         })
 
-        return newInterface.id()
+        console.log(refactoringChangeSet)
+        return refactoringChangeSet
     }
 }

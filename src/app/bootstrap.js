@@ -9,9 +9,10 @@ import { createAppState, installWindowStateShim } from './state.js';
 import { createUiAdapter } from './uiAdapter.js';
 import { tap } from '../composing.js';
 import { DEFAULT_COLOR_MAP, DEFAULT_COLOR_ORDER } from './constants.js';
-import { nodeHasKind, edgeHasLabel } from '../utilities/utils.js';
+import { addScratch, nodeHasKind, edgeHasLabel } from '../utilities/utils.js';
 import { ExtractInterfacetrategy } from '../refactoring/extractInterfaceStrategy.ts';
 import { relayout } from '../uiControls/graphPanel.js';
+import { showNeighborhood } from '../graphProcessing/visualTransformations.js'
 
 const pipeAsync = (...fns) => async (x) => {
 	let value = x;
@@ -51,26 +52,28 @@ export function bootstrapApp() {
         ctx.graph = graphPreprocessor.prepareGraph(ctx.rawGraph, ctx.sourceName);
 		ctx.state.coloringMeta = ctx.graph.coloringMeta || { nodes: [], edges: [] };
 	});
-
+    
     const inspectCD = (ctx, idx) => {
         const scc = ctx.state.stronglyConnectedComponents[idx]
-
-        // Zoom in to SCC
-        ctx.state.cy.animate({
-            zoom: 0.5,
-            center: {
-                eles: ctx.state.cy.getElementById(scc[0])
-            }
-        });
-
-        const nodes = scc;
-
+        
+        const nodes = [...scc];
         scc.forEach((id) => {
             ctx.state.cy.getElementById(id).children().forEach((child) => {
                 nodes.push(child.id())
             })
         })
-        ctx.state.inspectSCC = {
+
+        // for (const [key, value] of Object.entries(state.hiddenNodes['methods'])) {
+        //     state.hiddenNodes['methods'][key].remove()
+        //     state.hiddenNodes['variables'][key].remove()
+        // }
+        // scc.forEach((id) => {
+        //     console.log(id, state.hiddenNodes['methods'][id])
+        //     state.hiddenNodes['methods'][id].restore()
+        //     state.hiddenNodes['variables'][id].restore()
+        // })
+
+        ctx.state.inspect = {
             index: idx,
             hiddenEdges: {},
             scopes: new Set(["Inside"]),
@@ -80,20 +83,29 @@ export function bootstrapApp() {
         const selectScope = (target) => {
             const scope = target.value
             if (target.checked) {
-                ctx.state.inspectSCC.scopes.add(scope)
+                ctx.state.inspect.scopes.add(scope)
             } else {
-                ctx.state.inspectSCC.scopes.delete(scope)
+                ctx.state.inspect.scopes.delete(scope)
             }
 
             // Show edges based on scope
         }
 
         // Add scope UI and execute scope filters
-        ui.listScopes(["Inside", "Boundary", "Outside"], ctx.state.inspectSCC.scopes, () => {ctx.state.inspectSCC = null, relayout(ctx.state.cy, 'klay'), ui.removeScopes()}, selectScope)
+        ui.listScopes(["Inside", "Boundary", "Outside"], ctx.state.inspect.scopes, () => {ctx.state.inspect = null, relayout(ctx.state.cy, 'klay'), ui.removeScopes()}, selectScope)
         const defaultInspectEdges = {"returns": true, "parameterizes": true, "calls": false, "typed": true}
         for (const [key, value] of Object.entries(defaultInspectEdges)) {
             ctx.actions.setEdgeVisibilityViaRelation(key, value, ctx.state.cy, ui.$all(`#reltab input[name="showrels"]`))
         }
+
+
+        // Zoom in to SCC
+        ctx.state.cy.animate({
+            zoom: 0.5,
+            center: {
+                eles: ctx.state.cy.getElementById(scc[0])
+            }
+        });
     }
     
     const stageDetectCyclicDependencies = tap((ctx) => {
@@ -137,8 +149,9 @@ export function bootstrapApp() {
 		ctx.cyAdapter.batch(ctx.state.cy, () => {
 			visualPipeline({ cy: ctx.state.cy });
 		});
+        console.log("?", ctx.state.cy.edges('[label="instantiates"]').first().data())
 	});
-
+    
     const stageCreateRefactoringPipeline = async (ctx) => {
 		ctx.state.refactoringPipeline = await ctx.cyAdapter.createHeadless(ctx.graph.abstract.elements);
 		return ctx;
@@ -166,8 +179,68 @@ export function bootstrapApp() {
         const cynew = await ctx.cyAdapter.createVisual(ctx.ui.$('#cypreview'), elements, ctx.style, numEdges > 5000);
         
         const strat = new ExtractInterfacetrategy(refactoring.targetClass);
-        const focusId = strat.apply(cynew);
+        const changeSet = strat.apply(ctx.state.hcy);
 
+        changeSet.addedNodes.forEach((n) => {
+            cynew.add({
+                group: 'nodes',
+                data: n,
+            })
+        })
+        changeSet.addedNodes.forEach((n) => {
+            if (n.parent) {
+                cynew.getElementById(n.id).move({parent: n.parent});
+            }
+        })
+        
+        changeSet.updatedNodes.forEach((n) => {
+            const node = cynew.getElementById(n.id)
+            if (!node) {
+                const nodehcy = ctx.state.hcy.getElementById(n.id);
+                const d = nodehcy.data();
+                cynew.add({
+                    group: 'nodes',
+                    data: {...d, labels: [...d.labels, "Modified"]}
+                });
+            }
+
+            if (node.data("labels")) {
+                node.data("labels").push(n.newLabel);
+            }
+        })
+        
+        changeSet.addedEdges.forEach((n) => {
+            const s = cynew.getElementById(n.source)
+            if (!s.data()) {
+                const nodehcy = ctx.state.hcy.getElementById(n.source);
+                if (!nodehcy || ! nodehcy.data()) {
+                    console.log("what", nodehcy)
+                    return;
+                }
+                const d = nodehcy.data();
+                cynew.add({
+                    group: 'nodes',
+                    data: {...d, labels: [...d.labels, "Modified"]}
+                });
+            }
+            if (!cynew.getElementById(n.target).data()) {
+                const nodehcy = ctx.state.hcy.getElementById(n.target);
+                if (!nodehcy || ! nodehcy.data()) {
+                    return;
+                }
+                const d = nodehcy.data();
+                cynew.add({
+                    group: 'nodes',
+                    data: {...d, labels: [...d.labels, "Modified"]}
+                });
+            }
+            cynew.add({
+                group: 'edges',
+                data: n,
+            })
+        })
+
+        
         cynew.$().forEach((ele) => {
             if (ele.data("labels")) {
                 ele.data("labels").forEach((label) => {
@@ -177,12 +250,24 @@ export function bootstrapApp() {
                 })
             }
         })
+
+        // Remove red borders again, not working atm
+        cynew.$(".CD-smell").forEach((ele) => {
+            if (ele.data("labels")) {
+                const newLabels = ele.data("labels").filter((l) => l !== "CD-smell")
+                ele.data("labels", newLabels);
+            }
+        })
+
+        
         cynew.$('.New').forEach((ele) => {
             ele.addClass("Expanded")
         })
         cynew.$('.Modified').forEach((ele) => {
             ele.addClass("Expanded")
         })
+        const nodes = cynew.nodes().filter((n) => n.data("labels").includes("Modified") || n.data("labels").includes("New")).map((n) => n.id())
+        console.log("inspect nodes", nodes);
         
         // post render and zoom in to added nodes
         // Run visual pipeline again (after copying) since ele.style() is not serialized
@@ -193,13 +278,28 @@ export function bootstrapApp() {
         // shallow clone, error prone
         const statePreview = {
             ...ctx.state,
-            hiddenEdges: {}
+            hiddenEdges: {},
+            inspect: {
+                index: 0,
+                hiddenEdges: {},
+                scopes: new Set(["Inside"]),
+                nodes: nodes
+            }
         };
+        
         const actionsPreview = createActions({state:statePreview, ui})
         console.log(statePreview)
         actionsPreview.initializePostRender(cynew, "#reltab2");
+        
+        const defaultInspectEdges = {"returns": true, "parameterizes": true, "calls": false, "typed": true}
+        for (const [key, value] of Object.entries(defaultInspectEdges)) {
+            actionsPreview.setEdgeVisibilityViaRelation(key, value, cynew, ui.$all(`#reltab2 input[name="showrels"]`))
+        }
+
+        // highlightPreview(cynew, changeSet.focus)
+
         cynew.once('layoutstop', () => {
-            const node = cynew.getElementById(focusId);
+            const node = cynew.getElementById(changeSet.focus);
 
             cynew.animate({
                 zoom: 0.8,
@@ -209,6 +309,24 @@ export function bootstrapApp() {
             });
         });
     }
+
+    // const highlightPreview = function (pCy, focusId) {
+    //     pCy.elements().addClass("dimmed");
+    //     pCy.elements(".hidden").removeClass("hidden").addClass("hidden");
+    //     pCy.elements().removeClass("highlight");
+        
+    //    const node = pCy.getElementById(focusId);
+    //     const nodes = node.descendants().union(node).union(node.ancestors()).union(node.children());
+    //     const edges = nodes.edgesWith(nodes);
+
+    //     nodes.union(edges).removeClass("dimmed");
+    //     node.addClass("highlight");
+    //     console.log("hih", node.data(), node.classes())
+    //     showNeighborhood(nodes);
+    //     pCy.center(node);
+    //     // pCy.edges(`[label = "${PARENT_REL}"]`).style("display", "none");
+    // };
+    
 
 	const stageRunPostRender = tap((ctx) => {
 		ctx.actions.initializePostRender(state.cy, '#reltab');

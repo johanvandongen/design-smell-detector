@@ -266,12 +266,18 @@ const stageBuildColoringRegistry = tap(({ cy, state }) => {
 });
 
 function setHideMethods(cy, state) {
-    console.log("state", state)
-    // Can be made faster by first getting classes and then finding methods rather than the other way around,.
-    state.hiddenNodes['methods'] = cy.nodes('.Operation').filter((n) => !nodeHasLabel(n.parent(), 'CD-smell'));
-    state.hiddenNodes['variables'] = cy.nodes('.Variable').filter((n) => n.parent().data("labels") !== undefined && !nodeHasLabel(n.parent(), 'CD-smell'));
-    state.hiddenNodes['methods'].remove();
-    state.hiddenNodes['variables'].remove();
+    
+    // Remove all fields and methods of non smelly nodes to save space
+    // Modified not strictly needed, but it improves layout for now, so change this later
+    state.hiddenNodes["methods2"] = cy.nodes('.Operation').filter((n) => !nodeHasLabel(n.parent(), 'CD-smell') && !nodeHasLabel(n, 'Modified')).remove();
+    cy.nodes('.Variable').filter((n) => n.parent().data("labels") !== undefined && !nodeHasLabel(n.parent(), 'CD-smell')).remove()
+
+    state.hiddenNodes['methods'] = {}
+    state.hiddenNodes['variables'] = {}
+    cy.nodes('.CD-smell').forEach((clasz) => {
+        state.hiddenNodes['methods'][clasz.id()] = clasz.children().filter((n) => nodeHasLabel(n, "Operation"))
+        state.hiddenNodes['variables'][clasz.id()] = clasz.children().filter((n) => nodeHasLabel(n, "Variable"))
+    })
 }
 
 const stageRemoveExtraNodes = tap(({ cy }) => removeExtraNodes(cy));

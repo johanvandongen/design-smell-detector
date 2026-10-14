@@ -76,7 +76,7 @@ export function createActions({ state, ui }) {
         // TODO investigate why remove and restore is ussed instead of using display hidden
         // Right now hiddenEdges, is not hidden, but just a lookup table for all edges. Maybe
         // restore/remove was used to free up space?
-        if (state.inspectSCC || true) {
+        if (state.inspect || true) {
             const updateHiddenEdges = (hiddenEdges) => {
                 const next = clone(hiddenEdges || {});
                 if (!visibility) {
@@ -85,11 +85,10 @@ export function createActions({ state, ui }) {
                     return next;
                 }
                 if (next[relation]) {
-                    if (state.inspectSCC) {
-                        // Only restore edges that fit the current scope.
-                        const scc = state.stronglyConnectedComponents[state.inspectSCC.index]
-                        const scopes = state.inspectSCC.scopes;
-                        const sccNodeIds = state.inspectSCC.nodes;
+                    if (state.inspect) {
+                        // Only restore edges that fit the current scope.s
+                        const scopes = state.inspect.scopes;
+                        const sccNodeIds = state.inspect.nodes;
                         const outsideEdges = (edge) => !sccNodeIds.includes(edge.source().id()) && !sccNodeIds.includes(edge.target().id());
                         const insideEdges = (edge) => sccNodeIds.includes(edge.source().id()) && sccNodeIds.includes(edge.target().id());
                         const boundaryEdges = (edge) => sccNodeIds.includes(edge.source().id()) != sccNodeIds.includes(edge.target().id());
@@ -273,7 +272,7 @@ export function createActions({ state, ui }) {
 
 		cy.on('select', 'node', (event) => {
 			event.target.addClass('selected');
-            console.log("selected node", event.target.data())
+            console.log("selected node", event.target.data(), event.target.classes())
 			displayInfo('#infobody')(event.target);
 			if (ui.$('#infobox').style.display !== 'flex') {
 				ui.$('#infobox').style.display = 'flex';

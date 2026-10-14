@@ -313,6 +313,7 @@ export class GraphAbtractizer {
             rawReturns: edges['returns'] || [],
             typed: edges['typed'] || [],
             parameterizes: parameterizes || [],
+            instantiates: edges['instantiates'] || [],
 
             implements: edges['implements'] || [],
             succeeds: edges['succeeds'] || [],

@@ -23,6 +23,8 @@ export interface RawNodeData extends NodeDataDefinition {
         name: string,
         shortname: string;
         simpleName: string;
+        kind: string;
+        sourceText?: string;
         [key: string]: any; 
     };
 }
@@ -69,7 +71,8 @@ export class GraphPreprocessor {
         const schemaVersion = this.determineSchemaVersion(originalGraph);
         console.log('schema version', schemaVersion);
         
-        const normalizedGraph = schemaVersion.startsWith('2.0') ? originalGraph : this.upgradeV1ToV2(originalGraph);
+        let normalizedGraph = schemaVersion.startsWith('2.0') ? originalGraph : this.upgradeV1ToV2(originalGraph);
+        normalizedGraph = this.addMissingFieldInstantiateEdges(normalizedGraph)
 
         // TODO Consider removing old schema version support, since it they cant be abstracted anyway
         const abstractGraph: RawGraphData = (schemaVersion.startsWith('2.0') || schemaVersion.startsWith('1.2')) ?
@@ -181,6 +184,54 @@ export class GraphPreprocessor {
         });
         return newGraphData;
     };
+
+    /**
+     * This method is intended to be a temporary quick fix. It adds missing field instantiates edges that are not listed in the json, but should be.
+     * Ideally the json should be fixed externally, and the current json generation tool (javapers) should be updated.
+     */
+    private addMissingFieldInstantiateEdges(graphData: RawGraphData): RawGraphData {
+        const newGraphData: RawGraphData = JSON.parse(JSON.stringify(graphData));
+        const fields = newGraphData.elements.nodes.filter((node) => node.data.properties.kind === "field");
+        const fieldWithInit = fields.filter((field) => field.data.properties.sourceText?.includes("= new"))
+
+        // Find constructor call
+        fieldWithInit.forEach((field) => {
+            const type = field.data.properties.sourceText?.split("= new")[1].slice(1, -3)  // Grab the part after new and remove the last 3 chars '();' to get the type
+            if (!type) { return; }
+            
+            const nodesWithTypeInName = newGraphData.elements.nodes.filter((node) => node.data.id.includes(type) && node.data.labels.includes("Type"))
+            const isConstructorCall = nodesWithTypeInName.length > 0;
+            if (!isConstructorCall) { return; }
+
+            // Get typed edges, since constructor call must have the same type
+            // const edges = newGraphData.elements.edges.filter((edge) => edge.data.source === field.data.id && edge.data.label === "typed")
+            // if (edges.length !== 1) {
+            //     return;
+            // }
+
+            // const nodes = newGraphData.elements.nodes.filter((node) => node.data.id === edges[0].data.target)
+            // if (nodes.length !== 1) {
+            //     throw Error("Cannot happen. Each id exists at most once. Either the id doesnt exist or the id is not unique");
+            // }
+
+            // Found missing instantiates instance
+            const newEdge = {
+                data: {
+                    label: 'instantiates',
+                    source: field.data.id,
+                    target: nodesWithTypeInName[0].data.id,
+                    properties: {
+                        weight: 1,
+                        metaSrc: "source code",
+                    }
+                }
+            }
+            newGraphData.elements.edges.push(newEdge)
+            console.warn(`Missing instantiates edge added for field ${field.data.id} with sourceText ${field.data.properties.sourceText}`)
+
+        })
+        return newGraphData
+    }
 
     private buildColoringMeta(graphData: RawGraphData): { nodes: Array<{ data: RawNodeData }>; edges: Array<{ data: RawEdgeData }> } {
         const nodesById: Map<string, RawNodeData> = new Map((graphData.elements.nodes || []).map((node) => [node.data.id, node.data]));

@@ -194,7 +194,7 @@ export class GraphAbtractizer {
         const packagesToRemove = topLevelPackages.flatMap((pkg) => pkg.slice(0, -1));
         // console.log('packagesToRemove', packagesToRemove);
 
-        let newContains = edges['encloses'];
+        let newContains = edges['encloses'] || [];
         if (topLevelPackages &&
             Array.isArray(topLevelPackages[0]) &&
             topLevelPackages[0].length > 1) {

@@ -270,7 +270,7 @@ function setHideMethods(cy, state) {
     // Remove all fields and methods of non smelly nodes to save space
     // Modified not strictly needed, but it improves layout for now, so change this later
     state.hiddenNodes["methods2"] = cy.nodes('.Operation').filter((n) => !nodeHasLabel(n.parent(), 'CD-smell') && !nodeHasLabel(n, 'Modified')).remove();
-    cy.nodes('.Variable').filter((n) => n.parent().data("labels") !== undefined && !nodeHasLabel(n.parent(), 'CD-smell')).remove()
+    cy.nodes('.Variable').filter((n) => n.parent().data("labels") !== undefined && !nodeHasLabel(n.parent(), 'CD-smell') && !nodeHasLabel(n, 'Modified')).remove()
 
     state.hiddenNodes['methods'] = {}
     state.hiddenNodes['variables'] = {}
@@ -319,7 +319,9 @@ export function createVisualPipeline({ state }) {
 
 
 const stageSuggestRefactorings = tap(({ cy, state }) => {
-    // Get all dependency egdes between classes in scc for case distinction
+    if (state.stronglyConnectedComponents.length === 0) {
+        return;
+    }
     const scc = state.stronglyConnectedComponents[0];
     const refactorEngine = new RefactorEngine(cy);
     state.refactorings = refactorEngine.suggestRefactoringsForSCC(scc);

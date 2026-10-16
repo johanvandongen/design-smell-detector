@@ -65,7 +65,7 @@ export class GraphService {
         
         console.log("Strongly Connected Components:");
         const result = []
-        for (let i = 0; i < SCCs.length - 1; i++) {
+        for (let i = 0; i < SCCs.length; i++) {
             if (SCCs[i].length > 1) {
                 result.push(SCCs[i]);
                 console.log(SCCs[i].join(" "));

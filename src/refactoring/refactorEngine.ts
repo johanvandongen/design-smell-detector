@@ -2,13 +2,25 @@ import cytoscape from 'cytoscape';
 // @ts-ignore
 import { nodeHasLabel, edgeHasLabel, nodeHasKind } from '../utilities/utils.js';
 
-export interface RefactorSuggestion {
-    name: string;
+export type RefactorSuggestion =
+    | ExtractInterfaceSuggestion
+    | DependencyInjectionSuggestion;
+
+export interface ExtractInterfaceSuggestion {
+    kind: "extract-interface";
     sourceClass: string;
     targetClass: string;
     description: string;
-    descriptions?: string[];
 }
+
+export interface DependencyInjectionSuggestion {
+    kind: "dependency-injection";
+    sourceClass: string;
+    targetClass: string;
+    fieldId: string;
+    description: string;
+}
+
 export class RefactorEngine {
     private cy: cytoscape.Core; // Graph that can be queried. We use cytocape, but any type that provides this functionality works. We dont use it for rendering.
 
@@ -18,7 +30,7 @@ export class RefactorEngine {
     
     /** @param scc list of node IDs that form a strongly connected component */
     public suggestRefactoringsForSCC(scc: string[]): RefactorSuggestion[] {
-        const refactorings = this.extractInterface(scc);
+        const refactorings = [...this.extractInterface(scc), ...this.dependencyInjection(scc)];
         const mergedRefactorings = this.mergeRefactorings(refactorings)
         for (const r of mergedRefactorings) {
             console.log(r);
@@ -31,15 +43,15 @@ export class RefactorEngine {
         const groupByNameAndTarget = (arr: RefactorSuggestion[]): RefactorSuggestion[][] => {
             const result: { [key: string]: { [key: string]: RefactorSuggestion[] } } = {}
             for (let i=0; i<arr.length; i++) {
-                if (!Object.hasOwn(result, arr[i].name)) {
-                    result[arr[i].name] = {};
+                if (!Object.hasOwn(result, arr[i].kind)) {
+                    result[arr[i].kind] = {};
                 }
 
-                if (!Object.hasOwn(result[arr[i].name], arr[i].targetClass)) {
-                    result[arr[i].name][arr[i].targetClass] = [];
+                if (!Object.hasOwn(result[arr[i].kind], arr[i].targetClass)) {
+                    result[arr[i].kind][arr[i].targetClass] = [];
                 }
 
-                result[arr[i].name][arr[i].targetClass].push(arr[i]);
+                result[arr[i].kind][arr[i].targetClass].push(arr[i]);
             }
 
             // Transform result back into more convenient format
@@ -57,18 +69,41 @@ export class RefactorEngine {
         const mergedRefactorings: RefactorSuggestion[] = [];
         for (const group of groupedRefactorings) {
             const mergedRefactoring: RefactorSuggestion = group[0];
-            mergedRefactoring.descriptions = []
-            for (let r of group) {
-                mergedRefactoring.descriptions.push(r.description);
-            }
+            // mergedRefactoring.descriptions = []
+            // for (let r of group) {
+            //     mergedRefactoring.descriptions.push(r.description);
+            // }
             mergedRefactorings.push(mergedRefactoring);
         }
 
         return mergedRefactorings
     }
 
+    private dependencyInjection(scc: string[]) {
+        const refactorings: DependencyInjectionSuggestion[] = []
+        scc.forEach((nodeId) => {
+            const currtentClass = this.cy.getElementById(nodeId);
+            currtentClass.children().forEach((child) => {
+                if (nodeHasKind(child, "field")) {
+                    const instantiatesEdges = child.outgoers().filter((e) => edgeHasLabel(e, 'instantiates'))
+                    if (instantiatesEdges.length > 0) {
+                        const target = instantiatesEdges[0].target();
+                        refactorings.push({
+                            sourceClass: currtentClass.id(),
+                            targetClass: target.id(),
+                            description: `Field Declaration ${child.data("name")}`,
+                            kind: 'dependency-injection',
+                            fieldId: child.id()
+                        })
+                    }
+                }
+            })
+        })
+        return refactorings;
+    }
+
     private extractInterface(scc: string[]) {
-        const refactorings: RefactorSuggestion[] = []
+        const refactorings: ExtractInterfaceSuggestion[] = []
         scc.forEach((nodeId) => {
             const currtentClass = this.cy.getElementById(nodeId);
             currtentClass.children().forEach((child) => {
@@ -81,10 +116,10 @@ export class RefactorEngine {
                         console.log(`Field ${currtentClass.data("name")}.${child.data("name")} has type ${target.data("label")} (${targetKind})`);
                         if (targetKind !== "Interface" && scc.includes(target.id())) {
                             refactorings.push({
-                                name: `Extract Interface`,
                                 sourceClass: currtentClass.id(),
                                 targetClass: target.id(),
-                                description: `Field Declaration ${child.data("name")}`
+                                description: `Field Declaration ${child.data("name")}`,
+                                kind: 'extract-interface'
                             });
                         }
                     });
@@ -98,10 +133,10 @@ export class RefactorEngine {
                         console.log(`Method ${currtentClass.data("name")}.${child.data("name")} returns type ${target.data("label")} (${targetKind})`);
                         if (targetKind !== "Interface" && scc.includes(target.id())) {
                             refactorings.push({
-                                name: `Extract Interface`,
                                 sourceClass: currtentClass.id(),
                                 targetClass: target.id(),
-                                description: `Method return type ${child.data("name")}`
+                                description: `Method return type ${child.data("name")}`,
+                                kind: 'extract-interface'
                             });
                         }
                     });
@@ -115,7 +150,7 @@ export class RefactorEngine {
                         console.log(`Method ${currtentClass.data("name")}.${child.data("name")} parameterizes type ${target.data("label")} (${targetKind})`);
                         if (targetKind !== "Interface" && scc.includes(target.id())) {
                             refactorings.push({
-                                name: `Extract Interface`,
+                                kind: `extract-interface`,
                                 sourceClass: currtentClass.id(),
                                 targetClass: target.id(),
                                 description: `Method return type ${child.data("name")}`

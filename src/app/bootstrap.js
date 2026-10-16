@@ -10,7 +10,8 @@ import { createUiAdapter } from './uiAdapter.js';
 import { tap } from '../composing.js';
 import { DEFAULT_COLOR_MAP, DEFAULT_COLOR_ORDER } from './constants.js';
 import { addScratch, nodeHasKind, edgeHasLabel } from '../utilities/utils.js';
-import { ExtractInterfacetrategy } from '../refactoring/extractInterfaceStrategy.ts';
+import { ExtractInterfaceStrategy } from '../refactoring/extractInterfaceStrategy.ts';
+import { DependencyInjectionStrategy } from '../refactoring/dependencyInjectionStrategy.ts'
 import { relayout } from '../uiControls/graphPanel.js';
 import { showNeighborhood } from '../graphProcessing/visualTransformations.js'
 
@@ -178,8 +179,18 @@ export function bootstrapApp() {
         const numEdges = ctx.state.hcy.edges().length;
         const cynew = await ctx.cyAdapter.createVisual(ctx.ui.$('#cypreview'), elements, ctx.style, numEdges > 5000);
         
-        const strat = new ExtractInterfacetrategy(refactoring.targetClass);
-        const changeSet = strat.apply(ctx.state.hcy);
+        let strategy;
+        switch( refactoring.kind) {
+            case "extract-interface":
+                strategy = new ExtractInterfaceStrategy();
+                break;
+            case "dependency-injection":
+                strategy = new DependencyInjectionStrategy();
+                break;
+            default:
+                throw Error("No strategy found")
+        }
+        const changeSet = strategy.apply(ctx.state.hcy, refactoring);
 
         changeSet.addedNodes.forEach((n) => {
             cynew.add({
@@ -240,6 +251,9 @@ export function bootstrapApp() {
             })
         })
 
+        changeSet.removeEdgeIds.forEach((e) => {
+            cynew.getElementById(e).remove();
+        })
         
         cynew.$().forEach((ele) => {
             if (ele.data("labels")) {

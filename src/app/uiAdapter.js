@@ -169,7 +169,7 @@ export function createUiAdapter() {
                     h('ul', {}, refactorings.map((refactoring, idx) => 
                         h('li', {class: 'selectable-list-item'}, [
                             h('h3', {}, `Option ${idx + 1}`),
-                            h('p', {}, `${refactoring.name} for ${refactoring.targetClass}`),
+                            h('p', {}, `${refactoring.kind} for ${refactoring.targetClass}`),
                             h('button', {}, 'preview', {
 							click: (event) => {
                                 const item = event.currentTarget.closest('li');

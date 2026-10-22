@@ -269,20 +269,23 @@ function setHideMethods(cy, state) {
     
     // Remove all fields and methods of non smelly nodes to save space
     // Modified not strictly needed, but it improves layout for now, so change this later
-    state.hiddenNodes["methods2"] = cy.nodes('.Operation').filter((n) => !nodeHasLabel(n.parent(), 'CD-smell') && !nodeHasLabel(n, 'Modified')).remove();
-    cy.nodes('.Variable').filter((n) => n.parent().data("labels") !== undefined && !nodeHasLabel(n.parent(), 'CD-smell') && !nodeHasLabel(n, 'Modified')).remove()
+    state.hiddenNodes["methods2"] = cy.nodes('.Operation').filter((n) => !nodeHasLabel(n.parent(), 'CD-smell') && !nodeHasLabel(n, 'Modified') && !nodeHasLabel(n, 'inspect')).remove();
+    cy.nodes('.Variable').filter((n) => n.parent().data("labels") !== undefined && !nodeHasLabel(n.parent(), 'CD-smell') && !nodeHasLabel(n, 'Modified') && !nodeHasLabel(n, 'inspect')).remove()
 
     state.hiddenNodes['methods'] = {}
     state.hiddenNodes['variables'] = {}
     cy.nodes('.CD-smell').forEach((clasz) => {
         state.hiddenNodes['methods'][clasz.id()] = clasz.children().filter((n) => nodeHasLabel(n, "Operation"))
         state.hiddenNodes['variables'][clasz.id()] = clasz.children().filter((n) => nodeHasLabel(n, "Variable"))
+        state.hiddenNodes['methods'][clasz.id()].remove()
+        state.hiddenNodes['variables'][clasz.id()].remove()
     })
 }
 
 const stageRemoveExtraNodes = tap(({ cy }) => removeExtraNodes(cy));
 
 export function createHeadlessPipeline({ state }) {
+    console.log("state", state)
 	const pipeline = pipe(
 		stageHomogenizeDepths,
 		stageShortenRoots,
@@ -322,7 +325,15 @@ const stageSuggestRefactorings = tap(({ cy, state }) => {
     if (state.stronglyConnectedComponents.length === 0) {
         return;
     }
-    const scc = state.stronglyConnectedComponents[0];
+    
+    let scc;
+    if (state.inspect === null)  {
+        scc = state.stronglyConnectedComponents[0];
+    } else {
+        console.log(state.inspect.index, state.stronglyConnectedComponents)
+        scc = state.stronglyConnectedComponents[state.inspect.index];
+        console.log(scc)
+    }
     const refactorEngine = new RefactorEngine(cy);
     state.refactorings = refactorEngine.suggestRefactoringsForSCC(scc);
 });

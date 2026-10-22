@@ -100,15 +100,15 @@ node[properties.kind = "file"] {
 }
 
 node[properties.kind = "field"] {
-  shape: ellipse;
+  shape: round-rectangle;
   font-size: 16;
-  padding: 16px;
+  padding: 4px;
   height: label;
   width: label;
   label: data(properties.simpleName);
   border-color: grey;
   background-color: whitesmoke;
-  border-width: 6px;
+  border-width: 1px;
   text-halign: center;
   text-valign: center;
   text-border-color: grey;
@@ -121,13 +121,12 @@ node[properties.kind = "parameter"] {
 node[properties.kind = "method"] {
   shape: round-rectangle;
   font-size: 16;
-  padding: 16px;
+  padding: 4px;
   height: label;
   width: label;
   label: data(label);
-  border-color: grey;
   background-color: whitesmoke;
-  border-width: 6px;
+  border-width: 1px;
   text-halign: center;
   text-valign: center;
   text-border-color: grey;

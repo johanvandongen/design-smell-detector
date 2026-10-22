@@ -32,9 +32,9 @@ export class RefactorEngine {
     public suggestRefactoringsForSCC(scc: string[]): RefactorSuggestion[] {
         const refactorings = [...this.extractInterface(scc), ...this.dependencyInjection(scc)];
         const mergedRefactorings = this.mergeRefactorings(refactorings)
-        for (const r of mergedRefactorings) {
-            console.log(r);
-        }
+        // for (const r of mergedRefactorings) {
+        //     console.log(r);
+        // }
         return mergedRefactorings;
     }
 
@@ -113,8 +113,8 @@ export class RefactorEngine {
                     child.outgoers().filter((e) => edgeHasLabel(e, 'typed')).forEach((edge) => {
                         const target = edge.target();
                         const targetKind = target.data("properties.kind");
-                        console.log(`Field ${currtentClass.data("name")}.${child.data("name")} has type ${target.data("label")} (${targetKind})`);
-                        if (targetKind !== "Interface" && scc.includes(target.id())) {
+                        // console.log(`Field ${currtentClass.data("name")}.${child.data("name")} has type ${target.data("label")} (${targetKind})`);
+                        if (targetKind !== "interface" && scc.includes(target.id())) {
                             refactorings.push({
                                 sourceClass: currtentClass.id(),
                                 targetClass: target.id(),
@@ -130,8 +130,8 @@ export class RefactorEngine {
                     child.outgoers().filter((e) => edgeHasLabel(e, 'returns')).forEach((edge) => {
                         const target = edge.target();
                         const targetKind = target.data("properties.kind");
-                        console.log(`Method ${currtentClass.data("name")}.${child.data("name")} returns type ${target.data("label")} (${targetKind})`);
-                        if (targetKind !== "Interface" && scc.includes(target.id())) {
+                        // console.log(`Method ${currtentClass.data("name")}.${child.data("name")} returns type ${target.data("label")} (${targetKind})`);
+                        if (targetKind !== "interface" && scc.includes(target.id())) {
                             refactorings.push({
                                 sourceClass: currtentClass.id(),
                                 targetClass: target.id(),
@@ -147,8 +147,8 @@ export class RefactorEngine {
                     child.outgoers().filter((e) => edgeHasLabel(e, 'parameterizes')).forEach((edge) => {
                         const target = edge.target();
                         const targetKind = target.data("properties.kind");
-                        console.log(`Method ${currtentClass.data("name")}.${child.data("name")} parameterizes type ${target.data("label")} (${targetKind})`);
-                        if (targetKind !== "Interface" && scc.includes(target.id())) {
+                        // console.log(`Method ${currtentClass.data("name")}.${child.data("name")} parameterizes type ${target.data("label")} (${targetKind})`);
+                        if (targetKind !== "interface" && scc.includes(target.id())) {
                             refactorings.push({
                                 kind: `extract-interface`,
                                 sourceClass: currtentClass.id(),

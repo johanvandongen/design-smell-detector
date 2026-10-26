@@ -277,9 +277,30 @@ function setHideMethods(cy, state) {
     cy.nodes('.CD-smell').forEach((clasz) => {
         state.hiddenNodes['methods'][clasz.id()] = clasz.children().filter((n) => nodeHasLabel(n, "Operation"))
         state.hiddenNodes['variables'][clasz.id()] = clasz.children().filter((n) => nodeHasLabel(n, "Variable"))
-        state.hiddenNodes['methods'][clasz.id()].remove()
-        state.hiddenNodes['variables'][clasz.id()].remove()
     })
+
+    
+    cy.nodes().filter((n) => nodeHasLabel(n, "Variable") && (nodeHasLabel(n, 'Modified') || nodeHasLabel(n, "New"))).forEach((n) => {
+        const parentId = n.parent().id()
+            if (!Object.hasOwn(state.hiddenNodes['variables'], parentId)) {
+                state.hiddenNodes['variables'][parentId] = cy.collection();
+            }
+            state.hiddenNodes['variables'][parentId] = state.hiddenNodes['variables'][parentId].union(n)
+        }
+    )
+    cy.nodes().filter((n) => nodeHasLabel(n, "Operation") && (nodeHasLabel(n, 'Modified') || nodeHasLabel(n, "New"))).forEach((n) => {
+        const parentId = n.parent().id()
+            if (!Object.hasOwn(state.hiddenNodes['methods'], parentId)) {
+                state.hiddenNodes['methods'][parentId] = cy.collection();
+            }
+            state.hiddenNodes['methods'][parentId] = state.hiddenNodes['methods'][parentId].union(n)
+        }
+    )
+    
+    // Object.keys(state.hiddenNodes['methods']).forEach((key) => state.hiddenNodes['methods'][key].remove())
+    // Object.keys(state.hiddenNodes['variables']).forEach((key) => state.hiddenNodes['variables'][key].remove())
+    Object.keys(state.hiddenNodes['methods']).forEach((key) => state.hiddenNodes['methods'][key].forEach((n) => n.style({visibility: 'hidden'})))
+    Object.keys(state.hiddenNodes['variables']).forEach((key) => state.hiddenNodes['variables'][key].forEach((n) => n.style({visibility: 'hidden'})))
 }
 
 const stageRemoveExtraNodes = tap(({ cy }) => removeExtraNodes(cy));

@@ -67,7 +67,7 @@
           <strong>Tip:</strong> try (right-)clicking on nodes and edges! Watch a
           screencast <a href="screencast.mp4" target="_blank">here</a>!
         </div>
-        <div class="tab-bar">
+        <div class="tab-bar" id="general-traces">
           <ul class="tabs">
             <li>
               <a class="tabs tablink active" data-tab="tab-general">
@@ -82,6 +82,7 @@
         </div>
         <div class="sidebar-tab" id="tab-general">
           <div class="menu" id="menu-layout">
+            <div id="sidebar-content"></div>
             <h2>Graph</h2>
             <div>
               <h3>Layout algorithm</h3>
@@ -155,6 +156,7 @@
           </div>
     
          <div class="menu" id="menu-scope"></div>
+         <div class="menu" id="menu-scope-preview"></div>
           <div class="menu" id="menu-edges">
             <h2>Edges</h2>
             <table style="width: 100%; text-align: left" id="reltab">
@@ -167,6 +169,33 @@
               <!-- relationship types here will be loaded from dataset -->
             </table>
             <table style="width: 100%; text-align: left" id="reltab2">
+              <thead>
+                <th>Edge Type</th>
+                <th>└</th>
+                <th>╰</th>
+                <th>Action</th>
+              </thead>
+              <!-- relationship types here will be loaded from dataset -->
+            </table>
+          </div>
+
+          <div id="tab-baseline">
+            <div class="menu menu-scope"></div>
+            <h2>Edges baseline</h2>
+            <table style="width: 100%; text-align: left" class="reltab">
+              <thead>
+                <th>Edge Type</th>
+                <th>└</th>
+                <th>╰</th>
+                <th>Action</th>
+              </thead>
+              <!-- relationship types here will be loaded from dataset -->
+            </table>
+          </div>
+          <div id="tab-preview">
+            <div class="menu menu-scope"></div>
+            <h2>Edges preview</h2>
+            <table style="width: 100%; text-align: left" class="reltab">
               <thead>
                 <th>Edge Type</th>
                 <th>└</th>

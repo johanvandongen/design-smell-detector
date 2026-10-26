@@ -7,6 +7,7 @@ import { ft_colors } from '../utilities/colors.js';
 import { arrayIntersection, getScratch, isPureContainer, nodeHasLabel } from '../utilities/utils.js';
 import { deriveColorLegendModel, deriveRelationshipLabels } from './pure.js';
 import { clone, identity, lens, not, over, pipe, tap } from '../composing.js';
+import { ExpansionLayout } from './expansionLayout.js';
 
 const hiddenEdgesLens = lens(
 	(state) => state.hiddenEdges,
@@ -20,6 +21,7 @@ const isEmpty = (arr) => arr.length === 0;
 
 export function createActions({ state, ui }) {
 	const mutateState = (transform) => Object.assign(state, transform(state));
+    const expansionLayouter = new ExpansionLayout();
 
 	function colorNodes(event, pCy = state.cy) {
 		const ctx = { selectedColorMode: event.target.value, pCy, state };
@@ -94,6 +96,7 @@ export function createActions({ state, ui }) {
                         const boundaryEdges = (edge) => sccNodeIds.includes(edge.source().id()) != sccNodeIds.includes(edge.target().id());
                         const edgeScope = (edge) => (scopes.has("Outside") && outsideEdges(edge)) || (scopes.has("Inside") && insideEdges(edge)) || (scopes.has("Boundary") && boundaryEdges(edge))
                         const edgesToRestore = next[relation].edges().filter((edge) => edge.source().id() !== undefined && edge.target().id !== undefined  && edge.data("label") === relation && edgeScope(edge))
+                        // const edgesToRestoreIds = state.hcy.edges().filter((edge) => edge.source().id() !== undefined && edge.target().id !== undefined  && edge.data("label") === relation && edgeScope(edge)).map((e) => e.id())
                         edgesToRestore.restore();
                     } else {
                         next[relation].restore();
@@ -115,7 +118,7 @@ export function createActions({ state, ui }) {
 	function fillRelationshipToggles(pCy = state.cy, elementId = '#reltab') {
 		const ctx = { pCy };
 		return pipe(
-			(ctxIn) => ({ ...ctxIn, edgeLabels: deriveRelationshipLabels(ctxIn.pCy.json().elements) }),
+			(ctxIn) => ({ ...ctxIn, edgeLabels: deriveRelationshipLabels(state.hcy.json().elements) }),
 			tap(({ edgeLabels }) => {
 				ui.renderRelationshipToggles(elementId, edgeLabels, {
 					onToggleEdge: (checkbox) => setEdgeVisibilityViaCheckbox(checkbox, pCy),
@@ -352,12 +355,13 @@ export function createActions({ state, ui }) {
 
 	function initializePostRender(statecy, elementId) {
 		ui.renderColoringModes(state.coloringModes || []);
+        fillInspectionControls(statecy, elementId)
 		applyInitialColor(statecy);
 		fillRelationshipToggles(statecy, elementId);
 		fillFeatureDropdown(statecy, showTrace);
 		bindGraphPanelControls(statecy);
 		bindCyInteractions(statecy);
-		state.zoom.value = statecy.zoom();
+		// state.zoom.value = statecy.zoom();
 		if (statecy.edges().length < 5000) {
 			relayout(statecy, ui.$('#selectlayout').options[ui.$('#selectlayout').selectedIndex].value);
 		}
@@ -416,6 +420,150 @@ export function createActions({ state, ui }) {
 		adjustEdgeWidths(state.cy);
 	}
 
+    function inspectCD(ctx, idx) {
+        if (state.inspect && state.inspect.index === idx) {
+            return
+        }
+        const scc = state.stronglyConnectedComponents[idx]
+        
+        const nodes = [...scc];
+        scc.forEach((id) => {
+            state.cy.getElementById(id).children().forEach((child) => {
+                nodes.push(child.id())
+            })
+        })
+
+        const expansionLayouter = new ExpansionLayout()
+        expansionLayouter.layoutExpandClasses2(state, scc)
+
+        state.inspect = {
+            index: idx,
+            hiddenEdges: {},
+            scopes: new Set(["Inside"]),
+            nodes: nodes
+        }
+
+        stageRunRefactoringPipeline(ctx)
+        
+        setEdgeVisibilityPresetMethodLevel()
+
+        // Zoom in to SCC
+        state.cy.animate({
+            zoom: 0.5,
+            center: {
+                eles: state.cy.getElementById(scc[0])
+            }
+        });
+    }
+
+    function toggleNodes(elementId, expand) {
+        if (expand) {
+            if (elementId === "#tab-baseline") {
+                expansionLayouter.layoutExpandClasses2(state, state.stronglyConnectedComponents[state.inspect.index])
+            } else {
+                expansionLayouter.layoutExpandClasses2(state, state.inspect.expandNodes)
+            }
+            setEdgeVisibilityPresetMethodLevel(state.cy)
+            fillRelationshipToggles(state.cy, elementId)
+        } else {
+            expansionLayouter.reset(state)
+        }
+    }
+
+    function fillInspectionControls(statecy, elementId) {
+        if (state.inspect === null) {
+            ui.removeScopes()
+        } else {
+            ui.listScopes(elementId, ["Inside", "Boundary", "Outside"], state.inspect.scopes, () => {state.inspect = null, expansionLayouter.reset(ctx.state), ui.removeScopes()}, selectScope, (value) => toggleNodes(elementId, value))
+        }
+    }
+
+    const selectScope = (target) => {
+        const scope = target.value
+        if (target.checked) {
+            state.inspect.scopes.add(scope)
+        } else {
+            state.inspect.scopes.delete(scope)
+        }
+    }
+
+    function listCyclicDependencies(ctx) {
+        ui.listCyclicDependencies(state.stronglyConnectedComponents, (idx) => inspectCD(ctx, idx));
+    }
+    
+    function listRefactorings(ctx) {
+        ui.listRefactorings(state.refactorings, (refactoring) => previewRefactoring(ctx, refactoring));
+    }
+
+    function setEdgeVisibilityPresetMethodLevel(statecy) {
+        const defaultInspectEdges = {"returns": true, "parameterizes": true, "calls": false, "typed": true, 'returns(cls': true}
+        for (const [key, value] of Object.entries(defaultInspectEdges)) {
+            setEdgeVisibilityViaRelation(key, value, statecy, ui.$all(`.reltab input[name="showrels"]`))
+        }
+    }
+
+     async function previewRefactoring(ctx, refactoring) {
+            const statePreview = createAppState()
+    
+            // Copy original graph including the hidden edges
+            const elements = {
+                nodes: ctx.state.cy.nodes().jsons(),
+                edges: [
+                    ...ctx.state.cy.edges().jsons(),
+                    ...Object.values(ctx.state.hiddenEdges ?? {})
+                    .filter(Boolean)
+                    .flatMap(edges => edges.jsons())
+                ]
+            };
+            const numEdges = ctx.state.hcy.edges().length;
+            const cynew = await ctx.cyAdapter.createVisual(ctx.ui.$('#cypreview'), elements, ctx.style, numEdges > 5000);
+            
+            let strategy;
+            switch( refactoring.kind) {
+                case "extract-interface":
+                    strategy = new ExtractInterfaceStrategy();
+                    break;
+                case "dependency-injection":
+                    strategy = new DependencyInjectionStrategy();
+                    break;
+                default:
+                    throw Error("No strategy found")
+            }
+            const changeSet = strategy.apply(ctx.state.hcy, refactoring);
+            applyRefactoringChangeSet(cynew, changeSet, ctx.state)
+            const visualPipeline = createVisualPipeline({ state: statePreview });
+            ctx.cyAdapter.batch(cynew, () => {
+                visualPipeline({ cy: cynew });
+            });
+    
+            const scc = ctx.state.stronglyConnectedComponents[ctx.state.inspect.index]
+            const nodes = cynew.nodes().filter((n) => n.data("labels").includes("Modified") || n.data("labels").includes("New") || scc.includes(n.id())).map((n) => n.id())
+            
+            // shallow clone, error prone
+            statePreview.inspect = {
+                    index: 0,
+                    hiddenEdges: {},
+                    scopes: new Set(["Inside"]),
+                    nodes: nodes
+                }
+            
+            const actionsPreview = createActions({state:statePreview, ui})
+            actionsPreview.initializePostRender(cynew, "#tab-preview");
+            
+            setEdgeVisibilityPresetMethodLevel()
+    
+            cynew.once('layoutstop', () => {
+                const node = cynew.getElementById(changeSet.focus);
+    
+                cynew.animate({
+                    zoom: 0.8,
+                    center: {
+                        eles: node
+                    }
+                });
+            });
+        }
+
 	return {
 		applyInitialColor,
 		colorNodes,
@@ -432,5 +580,7 @@ export function createActions({ state, ui }) {
 		saveAsSvg,
 		getSvgUrl,
 		normalizeAfterEdgeMutation,
+        fillInspectionControls,
+        setEdgeVisibilityPresetMethodLevel,
 	};
 }

@@ -13,19 +13,19 @@ export function createUiAdapter() {
 			$('#filename').textContent = text;
 		},
 		bindTabs() {
-			const tablinks = $all('.tablink');
+			const tablinks = $all('#general-traces .tablink');
+            console.log("taa", tablinks)
 			on('click', tablinks, (event) => {
 				tablinks.forEach((t) => t.classList.remove('active'));
 				event.target.classList.add('active');
 				const selectedTab = event.target.getAttribute('data-tab');
-				$all('.sidebar-tab').forEach((t) => {
-					t.style.display = 'none';
-				});
+                $(`[id="tab-general"]`).style.display = 'none'
+                $(`[id="tab-traces"]`).style.display = 'none'
 				$(`[id="${selectedTab}"]`).style.display = 'block';
 			});
 		},
 			renderRelationshipToggles(elementId, edgeLabels, handlers) {
-			r(elementId, [
+			r(`${elementId} .reltab`, [
 				h('thead', {}, [
 					h('tr', {}, [
 						h('th', {}, ['Edge Type']),
@@ -132,16 +132,26 @@ export function createUiAdapter() {
                         )),
                     ]);
             },
-            listScopes(scopes, defaultSelected, exit, selectScope) {
-                r("#menu-scope", [
+            listScopes(elementId, scopes, defaultSelected, exit, selectScope, toggleNodes) {
+                r(`${elementId} .menu-scope`, [
                     h('h2', {}, ['Scopes']),
                     h('p', {}, 'Cyclic dependency edge scope'),
-                    h('button', {}, 'Exit CD inspection mode', {
-                        click: (event) => {
-                            document.querySelectorAll('#menu-cycles .selectable-list-item.active').forEach((el) => el.classList.remove('active'));
-                            exit()
-                        }
+                    h('label', {}, [
+                    h('input', {
+                        type: 'checkbox',
+                        id: `toggle-methods`,
+                        name: 'scope',
+                        value: true,
+                        class: 'scope-input',
+                    }, [], {
+                        change: (event) => {
+                            toggleNodes(event.target.checked)
+                        },
+                    }, (e) => {
+                        e.checked = false;
                     }),
+                    "Toggle show/hide method and fields"
+                ]),
                     h('div', {class: 'edge-scopes'}, scopes.map((scope) => 
                         h('label', {}, [
 							h('input', {
@@ -157,7 +167,13 @@ export function createUiAdapter() {
 							}),
 							scope,
 						]),
-                    ))
+                    )),
+                    h('button', {}, 'Exit CD inspection mode', {
+                        click: (event) => {
+                            document.querySelectorAll('#menu-cycles .selectable-list-item.active').forEach((el) => el.classList.remove('active'));
+                            exit()
+                        }
+                    }),
                 ])
             },
             removeScopes() {

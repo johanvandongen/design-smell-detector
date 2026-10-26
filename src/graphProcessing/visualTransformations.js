@@ -154,3 +154,191 @@ export const showNeighborhood = function (nodes) {
 		.removeClass("dimmed");
 };
 
+export const applyRefactoringChangeSet = (state, changeSet, stateOriginal) => {
+
+        // Copy original graph including the hidden edges
+        // const elements = {
+        //     nodes: ctx.state.cy.nodes().jsons(),
+        //     edges: [
+        //         ...ctx.state.cy.edges().jsons(),
+        //         ...Object.values(ctx.state.hiddenEdges ?? {})
+        //         .filter(Boolean)
+        //         .flatMap(edges => edges.jsons())
+        //     ]
+        // };
+        // const numEdges = ctx.state.hcy.edges().length;
+        // const cynew = await ctx.cyAdapter.createVisual(ctx.ui.$('#cypreview'), elements, ctx.style, numEdges > 5000);
+        
+        // let strategy;
+        // switch( refactoring.kind) {
+        //     case "extract-interface":
+        //         strategy = new ExtractInterfaceStrategy();
+        //         break;
+        //     case "dependency-injection":
+        //         strategy = new DependencyInjectionStrategy();
+        //         break;
+        //     default:
+        //         throw Error("No strategy found")
+        // }
+        // const changeSet = strategy.apply(ctx.state.hcy, refactoring);
+
+        const cynew = state.cy
+
+        changeSet.addedNodes.forEach((n) => {
+            cynew.add({
+                group: 'nodes',
+                data: n,
+            })
+        })
+        changeSet.addedNodes.forEach((n) => {
+            if (n.parent) {
+                cynew.getElementById(n.id).move({parent: n.parent});
+            }
+        })
+        
+        changeSet.updatedNodes.forEach((n) => {
+            let node = cynew.getElementById(n.id)
+            // if (!node) {
+            //     const nodehcy = ctx.state.hcy.getElementById(n.id);
+            //     const d = nodehcy.data();
+            //     cynew.add({
+            //         group: 'nodes',
+            //         data: {...d, labels: [...d.labels, "Modified"]}
+            //     });
+            // }
+            if (node.empty()) {
+                const nodehcy = stateOriginal.hcy.getElementById(n.id);
+                if (nodehcy.empty()) return;
+                const d = nodehcy.data();
+                cynew.add({
+                    group: "nodes",
+                    data: { ...d, labels: [...d.labels, "Modified"] }
+                });
+                node = cynew.getElementById(n.id);
+            }
+
+            const labels = node.data("labels");
+            if (labels && !labels.includes(n.newLabel)) {
+                node.data("labels", [...labels, n.newLabel]);
+            }
+        })
+        
+        changeSet.addedEdges.forEach((n) => {
+            const s = cynew.getElementById(n.source)
+            if (!s.data()) {
+                const nodehcy = stateOriginal.hcy.getElementById(n.source);
+                if (!nodehcy || ! nodehcy.data()) {
+                    console.log("what", nodehcy)
+                    return;
+                }
+                const d = nodehcy.data();
+                cynew.add({
+                    group: 'nodes',
+                    data: {...d, labels: [...d.labels, "Modified"]}
+                });
+            }
+            if (!cynew.getElementById(n.target).data()) {
+                const nodehcy = stateOriginal.hcy.getElementById(n.target);
+                if (!nodehcy || ! nodehcy.data()) {
+                    return;
+                }
+                const d = nodehcy.data();
+                cynew.add({
+                    group: 'nodes',
+                    data: {...d, labels: [...d.labels, "Modified"]}
+                });
+            }
+            cynew.add({
+                group: 'edges',
+                data: n,
+            })
+        })
+
+        changeSet.removeEdgeIds.forEach((e) => {
+            cynew.getElementById(e).remove();
+        })
+        
+        cynew.$().forEach((ele) => {
+            if (ele.data("labels")) {
+                ele.data("labels").forEach((label) => {
+                    if (!ele.classes().includes(label) && label === "Type" || label === "New" || label === "Modified") {
+                        ele.addClass(label)
+                    }
+                })
+            }
+        })
+
+        // removedNodes.remove();
+
+        // Remove red borders again, not working atm
+        // cynew.$(".CD-smell").forEach((ele) => {
+        //     if (ele.data("labels")) {
+        //         const newLabels = ele.data("labels").filter((l) => l !== "CD-smell")
+        //         if (ctx.state.inspect) {
+        //             scc = ctx.state.stronglyConnectedComponents[ctx.state.inspect.index]
+        //             console.log("yowaddup", scc, ele.id())
+        //             if (scc.indluces(ele.id())) {
+        //                 newLabels.push("inspect")
+        //             }
+        //         }
+        //         ele.data("labels", newLabels);
+        //     }
+        // })
+
+        
+        cynew.$('.New').forEach((ele) => {
+            ele.addClass("Expanded")
+        })
+        cynew.$('.Modified').forEach((ele) => {
+            ele.addClass("Expanded")
+        })
+        
+        // const visualPipeline = createVisualPipeline({ state: statePreview });
+        // ctx.cyAdapter.batch(cynew, () => {
+        //     visualPipeline({ cy: cynew });
+        // });
+
+        // cynew.nodes().filter((n) => nodeHasLabel(n, "Operation")).remove()
+        // cynew.nodes().filter((n) => nodeHasLabel(n, "Variable")).remove()
+
+        // state.hiddenNodes = cynew.nodes().filter((n) => nodeHasLabel(n, "Variable"))
+        
+
+        // state.hiddenNodes["methods2"] = cy.nodes('.Operation').filter((n) => !nodeHasLabel(n.parent(), 'CD-smell') && !nodeHasLabel(n, 'Modified') && !nodeHasLabel(n, 'inspect')).remove();
+        // cy.nodes('.Variable').filter((n) => n.parent().data("labels") !== undefined && !nodeHasLabel(n.parent(), 'CD-smell') && !nodeHasLabel(n, 'Modified') && !nodeHasLabel(n, 'inspect')).remove()
+
+        // state.hiddenNodes['methods'] = {}
+        // state.hiddenNodes['variables'] = {}
+        // cynew.nodes().filter((n) => nodeHasLabel(n, "Variable")).forEach((n) => {
+        //         if (!Object.hasOwn(state.hiddenNodes['variables'], n.parent().id())) {
+        //             state.hiddenNodes['variables'][n.parent()] = [];
+        //         }
+        //         state.hiddenNodes['variables'][n.parent()].push(n);
+        //     }
+        // )
+        // cy.nodes().forEach((clasz) => {
+
+        //     // const methods = clasz.children().filter((n) => nodeHasLabel(n, "Operation"))
+        //     // const fields = clasz.children().filter((n) => nodeHasLabel(n, "Variable"))
+        //     state.hiddenNodes['methods'][clasz.id()] = clasz.children().filter((n) => nodeHasLabel(n, "Operation"))
+        //     state.hiddenNodes['variables'][clasz.id()] = clasz.children().filter((n) => nodeHasLabel(n, "Variable"))
+        //     state.hiddenNodes['methods'][clasz.id()].remove()
+        //     state.hiddenNodes['variables'][clasz.id()].remove()
+        // })
+
+
+        // state.hiddenNodes['variables'][clasz.id()] = clasz.children().filter((n) => nodeHasLabel(n, "Variable"))
+        // cynew.nodes().filter((n) => nodeHasLabel(n, "Operation")).forEach((n) =>
+        // {
+        //     if (n.id() == "nl.tudelft.jpacman.npc.ghost.Inky.followPath(java.util.List,nl.tudelft.jpacman.board.Square)") {
+        //         n.connectedEdges().remove()
+        //         n.remove()
+        //         console.warn(`Could not remove node`, n.data())
+        //         return;
+        //     }
+        //     state.hiddenNodes.append(n)
+        //     n.remove()
+        // })
+        // state.hiddenNodes.remove()
+    }
+

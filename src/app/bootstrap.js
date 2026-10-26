@@ -13,9 +13,10 @@ import { addScratch, nodeHasKind, edgeHasLabel, nodeHasLabel } from '../utilitie
 import { ExtractInterfaceStrategy } from '../refactoring/extractInterfaceStrategy.ts';
 import { DependencyInjectionStrategy } from '../refactoring/dependencyInjectionStrategy.ts'
 import { relayout } from '../uiControls/graphPanel.js';
-import { showNeighborhood } from '../graphProcessing/visualTransformations.js'
+import { applyRefactoringChangeSet, showNeighborhood } from '../graphProcessing/visualTransformations.js'
 import { RefactorEngine } from '../refactoring/refactorEngine.ts';
 import { ExpansionLayout } from './expansionLayout.ts'
+import { UIBuilder } from './uiBuilder.ts'
 
 const pipeAsync = (...fns) => async (x) => {
 	let value = x;
@@ -32,6 +33,7 @@ export function bootstrapApp() {
 	const actions = createActions({ state, ui });
     const graphPreprocessor = new GraphPreprocessor();
     const expansionLayouter = new ExpansionLayout()
+    const uiBuilder = new UIBuilder("#sidebar-content");
 	const headlessPipeline = createHeadlessPipeline({ state });
 	const visualPipeline = createVisualPipeline({ state });
     const refactoringPipeline = createRefactoringPipeline({ state });
@@ -79,25 +81,20 @@ export function bootstrapApp() {
             nodes: nodes
         }
         
-        const selectScope = (target) => {
-            const scope = target.value
-            if (target.checked) {
-                ctx.state.inspect.scopes.add(scope)
-            } else {
-                ctx.state.inspect.scopes.delete(scope)
-            }
-
-            // Show edges based on scope
-        }
         stageRunRefactoringPipeline(ctx)
 
         // Add scope UI and execute scope filters
-        ui.listScopes(["Inside", "Boundary", "Outside"], ctx.state.inspect.scopes, () => {ctx.state.inspect = null, expansionLayouter.reset(ctx.state), ui.removeScopes()}, selectScope)
-        const defaultInspectEdges = {"returns": true, "parameterizes": true, "calls": false, "typed": true}
-        for (const [key, value] of Object.entries(defaultInspectEdges)) {
-            ctx.actions.setEdgeVisibilityViaRelation(key, value, ctx.state.cy, ui.$all(`#reltab input[name="showrels"]`))
-        }
-
+        // const toggleNodes = (expand) => {
+        //     console.log(expand)
+        //     if (expand) {
+        //         expansionLayouter.layoutExpandClasses2(ctx.state, scc)
+        //     } else {
+        //         expansionLayouter.reset(ctx.state)
+        //     }
+        // }
+        actions.fillInspectionControls(ctx.state.cy, "#tab-baseline")
+        // actions.toggleNodes
+        actions.setEdgeVisibilityPresetMethodLevel(ctx.state.cy)
 
         // Zoom in to SCC
         ctx.state.cy.animate({
@@ -122,10 +119,12 @@ export function bootstrapApp() {
         const problematic_interactions = ['calls', 'holds', 'accepts'];
         let edges = ctx.graph.abstract.elements.edges.filter(edge => problematic_interactions.includes(edge.data.label) && nodeMapping.hasOwnProperty(edge.data.source) && nodeMapping.hasOwnProperty(edge.data.target)).map(edge => [nodeMapping[edge.data.source], nodeMapping[edge.data.target]]);
         const SSCs = GraphService.getStronglyConnectedComponents(ctx.graph.abstract.elements.nodes.length, edges);
+        
         ui.listCyclicDependencies(SSCs.map(scc => scc.map(index => nodeMapping[index])), (idx) => inspectCD(ctx, idx));
         
         // Convert back to original node ids
         ctx.state.stronglyConnectedComponents = SSCs.map(scc => scc.map(index => nodeMapping[index]));
+        // uiBuilder.buildCyclicDependenciesList(ctx.state)
 	});
 
 	const stageCreateHeadlessCy = async (ctx) => {
@@ -160,22 +159,14 @@ export function bootstrapApp() {
 		ctx.cyAdapter.batch(ctx.state.refactoringPipeline, () => {
 			refactoringPipeline({ cy: ctx.state.hcy });
 		});
+
         ui.listRefactorings(state.refactorings, (refactoring) => previewRefactoring(ctx, refactoring));
+        // uiBuilder.buildRefactoringList(state, ctx)
 	});
 
-    const previewRefactoring = async (ctx, refactoring) => {
+     const previewRefactoring = async (ctx, refactoring) => {
         const statePreview = createAppState()
-        // const visualPipeline = createVisualPipeline({ state: statePreview });
-	    // const headlessPipeline = createHeadlessPipeline({ state: statePreview });
-        // const hcy = await ctx.cyAdapter.createHeadless(ctx.graph.abstract.elements);
-        // ctx.cyAdapter.batch(hcy, () => {
-		// 	headlessPipeline({ cy: hcy });
-		// });
-        // const cynew = await ctx.cyAdapter.createVisual(ctx.ui.$('#cypreview'), hcy.json().elements, ctx.style, true);
-        // ctx.cyAdapter.batch(cynew, () => {
-		// 	visualPipeline({ cy: cynew });
-		// });
-
+        
         // Copy original graph including the hidden edges
         const elements = {
             nodes: ctx.state.cy.nodes().jsons(),
@@ -194,162 +185,38 @@ export function bootstrapApp() {
             case "extract-interface":
                 strategy = new ExtractInterfaceStrategy();
                 break;
-            case "dependency-injection":
+                case "dependency-injection":
                 strategy = new DependencyInjectionStrategy();
                 break;
             default:
                 throw Error("No strategy found")
-        }
+            }
+        
         const changeSet = strategy.apply(ctx.state.hcy, refactoring);
+        statePreview.cy = cynew;
+        // statePreview.hcy = ctx.cyAdapter.createHeadless(cynew.json().elements.clone());
+        statePreview.hcy = ctx.state.hcy
+        applyRefactoringChangeSet(statePreview, changeSet, ctx.state)
+        const visualPipeline = createVisualPipeline({ state: statePreview });
+        ctx.cyAdapter.batch(cynew, () => {
+            visualPipeline({ cy: cynew });
+        });
 
-        changeSet.addedNodes.forEach((n) => {
-            cynew.add({
-                group: 'nodes',
-                data: n,
-            })
-        })
-        changeSet.addedNodes.forEach((n) => {
-            if (n.parent) {
-                cynew.getElementById(n.id).move({parent: n.parent});
-            }
-        })
-        
-        changeSet.updatedNodes.forEach((n) => {
-            let node = cynew.getElementById(n.id)
-            // if (!node) {
-            //     const nodehcy = ctx.state.hcy.getElementById(n.id);
-            //     const d = nodehcy.data();
-            //     cynew.add({
-            //         group: 'nodes',
-            //         data: {...d, labels: [...d.labels, "Modified"]}
-            //     });
-            // }
-            if (node.empty()) {
-                const nodehcy = ctx.state.hcy.getElementById(n.id);
-                if (nodehcy.empty()) return;
-                const d = nodehcy.data();
-                cynew.add({
-                    group: "nodes",
-                    data: { ...d, labels: [...d.labels, "Modified"] }
-                });
-                node = cynew.getElementById(n.id);
-            }
-
-            const labels = node.data("labels");
-            if (labels && !labels.includes(n.newLabel)) {
-                node.data("labels", [...labels, n.newLabel]);
-            }
-        })
-        
-        changeSet.addedEdges.forEach((n) => {
-            const s = cynew.getElementById(n.source)
-            if (!s.data()) {
-                const nodehcy = ctx.state.hcy.getElementById(n.source);
-                if (!nodehcy || ! nodehcy.data()) {
-                    console.log("what", nodehcy)
-                    return;
-                }
-                const d = nodehcy.data();
-                cynew.add({
-                    group: 'nodes',
-                    data: {...d, labels: [...d.labels, "Modified"]}
-                });
-            }
-            if (!cynew.getElementById(n.target).data()) {
-                const nodehcy = ctx.state.hcy.getElementById(n.target);
-                if (!nodehcy || ! nodehcy.data()) {
-                    return;
-                }
-                const d = nodehcy.data();
-                cynew.add({
-                    group: 'nodes',
-                    data: {...d, labels: [...d.labels, "Modified"]}
-                });
-            }
-            cynew.add({
-                group: 'edges',
-                data: n,
-            })
-        })
-
-        changeSet.removeEdgeIds.forEach((e) => {
-            cynew.getElementById(e).remove();
-        })
-        
-        cynew.$().forEach((ele) => {
-            if (ele.data("labels")) {
-                ele.data("labels").forEach((label) => {
-                    if (!ele.classes().includes(label) && label === "Type" || label === "New" || label === "Modified") {
-                        ele.addClass(label)
-                    }
-                })
-            }
-        })
-
-        // removedNodes.remove();
-
-        // Remove red borders again, not working atm
-        // cynew.$(".CD-smell").forEach((ele) => {
-        //     if (ele.data("labels")) {
-        //         const newLabels = ele.data("labels").filter((l) => l !== "CD-smell")
-        //         if (ctx.state.inspect) {
-        //             scc = ctx.state.stronglyConnectedComponents[ctx.state.inspect.index]
-        //             console.log("yowaddup", scc, ele.id())
-        //             if (scc.indluces(ele.id())) {
-        //                 newLabels.push("inspect")
-        //             }
-        //         }
-        //         ele.data("labels", newLabels);
-        //     }
-        // })
-
-        
-        cynew.$('.New').forEach((ele) => {
-            ele.addClass("Expanded")
-        })
-        cynew.$('.Modified').forEach((ele) => {
-            ele.addClass("Expanded")
-        })
         const scc = ctx.state.stronglyConnectedComponents[ctx.state.inspect.index]
         const nodes = cynew.nodes().filter((n) => n.data("labels").includes("Modified") || n.data("labels").includes("New") || scc.includes(n.id())).map((n) => n.id())
         
         // shallow clone, error prone
         statePreview.inspect = {
-                index: 0,
-                hiddenEdges: {},
-                scopes: new Set(["Inside"]),
-                nodes: nodes
-            }
-        // post render and zoom in to added nodes
-        // Run visual pipeline again (after copying) since ele.style() is not serialized
-        const visualPipeline = createVisualPipeline({ state: statePreview });
-        ctx.cyAdapter.batch(cynew, () => {
-			visualPipeline({ cy: cynew });
-		});
-
-        // cynew.nodes().filter((n) => nodeHasLabel(n, "Operation")).remove()
-        cynew.nodes().filter((n) => nodeHasLabel(n, "Variable")).remove()
-        cynew.nodes().filter((n) => nodeHasLabel(n, "Operation")).forEach((n) =>
-        {
-            if (n.id() == "nl.tudelft.jpacman.npc.ghost.Inky.followPath(java.util.List,nl.tudelft.jpacman.board.Square)") {
-                n.connectedEdges().remove()
-                n.remove()
-                console.warn(`Could not remove node`, n.data())
-                return;
-            }
-            n.remove()
-        })
-        
+            index: 0,
+            hiddenEdges: {},
+            scopes: new Set(["Inside"]),
+            nodes: nodes,
+            expandNodes: Object.keys(statePreview.hiddenNodes['variables']).concat(Object.keys(statePreview.hiddenNodes['methods']))
+        }
+        console.log("keysss", statePreview.inspect.expandNodes)
         
         const actionsPreview = createActions({state:statePreview, ui})
-        actionsPreview.initializePostRender(cynew, "#reltab2");
-        
-        const defaultInspectEdges = {"returns": true, "parameterizes": true, "calls": false, "typed": true}
-        for (const [key, value] of Object.entries(defaultInspectEdges)) {
-            actionsPreview.setEdgeVisibilityViaRelation(key, value, cynew, ui.$all(`#reltab2 input[name="showrels"]`))
-        }
-
-        // highlightPreview(cynew, changeSet.focus)
+        actionsPreview.initializePostRender(cynew, "#tab-preview");
 
         cynew.once('layoutstop', () => {
             const node = cynew.getElementById(changeSet.focus);
@@ -363,26 +230,9 @@ export function bootstrapApp() {
         });
     }
 
-    // const highlightPreview = function (pCy, focusId) {
-    //     pCy.elements().addClass("dimmed");
-    //     pCy.elements(".hidden").removeClass("hidden").addClass("hidden");
-    //     pCy.elements().removeClass("highlight");
-        
-    //    const node = pCy.getElementById(focusId);
-    //     const nodes = node.descendants().union(node).union(node.ancestors()).union(node.children());
-    //     const edges = nodes.edgesWith(nodes);
-
-    //     nodes.union(edges).removeClass("dimmed");
-    //     node.addClass("highlight");
-    //     console.log("hih", node.data(), node.classes())
-    //     showNeighborhood(nodes);
-    //     pCy.center(node);
-    //     // pCy.edges(`[label = "${PARENT_REL}"]`).style("display", "none");
-    // };
-    
-
 	const stageRunPostRender = tap((ctx) => {
-		ctx.actions.initializePostRender(state.cy, '#reltab');
+        uiBuilder.buildNormalEdgeControls(ctx.state)
+		ctx.actions.initializePostRender(state.cy, '#tab-baseline');
 	});
 
 	const initializeGraph = pipeAsync(

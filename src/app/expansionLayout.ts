@@ -4,7 +4,6 @@ export class ExpansionLayout {
     private classBaseline: { [key: string]: {x: number, y: number, height: number}} = {};
     private viewport: { zoom: number; pan: cytoscape.Position } | null = null;
 
-
     setBaseline = (state: any) => {
         this.viewport = {zoom: state.cy.zoom(), pan: {x: state.cy.pan().x, y: state.cy.pan().y}};
         const classBaseline: { [key: string]: {x: number, y: number, height: number}} = {};
@@ -22,16 +21,25 @@ export class ExpansionLayout {
 
     reset = (state: any) => {
         state.cy.$(".Type").forEach((node: any) => {
-            node.position({
-                x: this.classBaseline[node.id()].x,
-                y: this.classBaseline[node.id()].y,
-            });
+            const nodePosition = this.classBaseline[node.id()]
+            if (nodePosition) {
+                node.position({
+                    x: this.classBaseline[node.id()].x,
+                    y: this.classBaseline[node.id()].y,
+                });
+            }
         });
-        for (const key of Object.keys(state.hiddenNodes.methods)) {
-            state.hiddenNodes.methods[key].remove();
-            state.hiddenNodes.variables[key].remove();
+        // for (const key of Object.keys(state.hiddenNodes.methods)) {
+        //     state.hiddenNodes.methods[key].remove();
+        //     state.hiddenNodes.variables[key].remove();
+        // }
+        // Object.keys(state.hiddenNodes.methods).forEach((key) => state.hiddenNodes.methods[key].remove())
+        // Object.keys(state.hiddenNodes.variables).forEach((key) => state.hiddenNodes.variables[key].remove())
+        Object.keys(state.hiddenNodes['methods']).forEach((key) => state.hiddenNodes['methods'][key].forEach((n: any) => n.style({visibility: 'hidden'})))
+        Object.keys(state.hiddenNodes['variables']).forEach((key) => state.hiddenNodes['variables'][key].forEach((n: any) => n.style({visibility: 'hidden'})))
+        if (this.viewport) {
+            state.cy.animate(this.viewport);
         }
-        state.cy.animate(this.viewport);
     }
 
     layoutExpandClasses2 = (state: any, classesToExpand: string[]) => {
@@ -43,15 +51,32 @@ export class ExpansionLayout {
         const layoutGap = 20;
 
         // Hide all previously restored members.
-        for (const key of Object.keys(state.hiddenNodes.methods)) {
-            state.hiddenNodes.methods[key].remove();
-            state.hiddenNodes.variables[key].remove();
-        }
+        // Object.keys(state.hiddenNodes.methods).forEach((key) => state.hiddenNodes.methods[key].remove())
+        // Object.keys(state.hiddenNodes.variables).forEach((key) => state.hiddenNodes.variables[key].remove())
 
+        // for (const key of Object.keys(state.hiddenNodes.methods)) {
+        //     state.hiddenNodes.methods[key].remove();
+        //     state.hiddenNodes.variables[key].remove();
+        // }
+        
         // Restore members of the classes we want to expand.
+        // classesToExpand.forEach((id) => {
+        //     state.hiddenNodes.methods[id].restore();
+        //     console.log(state.hiddenNodes.variables[id])
+        //     state.hiddenNodes.variables[id].restore();
+        // });
         classesToExpand.forEach((id) => {
-            state.hiddenNodes.methods[id].restore();
-            state.hiddenNodes.variables[id].restore();
+            if (state.hiddenNodes.methods[id]) {
+                console.log(state.hiddenNodes.methods[id])
+                state.hiddenNodes.methods[id].restore()
+                state.hiddenNodes.methods[id].style({visibility: 'visible'})
+            }
+        });
+        classesToExpand.forEach((id) => {
+            if (state.hiddenNodes.variables[id]) {
+                state.hiddenNodes.variables[id].restore()
+                state.hiddenNodes.variables[id].style({visibility: 'visible'})
+            }
         });
 
         // Position members relative to each class's original position.

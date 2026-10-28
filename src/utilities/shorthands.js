@@ -56,6 +56,20 @@ export function r(sel, children = [], replace = true) {
 	}
 }
 
+export function re(el, children = [], replace = true) {
+	if (el) {
+		if (replace) el.textContent = '';
+		if (children && children.length) {
+			const frag = document.createDocumentFragment();
+			for (let i = 0, len = children.length; i < len; i++) {
+				const child = children[i];
+				frag.appendChild(child instanceof Node ? child : document.createTextNode(child));
+			}
+			el.appendChild(frag);
+		}
+	}
+}
+
 export function on(event, targets, handler) {
 	(Array.isArray(targets) ? targets : [targets])
 		.forEach(t => t.addEventListener(event, handler));

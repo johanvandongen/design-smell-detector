@@ -12,15 +12,13 @@ export function createUiAdapter() {
 		setFilename(text) {
 			$('#filename').textContent = text;
 		},
-		bindTabs() {
-			const tablinks = $all('#general-traces .tablink');
-            console.log("taa", tablinks)
+		bindTabs(tabBarId) {
+			const tablinks = $all(`${tabBarId} .tablink`);
 			on('click', tablinks, (event) => {
 				tablinks.forEach((t) => t.classList.remove('active'));
 				event.target.classList.add('active');
 				const selectedTab = event.target.getAttribute('data-tab');
-                $(`[id="tab-general"]`).style.display = 'none'
-                $(`[id="tab-traces"]`).style.display = 'none'
+                tablinks.forEach((t) => $(`[id="${t.getAttribute('data-tab')}"]`).style.display = 'none')
 				$(`[id="${selectedTab}"]`).style.display = 'block';
 			});
 		},

@@ -154,31 +154,20 @@
             </div>
     
           </div>
-    
-         <div class="menu" id="menu-scope"></div>
-         <div class="menu" id="menu-scope-preview"></div>
-          <div class="menu" id="menu-edges">
-            <h2>Edges</h2>
-            <table style="width: 100%; text-align: left" id="reltab">
-              <thead>
-                <th>Edge Type</th>
-                <th>└</th>
-                <th>╰</th>
-                <th>Action</th>
-              </thead>
-              <!-- relationship types here will be loaded from dataset -->
-            </table>
-            <table style="width: 100%; text-align: left" id="reltab2">
-              <thead>
-                <th>Edge Type</th>
-                <th>└</th>
-                <th>╰</th>
-                <th>Action</th>
-              </thead>
-              <!-- relationship types here will be loaded from dataset -->
-            </table>
-          </div>
 
+          <div class="tab-bar" id="baseline-preview">
+          <ul class="tabs">
+            <li>
+              <a class="tabs tablink active" data-tab="tab-baseline">
+                Baseline
+              </a>
+            </li>
+            <li>
+              <a class="tabs tablink" data-tab="tab-preview">
+                Preview
+              </a>
+          </ul>
+        </div>
           <div id="tab-baseline">
             <div class="menu menu-scope"></div>
             <h2>Edges baseline</h2>
@@ -192,7 +181,7 @@
               <!-- relationship types here will be loaded from dataset -->
             </table>
           </div>
-          <div id="tab-preview">
+          <div id="tab-preview" style="display: none">
             <div class="menu menu-scope"></div>
             <h2>Edges preview</h2>
             <table style="width: 100%; text-align: left" class="reltab">

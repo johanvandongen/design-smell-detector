@@ -67,7 +67,6 @@ export class ExpansionLayout {
         // });
         classesToExpand.forEach((id) => {
             if (state.hiddenNodes.methods[id]) {
-                console.log(state.hiddenNodes.methods[id])
                 state.hiddenNodes.methods[id].restore()
                 state.hiddenNodes.methods[id].style({visibility: 'visible'})
             }

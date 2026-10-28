@@ -15,8 +15,6 @@ import { DependencyInjectionStrategy } from '../refactoring/dependencyInjectionS
 import { relayout } from '../uiControls/graphPanel.js';
 import { applyRefactoringChangeSet, showNeighborhood } from '../graphProcessing/visualTransformations.js'
 import { RefactorEngine } from '../refactoring/refactorEngine.ts';
-import { ExpansionLayout } from './expansionLayout.ts'
-import { UIBuilder } from './uiBuilder.ts'
 
 const pipeAsync = (...fns) => async (x) => {
 	let value = x;
@@ -32,8 +30,6 @@ export function bootstrapApp() {
 	const cyAdapter = createCyAdapter();
 	const actions = createActions({ state, ui });
     const graphPreprocessor = new GraphPreprocessor();
-    const expansionLayouter = new ExpansionLayout()
-    const uiBuilder = new UIBuilder("#sidebar-content");
 	const headlessPipeline = createHeadlessPipeline({ state });
 	const visualPipeline = createVisualPipeline({ state });
     const refactoringPipeline = createRefactoringPipeline({ state });
@@ -72,8 +68,6 @@ export function bootstrapApp() {
             })
         })
 
-        expansionLayouter.layoutExpandClasses2(ctx.state, scc)
-
         ctx.state.inspect = {
             index: idx,
             hiddenEdges: {},
@@ -82,19 +76,7 @@ export function bootstrapApp() {
         }
         
         stageRunRefactoringPipeline(ctx)
-
-        // Add scope UI and execute scope filters
-        // const toggleNodes = (expand) => {
-        //     console.log(expand)
-        //     if (expand) {
-        //         expansionLayouter.layoutExpandClasses2(ctx.state, scc)
-        //     } else {
-        //         expansionLayouter.reset(ctx.state)
-        //     }
-        // }
         actions.fillInspectionControls(ctx.state.cy, "#tab-baseline")
-        // actions.toggleNodes
-        actions.setEdgeVisibilityPresetMethodLevel(ctx.state.cy)
 
         // Zoom in to SCC
         ctx.state.cy.animate({
@@ -124,7 +106,6 @@ export function bootstrapApp() {
         
         // Convert back to original node ids
         ctx.state.stronglyConnectedComponents = SSCs.map(scc => scc.map(index => nodeMapping[index]));
-        // uiBuilder.buildCyclicDependenciesList(ctx.state)
 	});
 
 	const stageCreateHeadlessCy = async (ctx) => {
@@ -161,7 +142,6 @@ export function bootstrapApp() {
 		});
 
         ui.listRefactorings(state.refactorings, (refactoring) => previewRefactoring(ctx, refactoring));
-        // uiBuilder.buildRefactoringList(state, ctx)
 	});
 
      const previewRefactoring = async (ctx, refactoring) => {
@@ -231,7 +211,6 @@ export function bootstrapApp() {
     }
 
 	const stageRunPostRender = tap((ctx) => {
-        uiBuilder.buildNormalEdgeControls(ctx.state)
 		ctx.actions.initializePostRender(state.cy, '#tab-baseline');
 	});
 
@@ -259,7 +238,6 @@ export function bootstrapApp() {
 
 	const initFromPayload = async ({ rawGraph, style, sourceName }) => {
 		await initializeGraph({ rawGraph, style, sourceName, state, ui, cyAdapter, actions });
-        // await initializeGraph({ rawGraph, style, sourceName, state, ui, cyAdapter, actions });
 	};
 
 	const initFromQueryParam = async (fileName) => {
@@ -304,7 +282,8 @@ export function bootstrapApp() {
         cytoscape.warnings(false);
 		actions.bindWindowShortcuts();
 		bindStaticControls();
-		ui.bindTabs();
+		ui.bindTabs("#general-traces");
+        ui.bindTabs("#baseline-preview");
 
 		const fileName = new URLSearchParams(window.location.search).get('p');
 		if (!fileName) return;

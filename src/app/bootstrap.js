@@ -77,14 +77,8 @@ export function bootstrapApp() {
         
         stageRunRefactoringPipeline(ctx)
         actions.fillInspectionControls(ctx.state.cy, "#tab-baseline")
-
-        // Zoom in to SCC
-        ctx.state.cy.animate({
-            zoom: 0.5,
-            center: {
-                eles: ctx.state.cy.getElementById(scc[0])
-            }
-        });
+        actions.setEdgeVisibilityPreset("#tab-baseline", ctx.state.cy, "class")
+        ctx.state.cy.animate({fit: {eles: ctx.state.cy.nodes().filter((n) => scc.includes(n.id()))}})
     }
     
     const stageDetectCyclicDependencies = tap((ctx) => {
@@ -183,7 +177,7 @@ export function bootstrapApp() {
         });
 
         const scc = ctx.state.stronglyConnectedComponents[ctx.state.inspect.index]
-        const nodes = cynew.nodes().filter((n) => n.data("labels").includes("Modified") || n.data("labels").includes("New") || scc.includes(n.id())).map((n) => n.id())
+        const nodes = cynew.nodes().filter((n) => scc.includes(n.id()) ||  n.id() === changeSet.focus);
         
         // shallow clone, error prone
         statePreview.inspect = {
@@ -197,17 +191,9 @@ export function bootstrapApp() {
         
         const actionsPreview = createActions({state:statePreview, ui})
         actionsPreview.initializePostRender(cynew, "#tab-preview");
+        actionsPreview.setEdgeVisibilityPreset("#tab-preview", statePreview.cy, "class")
 
-        cynew.once('layoutstop', () => {
-            const node = cynew.getElementById(changeSet.focus);
-
-            cynew.animate({
-                zoom: 0.8,
-                center: {
-                    eles: node
-                }
-            });
-        });
+        cynew.once('layoutstop', () => cynew.animate({fit: {eles: nodes}}));
     }
 
 	const stageRunPostRender = tap((ctx) => {

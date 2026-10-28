@@ -427,7 +427,6 @@ export function createActions({ state, ui }) {
             } else {
                 expansionLayouter.layoutExpandClasses2(state, state.inspect.expandNodes)
             }
-            // setEdgeVisibilityPresetMethodLevel(state.cy)
             fillRelationshipToggles(state.cy, elementId)
         } else {
             expansionLayouter.reset(state)
@@ -451,10 +450,35 @@ export function createActions({ state, ui }) {
         }
     }
 
-    function setEdgeVisibilityPresetMethodLevel(statecy) {
-        const defaultInspectEdges = {"returns": true, "parameterizes": true, "calls": false, "typed": true, 'returns(cls': true}
+    function setEdgeVisibilityPreset(elementId, statecy, preset="method") {
+        let defaultInspectEdges;
+        if (preset === "method") {
+            defaultInspectEdges = {
+                "returns": true, 
+                "parameterizes": true, 
+                "typed": true, 
+                'invokes': true,
+                'instantiates': false,
+                "calls": false, 
+                'returns(cls)': false,
+                'accepts': false,
+                'holds': false,
+            }
+        } else if (preset === "class") {
+            defaultInspectEdges = {
+                "returns": false, 
+                "parameterizes": false, 
+                "typed": false, 
+                'invokes': false,
+                'instantiates': true,
+                "calls": true, 
+                'returns(cls)': true,
+                'accepts': true,
+                'holds': true,
+            }
+        }
         for (const [key, value] of Object.entries(defaultInspectEdges)) {
-            setEdgeVisibilityViaRelation(key, value, statecy, ui.$all(`.reltab input[name="showrels"]`))
+            setEdgeVisibilityViaRelation(key, value, statecy, ui.$all(`${elementId} .reltab input[name="showrels"]`))
         }
     }
 
@@ -475,6 +499,6 @@ export function createActions({ state, ui }) {
 		getSvgUrl,
 		normalizeAfterEdgeMutation,
         fillInspectionControls,
-        setEdgeVisibilityPresetMethodLevel,
+        setEdgeVisibilityPreset,
 	};
 }

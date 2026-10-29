@@ -155,33 +155,6 @@ export const showNeighborhood = function (nodes) {
 };
 
 export const applyRefactoringChangeSet = (state, changeSet, stateOriginal) => {
-
-        // Copy original graph including the hidden edges
-        // const elements = {
-        //     nodes: ctx.state.cy.nodes().jsons(),
-        //     edges: [
-        //         ...ctx.state.cy.edges().jsons(),
-        //         ...Object.values(ctx.state.hiddenEdges ?? {})
-        //         .filter(Boolean)
-        //         .flatMap(edges => edges.jsons())
-        //     ]
-        // };
-        // const numEdges = ctx.state.hcy.edges().length;
-        // const cynew = await ctx.cyAdapter.createVisual(ctx.ui.$('#cypreview'), elements, ctx.style, numEdges > 5000);
-        
-        // let strategy;
-        // switch( refactoring.kind) {
-        //     case "extract-interface":
-        //         strategy = new ExtractInterfaceStrategy();
-        //         break;
-        //     case "dependency-injection":
-        //         strategy = new DependencyInjectionStrategy();
-        //         break;
-        //     default:
-        //         throw Error("No strategy found")
-        // }
-        // const changeSet = strategy.apply(ctx.state.hcy, refactoring);
-
         const cynew = state.cy
 
         changeSet.addedNodes.forEach((n) => {
@@ -198,14 +171,6 @@ export const applyRefactoringChangeSet = (state, changeSet, stateOriginal) => {
         
         changeSet.updatedNodes.forEach((n) => {
             let node = cynew.getElementById(n.id)
-            // if (!node) {
-            //     const nodehcy = ctx.state.hcy.getElementById(n.id);
-            //     const d = nodehcy.data();
-            //     cynew.add({
-            //         group: 'nodes',
-            //         data: {...d, labels: [...d.labels, "Modified"]}
-            //     });
-            // }
             if (node.empty()) {
                 const nodehcy = stateOriginal.hcy.getElementById(n.id);
                 if (nodehcy.empty()) return;
@@ -248,6 +213,10 @@ export const applyRefactoringChangeSet = (state, changeSet, stateOriginal) => {
                     data: {...d, labels: [...d.labels, "Modified"]}
                 });
             }
+            
+            const edgeExists = cynew.getElementById(n.id).nonempty()
+            if (edgeExists) { return }
+
             cynew.add({
                 group: 'edges',
                 data: n,
@@ -293,39 +262,10 @@ export const applyRefactoringChangeSet = (state, changeSet, stateOriginal) => {
             ele.addClass("Expanded")
         })
         
-        // const visualPipeline = createVisualPipeline({ state: statePreview });
-        // ctx.cyAdapter.batch(cynew, () => {
-        //     visualPipeline({ cy: cynew });
-        // });
-
         // cynew.nodes().filter((n) => nodeHasLabel(n, "Operation")).remove()
         // cynew.nodes().filter((n) => nodeHasLabel(n, "Variable")).remove()
 
         // state.hiddenNodes = cynew.nodes().filter((n) => nodeHasLabel(n, "Variable"))
-        
-
-        // state.hiddenNodes["methods2"] = cy.nodes('.Operation').filter((n) => !nodeHasLabel(n.parent(), 'CD-smell') && !nodeHasLabel(n, 'Modified') && !nodeHasLabel(n, 'inspect')).remove();
-        // cy.nodes('.Variable').filter((n) => n.parent().data("labels") !== undefined && !nodeHasLabel(n.parent(), 'CD-smell') && !nodeHasLabel(n, 'Modified') && !nodeHasLabel(n, 'inspect')).remove()
-
-        // state.hiddenNodes['methods'] = {}
-        // state.hiddenNodes['variables'] = {}
-        // cynew.nodes().filter((n) => nodeHasLabel(n, "Variable")).forEach((n) => {
-        //         if (!Object.hasOwn(state.hiddenNodes['variables'], n.parent().id())) {
-        //             state.hiddenNodes['variables'][n.parent()] = [];
-        //         }
-        //         state.hiddenNodes['variables'][n.parent()].push(n);
-        //     }
-        // )
-        // cy.nodes().forEach((clasz) => {
-
-        //     // const methods = clasz.children().filter((n) => nodeHasLabel(n, "Operation"))
-        //     // const fields = clasz.children().filter((n) => nodeHasLabel(n, "Variable"))
-        //     state.hiddenNodes['methods'][clasz.id()] = clasz.children().filter((n) => nodeHasLabel(n, "Operation"))
-        //     state.hiddenNodes['variables'][clasz.id()] = clasz.children().filter((n) => nodeHasLabel(n, "Variable"))
-        //     state.hiddenNodes['methods'][clasz.id()].remove()
-        //     state.hiddenNodes['variables'][clasz.id()].remove()
-        // })
-
 
         // state.hiddenNodes['variables'][clasz.id()] = clasz.children().filter((n) => nodeHasLabel(n, "Variable"))
         // cynew.nodes().filter((n) => nodeHasLabel(n, "Operation")).forEach((n) =>

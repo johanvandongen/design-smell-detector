@@ -271,6 +271,17 @@ edge[label = "holds"] {
   taxi-direction: leftward;
   taxi-turn: -32px;
 }
+edge[label = "returns(cls)"] {
+  source-arrow-color: #400080;
+  line-fill: linear-gradient;
+  line-gradient-stop-colors: #66FFCC #400080;
+  line-gradient-stop-positions: 0% 100%;
+  source-arrow-shape: none;
+  source-arrow-fill: hollow;
+  target-arrow-shape: triangle;
+  taxi-direction: leftward;
+  taxi-turn: -32px;
+}
 
 edge[label = "specializes"] {
   source-arrow-color: #804000;

@@ -62,6 +62,7 @@ export class GraphAbtractizer {
 
                         if (!aggregatedEdges.has(key)) {
                             aggregatedEdges.set(key, {
+                                id: s1 + "-" + newlabel + "-" + t2,
                                 source: s1,
                                 target: t2,
                                 label: newlabel || `${label}-${l2label}`,

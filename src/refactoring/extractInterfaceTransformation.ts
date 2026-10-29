@@ -75,10 +75,10 @@ export class ExtractInterfaceTransformation {
                 
                 method.outgoers().filter((edge) => edgeHasLabel(edge, "returns") || edgeHasLabel(edge, "parameterizes")).forEach((edge) => {
                     if (edge.target().id() === targetNode.id()) {
-                        // console.log("no self edge", edge.data())
                         this.addEdge(refactoringChangeSet, edge, newInterfaceId, newInterfaceId, newMethodId)
+                    } else {
+                        this.addEdge(refactoringChangeSet, edge, newInterfaceId, edge.target().id(), newMethodId)
                     }
-                    this.addEdge(refactoringChangeSet, edge, newInterfaceId, edge.target().id(), newMethodId)
                 })
             });
 

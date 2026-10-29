@@ -89,6 +89,7 @@ export function createActions({ state, ui }) {
                 if (next[relation]) {
                     if (state.inspect) {
                         // Only restore edges that fit the current scope.s
+                        next[relation].remove();
                         const scopes = state.inspect.scopes;
                         const sccNodeIds = state.inspect.nodes;
                         const outsideEdges = (edge) => !sccNodeIds.includes(edge.source().id()) && !sccNodeIds.includes(edge.target().id());
@@ -427,7 +428,7 @@ export function createActions({ state, ui }) {
             } else {
                 expansionLayouter.layoutExpandClasses2(state, state.inspect.expandNodes)
             }
-            fillRelationshipToggles(state.cy, elementId)
+            // fillRelationshipToggles(state.cy, elementId)
         } else {
             expansionLayouter.reset(state)
         }
@@ -437,7 +438,7 @@ export function createActions({ state, ui }) {
         if (state.inspect === null) {
             ui.removeScopes()
         } else {
-            ui.listScopes(elementId, ["Inside", "Boundary", "Outside"], state.inspect.scopes, () => {state.inspect = null, expansionLayouter.reset(ctx.state), ui.removeScopes()}, selectScope, (value) => toggleNodes(elementId, value))
+            ui.listScopes(elementId, ["Inside", "Boundary", "Outside"], state.inspect.scopes, () => {state.inspect = null, toggleNodes(elementId, false), ui.removeScopes(elementId)}, selectScope, (value) => toggleNodes(elementId, value))
         }
     }
 

@@ -174,8 +174,8 @@ export function createUiAdapter() {
                     }),
                 ])
             },
-            removeScopes() {
-                r("#menu-scope", [])
+            removeScopes(elementId) {
+                r(`${elementId} .menu-scope`, [])
             },
             listRefactorings(refactorings, handler) {
                 r('#menu-refactor', [

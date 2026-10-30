@@ -72,6 +72,22 @@ export function createActions({ state, ui }) {
             }
         });
     }
+
+    // function initEdges() {
+    //     const edgeLabels = deriveRelationshipLabels(state.hcy.json().elements)
+    //     const updateHiddenEdges = (hiddenEdges) => {
+    //         const next = clone(hiddenEdges || {});
+    //         for (const relation of edgeLabels) {
+    //             console.log(relation)
+    //             next[relation] = state.cy.edges(`[label = "${relation}"]`)
+    //         }
+    //         return next
+    //     }
+    //     mutateState((s) => over(hiddenEdgesLens, updateHiddenEdges, s));
+
+    //     Object.keys(state.hiddenNodes.methods).forEach((key) => state.hiddenNodes.methods[key].remove())
+    //     Object.keys(state.hiddenNodes.variables).forEach((key) => state.hiddenNodes.variables[key].remove())
+    // }
     
     /** visibiliy: true if you want visible, false otherwise */
     function setEdgeVisibility(relation, visibility, pCy=state.cy) {

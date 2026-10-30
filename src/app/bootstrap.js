@@ -136,8 +136,14 @@ export function bootstrapApp() {
         const statePreview = createAppState()
         
         // Copy original graph including the hidden edges
+        // console.log(ctx.state.cy.getElementById("nl.​tudelft.​jpacman.​board.​​Square"))
+        // const hiddenNodes = ctx.state.hiddenNodes
+        
         const elements = {
-            nodes: ctx.state.cy.nodes().jsons(),
+            nodes: [
+                ...ctx.state.cy.nodes().jsons(),
+                ...Object.keys(state.hiddenNodes.methods).flatMap((key) => state.hiddenNodes.methods[key].jsons())
+            ],
             edges: [
                 ...ctx.state.cy.edges().jsons(),
                 ...Object.values(ctx.state.hiddenEdges ?? {})

@@ -299,8 +299,8 @@ function setHideMethods(cy, state) {
     
     // Object.keys(state.hiddenNodes['methods']).forEach((key) => state.hiddenNodes['methods'][key].remove())
     // Object.keys(state.hiddenNodes['variables']).forEach((key) => state.hiddenNodes['variables'][key].remove())
-    Object.keys(state.hiddenNodes['methods']).forEach((key) => state.hiddenNodes['methods'][key].forEach((n) => n.style({visibility: 'hidden'})))
-    Object.keys(state.hiddenNodes['variables']).forEach((key) => state.hiddenNodes['variables'][key].forEach((n) => n.style({visibility: 'hidden'})))
+    // Object.keys(state.hiddenNodes['methods']).forEach((key) => state.hiddenNodes['methods'][key].forEach((n) => n.style({visibility: 'hidden'})))
+    // Object.keys(state.hiddenNodes['variables']).forEach((key) => state.hiddenNodes['variables'][key].forEach((n) => n.style({visibility: 'hidden'})))
 }
 
 const stageRemoveExtraNodes = tap(({ cy }) => removeExtraNodes(cy));

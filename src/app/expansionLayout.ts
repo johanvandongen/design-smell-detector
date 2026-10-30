@@ -33,10 +33,10 @@ export class ExpansionLayout {
         //     state.hiddenNodes.methods[key].remove();
         //     state.hiddenNodes.variables[key].remove();
         // }
-        // Object.keys(state.hiddenNodes.methods).forEach((key) => state.hiddenNodes.methods[key].remove())
-        // Object.keys(state.hiddenNodes.variables).forEach((key) => state.hiddenNodes.variables[key].remove())
-        Object.keys(state.hiddenNodes['methods']).forEach((key) => state.hiddenNodes['methods'][key].forEach((n: any) => n.style({visibility: 'hidden'})))
-        Object.keys(state.hiddenNodes['variables']).forEach((key) => state.hiddenNodes['variables'][key].forEach((n: any) => n.style({visibility: 'hidden'})))
+        Object.keys(state.hiddenNodes.methods).forEach((key) => state.hiddenNodes.methods[key].remove())
+        Object.keys(state.hiddenNodes.variables).forEach((key) => state.hiddenNodes.variables[key].remove())
+        // Object.keys(state.hiddenNodes['methods']).forEach((key) => state.hiddenNodes['methods'][key].forEach((n: any) => n.style({visibility: 'hidden'})))
+        // Object.keys(state.hiddenNodes['variables']).forEach((key) => state.hiddenNodes['variables'][key].forEach((n: any) => n.style({visibility: 'hidden'})))
         if (this.viewport) {
             state.cy.animate(this.viewport);
         }
@@ -51,8 +51,8 @@ export class ExpansionLayout {
         const layoutGap = 20;
 
         // Hide all previously restored members.
-        // Object.keys(state.hiddenNodes.methods).forEach((key) => state.hiddenNodes.methods[key].remove())
-        // Object.keys(state.hiddenNodes.variables).forEach((key) => state.hiddenNodes.variables[key].remove())
+        Object.keys(state.hiddenNodes.methods).forEach((key) => state.hiddenNodes.methods[key].remove())
+        Object.keys(state.hiddenNodes.variables).forEach((key) => state.hiddenNodes.variables[key].remove())
 
         // for (const key of Object.keys(state.hiddenNodes.methods)) {
         //     state.hiddenNodes.methods[key].remove();
@@ -60,23 +60,24 @@ export class ExpansionLayout {
         // }
         
         // Restore members of the classes we want to expand.
-        // classesToExpand.forEach((id) => {
-        //     state.hiddenNodes.methods[id].restore();
-        //     console.log(state.hiddenNodes.variables[id])
-        //     state.hiddenNodes.variables[id].restore();
-        // });
         classesToExpand.forEach((id) => {
-            if (state.hiddenNodes.methods[id]) {
-                state.hiddenNodes.methods[id].restore()
-                state.hiddenNodes.methods[id].style({visibility: 'visible'})
-            }
-        });
-        classesToExpand.forEach((id) => {
+            state.hiddenNodes.methods[id].restore();
             if (state.hiddenNodes.variables[id]) {
-                state.hiddenNodes.variables[id].restore()
-                state.hiddenNodes.variables[id].style({visibility: 'visible'})
+                state.hiddenNodes.variables[id].restore();
             }
         });
+        // classesToExpand.forEach((id) => {
+        //     if (state.hiddenNodes.methods[id]) {
+        //         state.hiddenNodes.methods[id].restore()
+        //         state.hiddenNodes.methods[id].style({visibility: 'visible'})
+        //     }
+        // });
+        // classesToExpand.forEach((id) => {
+        //     if (state.hiddenNodes.variables[id]) {
+        //         state.hiddenNodes.variables[id].restore()
+        //         state.hiddenNodes.variables[id].style({visibility: 'visible'})
+        //     }
+        // });
 
         // Position members relative to each class's original position.
         classesToExpand.forEach((id) => {

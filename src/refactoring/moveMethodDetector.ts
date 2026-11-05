@@ -8,6 +8,7 @@ export interface MoveMethodSuggestion {
     targetClass: string;
     methodId: string;
     description: string;
+    newMethodReference: 'parameter' | 'field'; // How can this new method be called from the original callers? 'parameter' when callers used targetClass as parameter, 'field' otherwise (original callers use sourceclass field to access new method)
 }
 
 /**
@@ -35,6 +36,7 @@ export class MoveMethodDetector {
                                 targetClass: target.id(),
                                 methodId: child.id(),
                                 description: `Move  method ${child.data("name")} to class ${target.data("properties.simpleName")}`,
+                                newMethodReference: this.hasParameterOfType(child, target) ? 'parameter' : 'field',
                                 kind: 'move-method'
                             });
                         }

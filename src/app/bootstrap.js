@@ -12,6 +12,7 @@ import { DEFAULT_COLOR_MAP, DEFAULT_COLOR_ORDER } from './constants.js';
 import { addScratch, nodeHasKind, edgeHasLabel, nodeHasLabel } from '../utilities/utils.js';
 import { ExtractInterfaceStrategy } from '../refactoring/extractInterfaceStrategy.ts';
 import { DependencyInjectionStrategy } from '../refactoring/dependencyInjectionStrategy.ts'
+import { MoveMethodStrategy } from '../refactoring/moveMethodStrategy.ts'
 import { relayout } from '../uiControls/graphPanel.js';
 import { applyRefactoringChangeSet, showNeighborhood } from '../graphProcessing/visualTransformations.js'
 import { RefactorEngine } from '../refactoring/refactorEngine.ts';
@@ -156,8 +157,11 @@ export function bootstrapApp() {
                 case "dependency-injection":
                 strategy = new DependencyInjectionStrategy();
                 break;
+                case "move-method":
+                strategy = new MoveMethodStrategy();
+                break;
             default:
-                throw Error("No strategy found")
+                throw Error("No strategy found to apply refactoring of kind: " + refactoring.kind);
             }
         
         const changeSet = strategy.apply(ctx.state.hcy, refactoring);

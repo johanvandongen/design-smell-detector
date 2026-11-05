@@ -1,7 +1,6 @@
 import cytoscape from "cytoscape";
 // @ts-ignore
 import { edgeHasLabel, nodeHasKind } from '../utilities/utils.js';
-import { ExtractInterfaceTransformation } from "./extractInterfaceTransformation.js";
 import { IRefactoringStrategy, RefactoringChangeSet } from "./IRefactoringStrategy.js";
 import { MoveMethodSuggestion } from "./moveMethodDetector.js";
 
@@ -13,7 +12,6 @@ export class MoveMethodStrategy implements IRefactoringStrategy<MoveMethodSugges
      * Applies the refactoring and returns a changeset 
      * */
     apply(cy: cytoscape.Core, suggestion: MoveMethodSuggestion): RefactoringChangeSet {
-        
         const targetClass = cy.getElementById(suggestion.targetClass)
         const sourceClass = cy.getElementById(suggestion.sourceClass) 
         const method = cy.getElementById(suggestion.methodId)
@@ -76,7 +74,7 @@ export class MoveMethodStrategy implements IRefactoringStrategy<MoveMethodSugges
         })
 
         
-        // Update composed edges of source class
+        // Update composed edges between source class and target class
         const sourceClassOtherMethods = sourceClass.children().filter((child) => nodeHasKind(child, "method") && child.id() !== method.id());
         sourceClassOtherMethods.forEach((method) => {
             if (!method.outgoers().edges().some((edge) => edgeHasLabel(edge, "returns"))) {
@@ -94,6 +92,31 @@ export class MoveMethodStrategy implements IRefactoringStrategy<MoveMethodSugges
             if (!method.outgoers().edges().some((edge) => edgeHasLabel(edge, "instantiates"))) {
                 const returnEdgeId = sourceClass.outgoers().edges().filter((e) => edgeHasLabel(e, "constructs") && e.target().id() === targetClass.id()).first().id();
                 refactoringChangeSet.removeEdgeIds.push(returnEdgeId)
+            }
+        })
+
+
+        method.incomers().edges().filter((e) => edgeHasLabel(e, "invokes")).forEach((edge) => {
+            refactoringChangeSet.updatedNodes.push({id: edge.source().id(), newLabel: "Modified"})
+            if (suggestion.newMethodReference === 'parameter') {
+                refactoringChangeSet.addedEdges.push({
+                    interaction: "invokes",
+                    group: "edges",
+                    label: "invokes",
+                    source: edge.source().id(),
+                    target: methodNewId
+                })
+            } else if (suggestion.newMethodReference === 'field') {
+                // 'uses' edges not supported in json input model, so left out of scope for now
+                // Add edges from edge.source() to sourceClass fields
+                // const sourceField = 'some source field of type target class'
+                // refactoringChangeSet.addedEdges.push({
+                //     interaction: "uses",
+                //     group: "edges",
+                //     label: "invokes",
+                //     source: edge.source().id(),
+                //     target: sourceField
+                // })
             }
         })
 

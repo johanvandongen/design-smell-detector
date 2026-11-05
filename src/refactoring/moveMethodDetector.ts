@@ -34,7 +34,7 @@ export class MoveMethodDetector {
                                 sourceClass: currtentClass.id(),
                                 targetClass: target.id(),
                                 methodId: child.id(),
-                                description: `Move  ${child.data("name")}`,
+                                description: `Move  method ${child.data("name")} to class ${target.data("properties.simpleName")}`,
                                 kind: 'move-method'
                             });
                         }

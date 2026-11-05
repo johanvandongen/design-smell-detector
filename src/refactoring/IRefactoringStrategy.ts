@@ -7,6 +7,7 @@ export interface RefactoringChangeSet {
     addedEdges: EdgeData[];
 
     removeEdgeIds: string[];
+    removeNodeIds: string[];
 
     updatedNodes: EdgeUpdate[];
     focus: string;

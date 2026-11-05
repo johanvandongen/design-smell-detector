@@ -94,7 +94,8 @@ export class RefactorEngine {
                         refactorings.push({
                             sourceClass: currtentClass.id(),
                             targetClass: target.id(),
-                            description: `Field Declaration ${child.data("name")}`,
+                            // description: `Field Declaration ${child.data("name")}`,
+                            description: `Dependency injection for field ${currtentClass.data("properties.simpleName")}.${child.data("name")}`,
                             kind: 'dependency-injection',
                             fieldId: child.id()
                         })
@@ -121,7 +122,8 @@ export class RefactorEngine {
                             refactorings.push({
                                 sourceClass: currtentClass.id(),
                                 targetClass: target.id(),
-                                description: `Field Declaration ${child.data("name")}`,
+                                // description: `Field Declaration ${child.data("name")}`,
+                                description: `Extract interface for class ${target.data("properties.simpleName")}`,
                                 kind: 'extract-interface'
                             });
                         }
@@ -138,7 +140,8 @@ export class RefactorEngine {
                             refactorings.push({
                                 sourceClass: currtentClass.id(),
                                 targetClass: target.id(),
-                                description: `Method return type ${child.data("name")}`,
+                                // description: `Method return type ${child.data("name")}`,
+                                description: `Extract interface for class ${target.data("properties.simpleName")}`,
                                 kind: 'extract-interface'
                             });
                         }
@@ -156,7 +159,8 @@ export class RefactorEngine {
                                 kind: `extract-interface`,
                                 sourceClass: currtentClass.id(),
                                 targetClass: target.id(),
-                                description: `Method return type ${child.data("name")}`
+                                // description: `Method return type ${child.data("name")}`
+                                description: `Extract interface for class ${target.data("properties.simpleName")}`,
                             });
                         }
                     });

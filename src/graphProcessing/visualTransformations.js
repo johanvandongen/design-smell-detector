@@ -226,6 +226,9 @@ export const applyRefactoringChangeSet = (state, changeSet, stateOriginal) => {
         changeSet.removeEdgeIds.forEach((e) => {
             cynew.getElementById(e).remove();
         })
+        changeSet.removeNodeIds.forEach((e) => {
+            cynew.getElementById(e).remove();
+        })
         
         cynew.$().forEach((ele) => {
             if (ele.data("labels")) {

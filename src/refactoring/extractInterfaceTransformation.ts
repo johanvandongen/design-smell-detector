@@ -51,7 +51,8 @@ export class ExtractInterfaceTransformation {
         
         const refactoringChangeSet: RefactoringChangeSet = {
             addedNodes: [], addedEdges: [], updatedNodes: [],
-            removeEdgeIds: [], focus: newInterfaceId
+            removeEdgeIds: [], focus: newInterfaceId,
+            removeNodeIds: []
         };
 
         refactoringChangeSet.addedNodes.push({parent: targetNode.parent().first().id(), id: newInterfaceId, label: newInterfaceId,  name: newInterfaceId, labels: ["Type", "New"], properties: { "type": "interface", "kind": "class", "simpleName": "Int", "name": "name", "shortname": "name"}})

@@ -1,0 +1,1582 @@
+{
+  "elements": {
+    "nodes": [
+      {
+        "data": {
+          "id": "Main.main(java.lang.String[]).0",
+          "properties": {
+            "simpleName": "args",
+            "qualifiedName": "Main.main(java.lang.String[]).0",
+            "kind": "parameter",
+            "parameterPosition": 0,
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Variable"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Payment.refund(java.math.BigDecimal)",
+          "properties": {
+            "visibility": "public",
+            "simpleName": "refund(java.math.BigDecimal)",
+            "qualifiedName": "Payment.refund(java.math.BigDecimal)",
+            "kind": "method",
+            "sourceText": "public void refund(java.math.BigDecimal amount) {\r\n    java.math.BigDecimal refundable = this.order.calculateRefundableAmount(this);\r\n    if ((amount.compareTo(java.math.BigDecimal.ZERO) < 0) || (amount.compareTo(refundable) > 0)) {\r\n        throw new java.lang.IllegalArgumentException(\"Invalid refund amount\");\r\n    }\r\n    this.refundedAmount = this.refundedAmount.add(amount);\r\n}",
+            "docComment": "",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Operation"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Order.calculateRefundableAmount(Payment).0",
+          "properties": {
+            "simpleName": "payment",
+            "qualifiedName": "Order.calculateRefundableAmount(Payment).0",
+            "kind": "parameter",
+            "parameterPosition": 0,
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Variable"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "boolean",
+          "properties": {
+            "simpleName": "boolean",
+            "qualifiedName": "boolean",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Primitive"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "double",
+          "properties": {
+            "simpleName": "double",
+            "qualifiedName": "double",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Primitive"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Payment(Order,java.math.BigDecimal)",
+          "properties": {
+            "visibility": "public",
+            "simpleName": "<init>(Order,java.math.BigDecimal)",
+            "qualifiedName": "Payment(Order,java.math.BigDecimal)",
+            "kind": "constructor",
+            "sourceText": "public Payment(Order order, java.math.BigDecimal capturedAmount) {\r\n    super();\r\n    this.order = order;\r\n    this.capturedAmount = capturedAmount;\r\n    this.refundedAmount = java.math.BigDecimal.ZERO;\r\n}",
+            "docComment": "",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Constructor"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Payment(Order,java.math.BigDecimal).1",
+          "properties": {
+            "simpleName": "capturedAmount",
+            "qualifiedName": "Payment(Order,java.math.BigDecimal).1",
+            "kind": "parameter",
+            "parameterPosition": 1,
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Variable"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Payment",
+          "properties": {
+            "docComment": "",
+            "simpleName": "Payment",
+            "qualifiedName": "Payment",
+            "kind": "class",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Structure"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Main",
+          "properties": {
+            "docComment": "",
+            "simpleName": "Main",
+            "qualifiedName": "Main",
+            "kind": "class",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Structure"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "PaymentProcessor",
+          "properties": {
+            "docComment": "",
+            "simpleName": "PaymentProcessor",
+            "qualifiedName": "PaymentProcessor",
+            "kind": "class",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Structure"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "float",
+          "properties": {
+            "simpleName": "float",
+            "qualifiedName": "float",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Primitive"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Main()",
+          "properties": {
+            "visibility": "public",
+            "simpleName": "<init>()",
+            "qualifiedName": "Main()",
+            "kind": "constructor",
+            "sourceText": "Main() {\r\n    super();\r\n}",
+            "docComment": "",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Constructor"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Customer.orders",
+          "properties": {
+            "sourceText": "private final java.util.List<Order> orders = new java.util.ArrayList<Order>();",
+            "visibility": "private",
+            "simpleName": "orders",
+            "qualifiedName": "Customer.orders",
+            "kind": "field",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Variable"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "java.lang.String",
+          "properties": {
+            "simpleName": "String",
+            "qualifiedName": "java.lang.String",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Structure"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Order(java.math.BigDecimal)",
+          "properties": {
+            "visibility": "public",
+            "simpleName": "<init>(java.math.BigDecimal)",
+            "qualifiedName": "Order(java.math.BigDecimal)",
+            "kind": "constructor",
+            "sourceText": "public Order(java.math.BigDecimal total) {\r\n    super();\r\n    this.total = total;\r\n}",
+            "docComment": "",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Constructor"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Order.calculateRefundableAmount(Payment)",
+          "properties": {
+            "visibility": "public",
+            "simpleName": "calculateRefundableAmount(Payment)",
+            "qualifiedName": "Order.calculateRefundableAmount(Payment)",
+            "kind": "method",
+            "sourceText": "// Calculates how much of a payment can still be refunded\r\npublic java.math.BigDecimal calculateRefundableAmount(Payment payment) {\r\n    if (!payment.isCaptured()) {\r\n        return java.math.BigDecimal.ZERO;\r\n    }\r\n    java.math.BigDecimal remainingPayment = payment.getCapturedAmount().subtract(payment.getRefundedAmount());\r\n    java.math.BigDecimal remainingOrderValue = this.total.subtract(payment.getRefundedAmount());\r\n    return remainingPayment.min(remainingOrderValue).max(java.math.BigDecimal.ZERO);\r\n}",
+            "docComment": "",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Operation"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "byte",
+          "properties": {
+            "simpleName": "byte",
+            "qualifiedName": "byte",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Primitive"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Customer.addOrder(Order)",
+          "properties": {
+            "visibility": "public",
+            "simpleName": "addOrder(Order)",
+            "qualifiedName": "Customer.addOrder(Order)",
+            "kind": "method",
+            "sourceText": "public void addOrder(Order order) {\r\n    this.orders.add(order);\r\n}",
+            "docComment": "",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Operation"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Order.total",
+          "properties": {
+            "sourceText": "private final java.math.BigDecimal total;",
+            "visibility": "private",
+            "simpleName": "total",
+            "qualifiedName": "Order.total",
+            "kind": "field",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Variable"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "char",
+          "properties": {
+            "simpleName": "char",
+            "qualifiedName": "char",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Primitive"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Payment.order",
+          "properties": {
+            "sourceText": "private final Order order;",
+            "visibility": "private",
+            "simpleName": "order",
+            "qualifiedName": "Payment.order",
+            "kind": "field",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Variable"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Payment.getOrder()",
+          "properties": {
+            "visibility": "public",
+            "simpleName": "getOrder()",
+            "qualifiedName": "Payment.getOrder()",
+            "kind": "method",
+            "sourceText": "public Order getOrder() {\r\n    return this.order;\r\n}",
+            "docComment": "",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Operation"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Order.getTotal()",
+          "properties": {
+            "visibility": "public",
+            "simpleName": "getTotal()",
+            "qualifiedName": "Order.getTotal()",
+            "kind": "method",
+            "sourceText": "public java.math.BigDecimal getTotal() {\r\n    return this.total;\r\n}",
+            "docComment": "",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Operation"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "short",
+          "properties": {
+            "simpleName": "short",
+            "qualifiedName": "short",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Primitive"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Customer",
+          "properties": {
+            "docComment": "",
+            "simpleName": "Customer",
+            "qualifiedName": "Customer",
+            "kind": "class",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Structure"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "long",
+          "properties": {
+            "simpleName": "long",
+            "qualifiedName": "long",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Primitive"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Payment.refund(java.math.BigDecimal).0",
+          "properties": {
+            "simpleName": "amount",
+            "qualifiedName": "Payment.refund(java.math.BigDecimal).0",
+            "kind": "parameter",
+            "parameterPosition": 0,
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Variable"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Payment(Order,java.math.BigDecimal).0",
+          "properties": {
+            "simpleName": "order",
+            "qualifiedName": "Payment(Order,java.math.BigDecimal).0",
+            "kind": "parameter",
+            "parameterPosition": 0,
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Variable"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Payment.capture()",
+          "properties": {
+            "visibility": "public",
+            "simpleName": "capture()",
+            "qualifiedName": "Payment.capture()",
+            "kind": "method",
+            "sourceText": "public void capture() {\r\n    this.captured = true;\r\n}",
+            "docComment": "",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Operation"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Main.main(java.lang.String[])",
+          "properties": {
+            "visibility": "public",
+            "simpleName": "main(java.lang.String[])",
+            "qualifiedName": "Main.main(java.lang.String[])",
+            "kind": "static method",
+            "sourceText": "public static void main(java.lang.String[] args) {\r\n    Customer customer = new Customer();\r\n    Order order = new Order(new java.math.BigDecimal(\"100.00\"));\r\n    customer.addOrder(order);\r\n    Payment payment = new Payment(order, new java.math.BigDecimal(\"80.00\"));\r\n    payment.capture();\r\n    java.lang.System.out.println(\"=== Payment demonstration ===\");\r\n    java.lang.System.out.println(\"Order total: €\" + order.getTotal());\r\n    java.lang.System.out.println(\"Captured amount: €\" + payment.getCapturedAmount());\r\n    // Calculate refundable amount\r\n    java.math.BigDecimal refundable = order.calculateRefundableAmount(payment);\r\n    java.lang.System.out.println(\"Refundable amount: €\" + refundable);\r\n    // Refund €30\r\n    payment.refund(new java.math.BigDecimal(\"30.00\"));\r\n    java.lang.System.out.println(\"\\nAfter refunding €30:\");\r\n    java.lang.System.out.println(\"Already refunded: €\" + payment.getRefundedAmount());\r\n    refundable = order.calculateRefundableAmount(payment);\r\n    java.lang.System.out.println(\"Remaining refundable amount: €\" + refundable);\r\n    // Refund the remaining amount\r\n    payment.refund(refundable);\r\n    java.lang.System.out.println(\"\\nAfter refunding the remainder:\");\r\n    java.lang.System.out.println(\"Already refunded: €\" + payment.getRefundedAmount());\r\n    refundable = order.calculateRefundableAmount(payment);\r\n    java.lang.System.out.println(\"Remaining refundable amount: €\" + refundable);\r\n}",
+            "docComment": "",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Operation"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "PaymentProcessor.process(Payment)",
+          "properties": {
+            "visibility": "public",
+            "simpleName": "process(Payment)",
+            "qualifiedName": "PaymentProcessor.process(Payment)",
+            "kind": "method",
+            "sourceText": "public void process(Payment payment) {\r\n    // Process payment through payment provider\r\n}",
+            "docComment": "",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Operation"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Payment.getCapturedAmount()",
+          "properties": {
+            "visibility": "public",
+            "simpleName": "getCapturedAmount()",
+            "qualifiedName": "Payment.getCapturedAmount()",
+            "kind": "method",
+            "sourceText": "public java.math.BigDecimal getCapturedAmount() {\r\n    return this.capturedAmount;\r\n}",
+            "docComment": "",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Operation"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Payment.refundedAmount",
+          "properties": {
+            "sourceText": "private java.math.BigDecimal refundedAmount;",
+            "visibility": "private",
+            "simpleName": "refundedAmount",
+            "qualifiedName": "Payment.refundedAmount",
+            "kind": "field",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Variable"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Customer()",
+          "properties": {
+            "visibility": "public",
+            "simpleName": "<init>()",
+            "qualifiedName": "Customer()",
+            "kind": "constructor",
+            "sourceText": "Customer() {\r\n    super();\r\n}",
+            "docComment": "",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Constructor"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Payment.getRefundedAmount()",
+          "properties": {
+            "visibility": "public",
+            "simpleName": "getRefundedAmount()",
+            "qualifiedName": "Payment.getRefundedAmount()",
+            "kind": "method",
+            "sourceText": "public java.math.BigDecimal getRefundedAmount() {\r\n    return this.refundedAmount;\r\n}",
+            "docComment": "",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Operation"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Payment.captured",
+          "properties": {
+            "sourceText": "private boolean captured;",
+            "visibility": "private",
+            "simpleName": "captured",
+            "qualifiedName": "Payment.captured",
+            "kind": "field",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Variable"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "PaymentProcessor.process(Payment).0",
+          "properties": {
+            "simpleName": "payment",
+            "qualifiedName": "PaymentProcessor.process(Payment).0",
+            "kind": "parameter",
+            "parameterPosition": 0,
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Variable"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "int",
+          "properties": {
+            "simpleName": "int",
+            "qualifiedName": "int",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Primitive"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Payment.isCaptured()",
+          "properties": {
+            "visibility": "public",
+            "simpleName": "isCaptured()",
+            "qualifiedName": "Payment.isCaptured()",
+            "kind": "method",
+            "sourceText": "public boolean isCaptured() {\r\n    return this.captured;\r\n}",
+            "docComment": "",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Operation"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Order",
+          "properties": {
+            "docComment": "",
+            "simpleName": "Order",
+            "qualifiedName": "Order",
+            "kind": "class",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Structure"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Customer.addOrder(Order).0",
+          "properties": {
+            "simpleName": "order",
+            "qualifiedName": "Customer.addOrder(Order).0",
+            "kind": "parameter",
+            "parameterPosition": 0,
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Variable"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Payment.capturedAmount",
+          "properties": {
+            "sourceText": "private final java.math.BigDecimal capturedAmount;",
+            "visibility": "private",
+            "simpleName": "capturedAmount",
+            "qualifiedName": "Payment.capturedAmount",
+            "kind": "field",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Variable"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "PaymentProcessor()",
+          "properties": {
+            "visibility": "public",
+            "simpleName": "<init>()",
+            "qualifiedName": "PaymentProcessor()",
+            "kind": "constructor",
+            "sourceText": "PaymentProcessor() {\r\n    super();\r\n}",
+            "docComment": "",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Constructor"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Order(java.math.BigDecimal).0",
+          "properties": {
+            "simpleName": "total",
+            "qualifiedName": "Order(java.math.BigDecimal).0",
+            "kind": "parameter",
+            "parameterPosition": 0,
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Variable"
+          ]
+        }
+      }
+    ],
+    "edges": [
+      {
+        "data": {
+          "id": "af100d23bcc79f480c569c6192b80f98",
+          "source": "PaymentProcessor",
+          "label": "hasScript",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "PaymentProcessor()"
+        }
+      },
+      {
+        "data": {
+          "id": "cedf0d0406d7d1fa6f3a6520ec719bd1",
+          "source": "Main()",
+          "label": "returnType",
+          "properties": {
+            "weight": 1,
+            "kind": "type",
+            "metaSrc": "source code"
+          },
+          "target": "Main"
+        }
+      },
+      {
+        "data": {
+          "id": "979dd176ff2644043fec4a785750c162",
+          "source": "Payment(Order,java.math.BigDecimal)",
+          "label": "hasParameter",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment(Order,java.math.BigDecimal).0"
+        }
+      },
+      {
+        "data": {
+          "id": "a969335341024fd9c9724905e56d2079",
+          "source": "Customer.addOrder(Order).0",
+          "label": "type",
+          "properties": {
+            "weight": 1,
+            "kind": "type",
+            "metaSrc": "source code"
+          },
+          "target": "Order"
+        }
+      },
+      {
+        "data": {
+          "id": "2e6e1e1a9314269f9de4d5ba524aeb22",
+          "source": "Payment.captured",
+          "label": "type",
+          "properties": {
+            "weight": 1,
+            "kind": "type",
+            "metaSrc": "source code"
+          },
+          "target": "boolean"
+        }
+      },
+      {
+        "data": {
+          "id": "cd2a8a6ecf614204d6128ad72e3d937c",
+          "source": "Payment(Order,java.math.BigDecimal)",
+          "label": "uses",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment.capturedAmount"
+        }
+      },
+      {
+        "data": {
+          "id": "47a0062decbb07b7e5359f78d357f3df",
+          "source": "Payment",
+          "label": "hasScript",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment(Order,java.math.BigDecimal)"
+        }
+      },
+      {
+        "data": {
+          "id": "4da4203a531854f70c8e2d8a4d9423e4",
+          "source": "Payment",
+          "label": "hasScript",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment.getCapturedAmount()"
+        }
+      },
+      {
+        "data": {
+          "id": "e45398b4537afbb65ed3ca46bc24840f",
+          "source": "Payment.capture()",
+          "label": "uses",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment.captured"
+        }
+      },
+      {
+        "data": {
+          "id": "e4e0be45b12de3ced8a5fed9c700f789",
+          "source": "Payment",
+          "label": "hasVariable",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment.refundedAmount"
+        }
+      },
+      {
+        "data": {
+          "id": "25da8af9deba971ff118382fe044dc2a",
+          "source": "Payment",
+          "label": "hasScript",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment.getOrder()"
+        }
+      },
+      {
+        "data": {
+          "id": "5ca430599c870032ee35fd2a57ef45a5",
+          "source": "Order",
+          "label": "hasScript",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Order.calculateRefundableAmount(Payment)"
+        }
+      },
+      {
+        "data": {
+          "id": "465b6dd7da8adcc58f927389c100d496",
+          "source": "Main.main(java.lang.String[])",
+          "label": "invokes",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Customer.addOrder(Order)"
+        }
+      },
+      {
+        "data": {
+          "id": "9bc966b463838621e74c717915316d2b",
+          "source": "Customer",
+          "label": "hasScript",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Customer()"
+        }
+      },
+      {
+        "data": {
+          "id": "659411af6ceba3986749b3332730fd40",
+          "source": "Payment",
+          "label": "hasScript",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment.refund(java.math.BigDecimal)"
+        }
+      },
+      {
+        "data": {
+          "id": "eb833bd98d74d90aaee909ddb66592a4",
+          "source": "Order(java.math.BigDecimal)",
+          "label": "uses",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Order.total"
+        }
+      },
+      {
+        "data": {
+          "id": "51a4093798f0ef5fef48d53b0a64c119",
+          "source": "Order.calculateRefundableAmount(Payment)",
+          "label": "invokes",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment.isCaptured()"
+        }
+      },
+      {
+        "data": {
+          "id": "be213937c49e602e2c778684c30b0e6d",
+          "source": "Payment(Order,java.math.BigDecimal)",
+          "label": "returnType",
+          "properties": {
+            "weight": 1,
+            "kind": "type",
+            "metaSrc": "source code"
+          },
+          "target": "Payment"
+        }
+      },
+      {
+        "data": {
+          "id": "dd285fb7f6d0fdf6d3401025916b1bec",
+          "source": "Payment.getOrder()",
+          "label": "uses",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment.order"
+        }
+      },
+      {
+        "data": {
+          "id": "dee3e6d03d1c9746e31e99ba960a202c",
+          "source": "Customer.orders",
+          "label": "type",
+          "properties": {
+            "weight": 1,
+            "kind": "type argument",
+            "metaSrc": "source code"
+          },
+          "target": "Order"
+        }
+      },
+      {
+        "data": {
+          "id": "d13fa85ac5bf2d32a92f0420cead8e51",
+          "source": "Customer.addOrder(Order)",
+          "label": "uses",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Customer.orders"
+        }
+      },
+      {
+        "data": {
+          "id": "7602a2898bb362b608df3d6a64aac53e",
+          "source": "Customer()",
+          "label": "returnType",
+          "properties": {
+            "weight": 1,
+            "kind": "type",
+            "metaSrc": "source code"
+          },
+          "target": "Customer"
+        }
+      },
+      {
+        "data": {
+          "id": "e3c18abb95b1ab3a6770d435b01fa48e",
+          "source": "Payment.refund(java.math.BigDecimal)",
+          "label": "uses",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment.order"
+        }
+      },
+      {
+        "data": {
+          "id": "a3bf43b476bc5884118d5bb8ca70ad02",
+          "source": "Order(java.math.BigDecimal)",
+          "label": "returnType",
+          "properties": {
+            "weight": 1,
+            "kind": "type",
+            "metaSrc": "source code"
+          },
+          "target": "Order"
+        }
+      },
+      {
+        "data": {
+          "id": "e9c6f4c6a40fc1371b664ad1a0bc1c9b",
+          "source": "Main.main(java.lang.String[])",
+          "label": "invokes",
+          "properties": {
+            "weight": 2,
+            "metaSrc": "source code"
+          },
+          "target": "Payment.getRefundedAmount()"
+        }
+      },
+      {
+        "data": {
+          "id": "1b15079748050cf822b42f27a498da78",
+          "source": "Payment.getCapturedAmount()",
+          "label": "uses",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment.capturedAmount"
+        }
+      },
+      {
+        "data": {
+          "id": "d6b404ac5c8c67fc43111e8976153c6d",
+          "source": "Main.main(java.lang.String[])",
+          "label": "hasParameter",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Main.main(java.lang.String[]).0"
+        }
+      },
+      {
+        "data": {
+          "id": "69ccaffd7f1ad642e55b414875f35edc",
+          "source": "Order",
+          "label": "hasScript",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Order.getTotal()"
+        }
+      },
+      {
+        "data": {
+          "id": "49ca2df4195624bcb05d9ba14abd7bb8",
+          "source": "Payment(Order,java.math.BigDecimal).0",
+          "label": "type",
+          "properties": {
+            "weight": 1,
+            "kind": "type",
+            "metaSrc": "source code"
+          },
+          "target": "Order"
+        }
+      },
+      {
+        "data": {
+          "id": "f31235d4699b329a66eefea8c72b398c",
+          "source": "Payment.order",
+          "label": "type",
+          "properties": {
+            "weight": 1,
+            "kind": "type",
+            "metaSrc": "source code"
+          },
+          "target": "Order"
+        }
+      },
+      {
+        "data": {
+          "id": "59780443618b85643ec87e37b02b3503",
+          "source": "Payment",
+          "label": "hasVariable",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment.captured"
+        }
+      },
+      {
+        "data": {
+          "id": "6a1dd994cc7f4370b721c0df7781eb3f",
+          "source": "Payment.isCaptured()",
+          "label": "returnType",
+          "properties": {
+            "weight": 1,
+            "kind": "type",
+            "metaSrc": "source code"
+          },
+          "target": "boolean"
+        }
+      },
+      {
+        "data": {
+          "id": "f06cac30785a00d05b752783d786d466",
+          "source": "Order.calculateRefundableAmount(Payment)",
+          "label": "uses",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Order.total"
+        }
+      },
+      {
+        "data": {
+          "id": "3358cfdd13ceceb0e1d47f33544ce02f",
+          "source": "Main.main(java.lang.String[])",
+          "label": "invokes",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment.capture()"
+        }
+      },
+      {
+        "data": {
+          "id": "0e2e1efb1afcac87b1f267974694ee45",
+          "source": "Order.calculateRefundableAmount(Payment)",
+          "label": "invokes",
+          "properties": {
+            "weight": 2,
+            "metaSrc": "source code"
+          },
+          "target": "Payment.getRefundedAmount()"
+        }
+      },
+      {
+        "data": {
+          "id": "b2d28d79b8deebe3b699b98652f9c36c",
+          "source": "Payment.refund(java.math.BigDecimal)",
+          "label": "uses",
+          "properties": {
+            "weight": 2,
+            "metaSrc": "source code"
+          },
+          "target": "Payment.refundedAmount"
+        }
+      },
+      {
+        "data": {
+          "id": "04068ed8276af993e7d5c8559740272c",
+          "source": "Payment.getRefundedAmount()",
+          "label": "uses",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment.refundedAmount"
+        }
+      },
+      {
+        "data": {
+          "id": "25777814218d1e1ba116c428b5cb35b4",
+          "source": "Payment",
+          "label": "hasScript",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment.isCaptured()"
+        }
+      },
+      {
+        "data": {
+          "id": "cd3a82c4f48519787115f19b0bbdf276",
+          "source": "PaymentProcessor",
+          "label": "hasScript",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "PaymentProcessor.process(Payment)"
+        }
+      },
+      {
+        "data": {
+          "id": "a5cde174acf71fc9a817496456d81e27",
+          "source": "Customer",
+          "label": "hasVariable",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Customer.orders"
+        }
+      },
+      {
+        "data": {
+          "id": "74b30b7a76b13c8cf67a6a2d1f399054",
+          "source": "Payment.isCaptured()",
+          "label": "uses",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment.captured"
+        }
+      },
+      {
+        "data": {
+          "id": "c827fd907d4d16195dc0ccd115cb3223",
+          "source": "Order.calculateRefundableAmount(Payment)",
+          "label": "hasParameter",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Order.calculateRefundableAmount(Payment).0"
+        }
+      },
+      {
+        "data": {
+          "id": "57edfe6a16e5a2355ae3ac94a667b4e8",
+          "source": "Main.main(java.lang.String[])",
+          "label": "instantiates",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Order"
+        }
+      },
+      {
+        "data": {
+          "id": "c756e5c973da61f9d7f784b79de0a6ab",
+          "source": "Customer",
+          "label": "hasScript",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Customer.addOrder(Order)"
+        }
+      },
+      {
+        "data": {
+          "id": "753d5a9ab6ce883feb083a9808e4f648",
+          "source": "Main.main(java.lang.String[])",
+          "label": "invokes",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment.getCapturedAmount()"
+        }
+      },
+      {
+        "data": {
+          "id": "a626e8fc0eecdd42f3e6b6f1f704b28d",
+          "source": "Order(java.math.BigDecimal)",
+          "label": "hasParameter",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Order(java.math.BigDecimal).0"
+        }
+      },
+      {
+        "data": {
+          "id": "0e99933a3c79667cc6473562524cc163",
+          "source": "Payment(Order,java.math.BigDecimal)",
+          "label": "hasParameter",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment(Order,java.math.BigDecimal).1"
+        }
+      },
+      {
+        "data": {
+          "id": "927ddd569166186e016c6b47b87ae747",
+          "source": "Payment",
+          "label": "hasScript",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment.getRefundedAmount()"
+        }
+      },
+      {
+        "data": {
+          "id": "d2e5d6db4480eeaa6500d990508902e2",
+          "source": "Payment",
+          "label": "hasScript",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment.capture()"
+        }
+      },
+      {
+        "data": {
+          "id": "ea1fbca75b4011e0fa46899eafed9d1c",
+          "source": "Order.calculateRefundableAmount(Payment)",
+          "label": "invokes",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment.getCapturedAmount()"
+        }
+      },
+      {
+        "data": {
+          "id": "c2cae738d5e5204707e262fd850f70b7",
+          "source": "Payment.getOrder()",
+          "label": "returnType",
+          "properties": {
+            "weight": 1,
+            "kind": "type",
+            "metaSrc": "source code"
+          },
+          "target": "Order"
+        }
+      },
+      {
+        "data": {
+          "id": "40dd9b68b0748c42842bcd6c36605391",
+          "source": "Payment.refund(java.math.BigDecimal)",
+          "label": "invokes",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Order.calculateRefundableAmount(Payment)"
+        }
+      },
+      {
+        "data": {
+          "id": "2079f598734560e2ecc71121403dadd7",
+          "source": "Main",
+          "label": "hasScript",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Main()"
+        }
+      },
+      {
+        "data": {
+          "id": "e060e7ea85687ea24e657aadb1967d6f",
+          "source": "Payment(Order,java.math.BigDecimal)",
+          "label": "uses",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment.order"
+        }
+      },
+      {
+        "data": {
+          "id": "c68d10ec310716d8ec8eef46e45f30bf",
+          "source": "PaymentProcessor.process(Payment).0",
+          "label": "type",
+          "properties": {
+            "weight": 1,
+            "kind": "type",
+            "metaSrc": "source code"
+          },
+          "target": "Payment"
+        }
+      },
+      {
+        "data": {
+          "id": "cc8732e9bc2f6d7d69fb5b0cbda50f32",
+          "source": "Order",
+          "label": "hasVariable",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Order.total"
+        }
+      },
+      {
+        "data": {
+          "id": "3c21b742c09e554b78ce97384f6b2677",
+          "source": "Order.calculateRefundableAmount(Payment).0",
+          "label": "type",
+          "properties": {
+            "weight": 1,
+            "kind": "type",
+            "metaSrc": "source code"
+          },
+          "target": "Payment"
+        }
+      },
+      {
+        "data": {
+          "id": "4b122ce244bffa27c5e576b47570d007",
+          "source": "Payment(Order,java.math.BigDecimal)",
+          "label": "uses",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment.refundedAmount"
+        }
+      },
+      {
+        "data": {
+          "id": "551c7a0f8aaad66a7d0ac03fe4272b59",
+          "source": "Order",
+          "label": "hasScript",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Order(java.math.BigDecimal)"
+        }
+      },
+      {
+        "data": {
+          "id": "7842b0f1d166c8e88baced5cf028a665",
+          "source": "Main.main(java.lang.String[])",
+          "label": "instantiates",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Customer"
+        }
+      },
+      {
+        "data": {
+          "id": "95651559647225c0a73dfba21581ed94",
+          "source": "Main.main(java.lang.String[])",
+          "label": "invokes",
+          "properties": {
+            "weight": 2,
+            "metaSrc": "source code"
+          },
+          "target": "Payment.refund(java.math.BigDecimal)"
+        }
+      },
+      {
+        "data": {
+          "id": "87a3d5638729e4ade00bc78bd18a6e8a",
+          "source": "PaymentProcessor()",
+          "label": "returnType",
+          "properties": {
+            "weight": 1,
+            "kind": "type",
+            "metaSrc": "source code"
+          },
+          "target": "PaymentProcessor"
+        }
+      },
+      {
+        "data": {
+          "id": "58464a633b064d5c0dd9ad9f9888db94",
+          "source": "Payment",
+          "label": "hasVariable",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment.capturedAmount"
+        }
+      },
+      {
+        "data": {
+          "id": "7fbb5226c59bac447261408bdc910a74",
+          "source": "Payment",
+          "label": "hasVariable",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment.order"
+        }
+      },
+      {
+        "data": {
+          "id": "6c4617e3062a66b38277bcd242fe7eea",
+          "source": "Order.getTotal()",
+          "label": "uses",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Order.total"
+        }
+      },
+      {
+        "data": {
+          "id": "160fa18c543cbee4fabe471e709a4293",
+          "source": "Payment.refund(java.math.BigDecimal)",
+          "label": "hasParameter",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment.refund(java.math.BigDecimal).0"
+        }
+      },
+      {
+        "data": {
+          "id": "cd4437a35e01e517eb774924a135419f",
+          "source": "Customer.addOrder(Order)",
+          "label": "hasParameter",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Customer.addOrder(Order).0"
+        }
+      },
+      {
+        "data": {
+          "id": "26c42dfa3a74d6ee207fe412424eb583",
+          "source": "PaymentProcessor.process(Payment)",
+          "label": "hasParameter",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "PaymentProcessor.process(Payment).0"
+        }
+      },
+      {
+        "data": {
+          "id": "61c10e39d673f903b3c19e4325420d68",
+          "source": "Main.main(java.lang.String[])",
+          "label": "invokes",
+          "properties": {
+            "weight": 3,
+            "metaSrc": "source code"
+          },
+          "target": "Order.calculateRefundableAmount(Payment)"
+        }
+      },
+      {
+        "data": {
+          "id": "e6e9aaa058887ced9445adc3b34c1860",
+          "source": "Main.main(java.lang.String[])",
+          "label": "invokes",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Order.getTotal()"
+        }
+      },
+      {
+        "data": {
+          "id": "43c2c9006b2c5457c6472e1fddac3e55",
+          "source": "Main.main(java.lang.String[]).0",
+          "label": "type",
+          "properties": {
+            "weight": 1,
+            "kind": "array type",
+            "metaSrc": "source code"
+          },
+          "target": "java.lang.String"
+        }
+      },
+      {
+        "data": {
+          "id": "388e45f5a2bed0ea3be039aa4fd9e012",
+          "source": "Main.main(java.lang.String[])",
+          "label": "instantiates",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment"
+        }
+      },
+      {
+        "data": {
+          "id": "edfac48b590ea9081a9f6c694287a12f",
+          "source": "Main",
+          "label": "hasScript",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Main.main(java.lang.String[])"
+        }
+      }
+    ]
+  },
+  "properties": {
+    "schemaVersion": "1.2.0"
+  }
+}

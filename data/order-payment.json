@@ -1,0 +1,2350 @@
+{
+  "elements": {
+    "nodes": [
+      {
+        "data": {
+          "id": "Customer#addOrder(Order):param[0]:order",
+          "properties": {
+            "simpleName": "order",
+            "parameterIndex": 0,
+            "qualifiedName": "Customer#addOrder(Order):param[0]:order",
+            "kind": "parameter",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Variable"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\order-payment\\Main.java",
+          "properties": {
+            "simpleName": "Main.java",
+            "qualifiedName": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\order-payment\\Main.java",
+            "kind": "file",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "File"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Payment#Payment(Order,java.math.BigDecimal)",
+          "properties": {
+            "visibility": "public",
+            "simpleName": "Payment(Order,java.math.BigDecimal)",
+            "qualifiedName": "Payment#Payment(Order,java.math.BigDecimal)",
+            "kind": "constructor",
+            "sourceText": "public Payment(Order order, java.math.BigDecimal capturedAmount) {\r\n    super();\r\n    this.order = order;\r\n    this.capturedAmount = capturedAmount;\r\n    this.refundedAmount = java.math.BigDecimal.ZERO;\r\n}",
+            "docComment": "",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Operation"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Order",
+          "properties": {
+            "docComment": "",
+            "visibility": "public",
+            "simpleName": "Order",
+            "qualifiedName": "Order",
+            "kind": "class",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Type"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Order#Order(java.math.BigDecimal):param[0]:total",
+          "properties": {
+            "simpleName": "total",
+            "parameterIndex": 0,
+            "qualifiedName": "Order#Order(java.math.BigDecimal):param[0]:total",
+            "kind": "parameter",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Variable"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Payment.order",
+          "properties": {
+            "visibility": "private",
+            "simpleName": "order",
+            "qualifiedName": "Payment.order",
+            "kind": "field",
+            "sourceText": "private final Order order;",
+            "docComment": "",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Variable"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Customer#addOrder(Order)",
+          "properties": {
+            "visibility": "public",
+            "simpleName": "addOrder(Order)",
+            "qualifiedName": "Customer#addOrder(Order)",
+            "kind": "method",
+            "sourceText": "public void addOrder(Order order) {\r\n    this.orders.add(order);\r\n}",
+            "docComment": "",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Operation"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Metrics#HalsteadMetrics",
+          "properties": {
+            "simpleName": "HalsteadMetrics",
+            "qualifiedName": "Halstead Complexity Metrics",
+            "kind": "metric",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Metric"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "PaymentProcessor#process(Payment):param[0]:payment",
+          "properties": {
+            "simpleName": "payment",
+            "parameterIndex": 0,
+            "qualifiedName": "PaymentProcessor#process(Payment):param[0]:payment",
+            "kind": "parameter",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Variable"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Order#Order(java.math.BigDecimal)",
+          "properties": {
+            "visibility": "public",
+            "simpleName": "Order(java.math.BigDecimal)",
+            "qualifiedName": "Order#Order(java.math.BigDecimal)",
+            "kind": "constructor",
+            "sourceText": "public Order(java.math.BigDecimal total) {\r\n    super();\r\n    this.total = total;\r\n}",
+            "docComment": "",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Operation"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Payment.captured",
+          "properties": {
+            "visibility": "private",
+            "simpleName": "captured",
+            "qualifiedName": "Payment.captured",
+            "kind": "field",
+            "sourceText": "private boolean captured;",
+            "docComment": "",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Variable"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Main#main(java.lang.String[]):param[0]:args",
+          "properties": {
+            "simpleName": "args",
+            "parameterIndex": 0,
+            "qualifiedName": "Main#main(java.lang.String[]):param[0]:args",
+            "kind": "parameter",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Variable"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\order-payment\\Main.class",
+          "properties": {
+            "simpleName": "Main.class",
+            "qualifiedName": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\order-payment\\Main.class",
+            "kind": "file",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "File"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Customer",
+          "properties": {
+            "docComment": "",
+            "visibility": "public",
+            "simpleName": "Customer",
+            "qualifiedName": "Customer",
+            "kind": "class",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Type"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Payment.capturedAmount",
+          "properties": {
+            "visibility": "private",
+            "simpleName": "capturedAmount",
+            "qualifiedName": "Payment.capturedAmount",
+            "kind": "field",
+            "sourceText": "private final java.math.BigDecimal capturedAmount;",
+            "docComment": "",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Variable"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Payment",
+          "properties": {
+            "docComment": "",
+            "visibility": "public",
+            "simpleName": "Payment",
+            "qualifiedName": "Payment",
+            "kind": "class",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Type"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Payment.refundedAmount",
+          "properties": {
+            "visibility": "private",
+            "simpleName": "refundedAmount",
+            "qualifiedName": "Payment.refundedAmount",
+            "kind": "field",
+            "sourceText": "private java.math.BigDecimal refundedAmount;",
+            "docComment": "",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Variable"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Order#calculateRefundableAmount(Payment):param[0]:payment",
+          "properties": {
+            "simpleName": "payment",
+            "parameterIndex": 0,
+            "qualifiedName": "Order#calculateRefundableAmount(Payment):param[0]:payment",
+            "kind": "parameter",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Variable"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\order-payment\\Order.class",
+          "properties": {
+            "simpleName": "Order.class",
+            "qualifiedName": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\order-payment\\Order.class",
+            "kind": "file",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "File"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Order.total",
+          "properties": {
+            "visibility": "private",
+            "simpleName": "total",
+            "qualifiedName": "Order.total",
+            "kind": "field",
+            "sourceText": "private final java.math.BigDecimal total;",
+            "docComment": "",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Variable"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Payment#refund(java.math.BigDecimal):param[0]:amount",
+          "properties": {
+            "simpleName": "amount",
+            "parameterIndex": 0,
+            "qualifiedName": "Payment#refund(java.math.BigDecimal):param[0]:amount",
+            "kind": "parameter",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Variable"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\order-payment\\Customer.java",
+          "properties": {
+            "simpleName": "Customer.java",
+            "qualifiedName": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\order-payment\\Customer.java",
+            "kind": "file",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "File"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Payment#Payment(Order,java.math.BigDecimal):param[0]:order",
+          "properties": {
+            "simpleName": "order",
+            "parameterIndex": 0,
+            "qualifiedName": "Payment#Payment(Order,java.math.BigDecimal):param[0]:order",
+            "kind": "parameter",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Variable"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Customer#Customer()",
+          "properties": {
+            "visibility": "public",
+            "simpleName": "Customer()",
+            "qualifiedName": "Customer#Customer()",
+            "kind": "constructor",
+            "sourceText": "Customer() {\r\n    super();\r\n}",
+            "docComment": "",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Operation"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Payment#getCapturedAmount()",
+          "properties": {
+            "visibility": "public",
+            "simpleName": "getCapturedAmount()",
+            "qualifiedName": "Payment#getCapturedAmount()",
+            "kind": "method",
+            "sourceText": "public java.math.BigDecimal getCapturedAmount() {\r\n    return this.capturedAmount;\r\n}",
+            "docComment": "",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Operation"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\order-payment\\Payment.class",
+          "properties": {
+            "simpleName": "Payment.class",
+            "qualifiedName": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\order-payment\\Payment.class",
+            "kind": "file",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "File"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Customer.orders",
+          "properties": {
+            "visibility": "private",
+            "simpleName": "orders",
+            "qualifiedName": "Customer.orders",
+            "kind": "field",
+            "sourceText": "private final java.util.List<Order> orders = new java.util.ArrayList<Order>();",
+            "docComment": "",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Variable"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Main#main(java.lang.String[])",
+          "properties": {
+            "visibility": "public",
+            "simpleName": "main(java.lang.String[])",
+            "qualifiedName": "Main#main(java.lang.String[])",
+            "kind": "method",
+            "sourceText": "public static void main(java.lang.String[] args) {\r\n    Customer customer = new Customer();\r\n    Order order = new Order(new java.math.BigDecimal(\"100.00\"));\r\n    customer.addOrder(order);\r\n    Payment payment = new Payment(order, new java.math.BigDecimal(\"80.00\"));\r\n    payment.capture();\r\n    java.lang.System.out.println(\"=== Payment demonstration ===\");\r\n    java.lang.System.out.println(\"Order total: €\" + order.getTotal());\r\n    java.lang.System.out.println(\"Captured amount: €\" + payment.getCapturedAmount());\r\n    // Calculate refundable amount\r\n    java.math.BigDecimal refundable = order.calculateRefundableAmount(payment);\r\n    java.lang.System.out.println(\"Refundable amount: €\" + refundable);\r\n    // Refund €30\r\n    payment.refund(new java.math.BigDecimal(\"30.00\"));\r\n    java.lang.System.out.println(\"\\nAfter refunding €30:\");\r\n    java.lang.System.out.println(\"Already refunded: €\" + payment.getRefundedAmount());\r\n    refundable = order.calculateRefundableAmount(payment);\r\n    java.lang.System.out.println(\"Remaining refundable amount: €\" + refundable);\r\n    // Refund the remaining amount\r\n    payment.refund(refundable);\r\n    java.lang.System.out.println(\"\\nAfter refunding the remainder:\");\r\n    java.lang.System.out.println(\"Already refunded: €\" + payment.getRefundedAmount());\r\n    refundable = order.calculateRefundableAmount(payment);\r\n    java.lang.System.out.println(\"Remaining refundable amount: €\" + refundable);\r\n}",
+            "docComment": "",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Operation"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Payment#capture()",
+          "properties": {
+            "visibility": "public",
+            "simpleName": "capture()",
+            "qualifiedName": "Payment#capture()",
+            "kind": "method",
+            "sourceText": "public void capture() {\r\n    this.captured = true;\r\n}",
+            "docComment": "",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Operation"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Metrics#NumMethods",
+          "properties": {
+            "simpleName": "NumMethods",
+            "qualifiedName": "Number of Methods",
+            "kind": "metric",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Metric"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "PaymentProcessor",
+          "properties": {
+            "docComment": "",
+            "visibility": "public",
+            "simpleName": "PaymentProcessor",
+            "qualifiedName": "PaymentProcessor",
+            "kind": "class",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Type"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\order-payment\\Order.java",
+          "properties": {
+            "simpleName": "Order.java",
+            "qualifiedName": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\order-payment\\Order.java",
+            "kind": "file",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "File"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Main",
+          "properties": {
+            "docComment": "",
+            "visibility": "public",
+            "simpleName": "Main",
+            "qualifiedName": "Main",
+            "kind": "class",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Type"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Metrics#NumStatements",
+          "properties": {
+            "simpleName": "NumStatements",
+            "qualifiedName": "Number of Statements",
+            "kind": "metric",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Metric"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "PaymentProcessor#PaymentProcessor()",
+          "properties": {
+            "visibility": "public",
+            "simpleName": "PaymentProcessor()",
+            "qualifiedName": "PaymentProcessor#PaymentProcessor()",
+            "kind": "constructor",
+            "sourceText": "PaymentProcessor() {\r\n    super();\r\n}",
+            "docComment": "",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Operation"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Order#getTotal()",
+          "properties": {
+            "visibility": "public",
+            "simpleName": "getTotal()",
+            "qualifiedName": "Order#getTotal()",
+            "kind": "method",
+            "sourceText": "public java.math.BigDecimal getTotal() {\r\n    return this.total;\r\n}",
+            "docComment": "",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Operation"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Payment#getRefundedAmount()",
+          "properties": {
+            "visibility": "public",
+            "simpleName": "getRefundedAmount()",
+            "qualifiedName": "Payment#getRefundedAmount()",
+            "kind": "method",
+            "sourceText": "public java.math.BigDecimal getRefundedAmount() {\r\n    return this.refundedAmount;\r\n}",
+            "docComment": "",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Operation"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\order-payment",
+          "properties": {
+            "simpleName": "order-payment",
+            "qualifiedName": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\order-payment",
+            "kind": "folder",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Folder"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\order-payment\\PaymentProcessor.java",
+          "properties": {
+            "simpleName": "PaymentProcessor.java",
+            "qualifiedName": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\order-payment\\PaymentProcessor.java",
+            "kind": "file",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "File"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Main#Main()",
+          "properties": {
+            "visibility": "public",
+            "simpleName": "Main()",
+            "qualifiedName": "Main#Main()",
+            "kind": "constructor",
+            "sourceText": "Main() {\r\n    super();\r\n}",
+            "docComment": "",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Operation"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Payment#isCaptured()",
+          "properties": {
+            "visibility": "public",
+            "simpleName": "isCaptured()",
+            "qualifiedName": "Payment#isCaptured()",
+            "kind": "method",
+            "sourceText": "public boolean isCaptured() {\r\n    return this.captured;\r\n}",
+            "docComment": "",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Operation"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Payment#refund(java.math.BigDecimal)",
+          "properties": {
+            "visibility": "public",
+            "simpleName": "refund(java.math.BigDecimal)",
+            "qualifiedName": "Payment#refund(java.math.BigDecimal)",
+            "kind": "method",
+            "sourceText": "public void refund(java.math.BigDecimal amount) {\r\n    java.math.BigDecimal refundable = this.order.calculateRefundableAmount(this);\r\n    if ((amount.compareTo(java.math.BigDecimal.ZERO) < 0) || (amount.compareTo(refundable) > 0)) {\r\n        throw new java.lang.IllegalArgumentException(\"Invalid refund amount\");\r\n    }\r\n    this.refundedAmount = this.refundedAmount.add(amount);\r\n}",
+            "docComment": "",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Operation"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Order#calculateRefundableAmount(Payment)",
+          "properties": {
+            "visibility": "public",
+            "simpleName": "calculateRefundableAmount(Payment)",
+            "qualifiedName": "Order#calculateRefundableAmount(Payment)",
+            "kind": "method",
+            "sourceText": "// Calculates how much of a payment can still be refunded\r\npublic java.math.BigDecimal calculateRefundableAmount(Payment payment) {\r\n    if (!payment.isCaptured()) {\r\n        return java.math.BigDecimal.ZERO;\r\n    }\r\n    java.math.BigDecimal remainingPayment = payment.getCapturedAmount().subtract(payment.getRefundedAmount());\r\n    java.math.BigDecimal remainingOrderValue = this.total.subtract(payment.getRefundedAmount());\r\n    return remainingPayment.min(remainingOrderValue).max(java.math.BigDecimal.ZERO);\r\n}",
+            "docComment": "",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Operation"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Payment#getOrder()",
+          "properties": {
+            "visibility": "public",
+            "simpleName": "getOrder()",
+            "qualifiedName": "Payment#getOrder()",
+            "kind": "method",
+            "sourceText": "public Order getOrder() {\r\n    return this.order;\r\n}",
+            "docComment": "",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Operation"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\order-payment\\Payment.java",
+          "properties": {
+            "simpleName": "Payment.java",
+            "qualifiedName": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\order-payment\\Payment.java",
+            "kind": "file",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "File"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\order-payment\\Customer.class",
+          "properties": {
+            "simpleName": "Customer.class",
+            "qualifiedName": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\order-payment\\Customer.class",
+            "kind": "file",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "File"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Payment#Payment(Order,java.math.BigDecimal):param[1]:capturedAmount",
+          "properties": {
+            "simpleName": "capturedAmount",
+            "parameterIndex": 1,
+            "qualifiedName": "Payment#Payment(Order,java.math.BigDecimal):param[1]:capturedAmount",
+            "kind": "parameter",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Variable"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "order-payment",
+          "properties": {
+            "simpleName": "order-payment",
+            "qualifiedName": "order-payment",
+            "kind": "project",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Project"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "PaymentProcessor#process(Payment)",
+          "properties": {
+            "visibility": "public",
+            "simpleName": "process(Payment)",
+            "qualifiedName": "PaymentProcessor#process(Payment)",
+            "kind": "method",
+            "sourceText": "public void process(Payment payment) {\r\n    // Process payment through payment provider\r\n}",
+            "docComment": "",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Operation"
+          ]
+        }
+      }
+    ],
+    "edges": [
+      {
+        "data": {
+          "id": "4b4cb32a81d5a3fa9d6de8976ae714d2",
+          "source": "Payment",
+          "label": "encapsulates",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment.capturedAmount"
+        }
+      },
+      {
+        "data": {
+          "id": "e425b3b3e5d6d9457295cbb88a05247d",
+          "source": "PaymentProcessor#process(Payment)",
+          "label": "measures",
+          "properties": {
+            "weight": 1,
+            "value": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#NumStatements"
+        }
+      },
+      {
+        "data": {
+          "id": "a66c070a3476dfb9472d92d8dcb3d739",
+          "source": "Payment.order",
+          "label": "typed",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Order"
+        }
+      },
+      {
+        "data": {
+          "id": "3209503457610950e13c30f32bc1fe5d",
+          "source": "Payment#capture()",
+          "label": "uses",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment.captured"
+        }
+      },
+      {
+        "data": {
+          "id": "60affabe729ac34d0a5162516a92548e",
+          "source": "PaymentProcessor#process(Payment)",
+          "label": "measures",
+          "properties": {
+            "difficulty": 0.5,
+            "volume": 8,
+            "vocabulary": 4,
+            "length": 4,
+            "weight": 1,
+            "effort": 4,
+            "estimatedBugs": 0.0026666666666666666,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#HalsteadMetrics"
+        }
+      },
+      {
+        "data": {
+          "id": "8c77d2384526a215a27b5696ad38e1db",
+          "source": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\order-payment",
+          "label": "contains",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\order-payment\\Payment.java"
+        }
+      },
+      {
+        "data": {
+          "id": "2086a5087a76e23f491c65a73f69ddbb",
+          "source": "Customer#Customer()",
+          "label": "measures",
+          "properties": {
+            "weight": 1,
+            "value": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#NumStatements"
+        }
+      },
+      {
+        "data": {
+          "id": "f93c732a6657baf1d37da4bf6021054c",
+          "source": "Customer#addOrder(Order):param[0]:order",
+          "label": "parameterizes",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Customer#addOrder(Order)"
+        }
+      },
+      {
+        "data": {
+          "id": "79e58e21218fc1cfe53a60b497312644",
+          "source": "Order#Order(java.math.BigDecimal)",
+          "label": "measures",
+          "properties": {
+            "weight": 1,
+            "value": 2,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#NumStatements"
+        }
+      },
+      {
+        "data": {
+          "id": "b959dcc698502030caf0c6b80820943c",
+          "source": "Customer",
+          "label": "encapsulates",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Customer#addOrder(Order)"
+        }
+      },
+      {
+        "data": {
+          "id": "d1059e162019a642e7004b6adc47d84c",
+          "source": "Payment",
+          "label": "encapsulates",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment#getOrder()"
+        }
+      },
+      {
+        "data": {
+          "id": "cc933b8d4270e42a9fda8f1ddbe4ac80",
+          "source": "Customer#addOrder(Order)",
+          "label": "measures",
+          "properties": {
+            "difficulty": 0.8333333333333334,
+            "volume": 53.1508495181978,
+            "vocabulary": 10,
+            "length": 16,
+            "weight": 1,
+            "effort": 44.29237459849817,
+            "estimatedBugs": 0.017716949839399268,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#HalsteadMetrics"
+        }
+      },
+      {
+        "data": {
+          "id": "c62dbd8d3a043c9528732f90f0d79d6e",
+          "source": "PaymentProcessor#process(Payment):param[0]:payment",
+          "label": "typed",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment"
+        }
+      },
+      {
+        "data": {
+          "id": "5ef84bd07f39e540ca5e2b061e44afce",
+          "source": "Main#main(java.lang.String[])",
+          "label": "invokes",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Order#calculateRefundableAmount(Payment)"
+        }
+      },
+      {
+        "data": {
+          "id": "6d832e9b4ba98e5b757d6e3ea28ca49d",
+          "source": "Order#calculateRefundableAmount(Payment)",
+          "label": "measures",
+          "properties": {
+            "weight": 1,
+            "value": 4,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#NumStatements"
+        }
+      },
+      {
+        "data": {
+          "id": "d11318dc6f2e0b6ad078cacc54441356",
+          "source": "PaymentProcessor#PaymentProcessor()",
+          "label": "returns",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "PaymentProcessor"
+        }
+      },
+      {
+        "data": {
+          "id": "0b30e5f006da7f05edf92e59e7923257",
+          "source": "Payment#Payment(Order,java.math.BigDecimal)",
+          "label": "uses",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment.order"
+        }
+      },
+      {
+        "data": {
+          "id": "61a5ffa4a966fe40e493e1bcebf59ffa",
+          "source": "Payment#Payment(Order,java.math.BigDecimal):param[0]:order",
+          "label": "typed",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Order"
+        }
+      },
+      {
+        "data": {
+          "id": "897e71c3da5256c80763f9a0e999feb1",
+          "source": "PaymentProcessor",
+          "label": "measures",
+          "properties": {
+            "difficulty": -1,
+            "volume": 8,
+            "vocabulary": -1,
+            "length": 4,
+            "weight": 1,
+            "effort": 4,
+            "estimatedBugs": 0.0026666666666666666,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#HalsteadMetrics"
+        }
+      },
+      {
+        "data": {
+          "id": "1234e64ec387d36be0fd089b8e22df96",
+          "source": "Customer",
+          "label": "encapsulates",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Customer.orders"
+        }
+      },
+      {
+        "data": {
+          "id": "ce47c428ab31d88426893ca5f83079c3",
+          "source": "Payment#getCapturedAmount()",
+          "label": "measures",
+          "properties": {
+            "weight": 1,
+            "value": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#NumStatements"
+        }
+      },
+      {
+        "data": {
+          "id": "5277269a62e8480cb07dd60935abfc2f",
+          "source": "Main#main(java.lang.String[])",
+          "label": "instantiates",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Order"
+        }
+      },
+      {
+        "data": {
+          "id": "e8809404de02d93a9ed5f7de938e8326",
+          "source": "PaymentProcessor",
+          "label": "encapsulates",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "PaymentProcessor#PaymentProcessor()"
+        }
+      },
+      {
+        "data": {
+          "id": "88fda4e6d08df5ccfa6c2b96561b8dda",
+          "source": "Customer",
+          "label": "encapsulates",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Customer#Customer()"
+        }
+      },
+      {
+        "data": {
+          "id": "7cac9dc86a79da1544561a98028b909a",
+          "source": "Order#Order(java.math.BigDecimal)",
+          "label": "returns",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Order"
+        }
+      },
+      {
+        "data": {
+          "id": "fe262703ecddef205586220964bcb4b0",
+          "source": "Main#main(java.lang.String[])",
+          "label": "measures",
+          "properties": {
+            "weight": 1,
+            "value": 20,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#NumStatements"
+        }
+      },
+      {
+        "data": {
+          "id": "b2d9de4c5a8cc3aff9f0ef269727949c",
+          "source": "Payment",
+          "label": "encapsulates",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment#Payment(Order,java.math.BigDecimal)"
+        }
+      },
+      {
+        "data": {
+          "id": "dd2cc9e6c06bf71d8df8dc10e2d4ce93",
+          "source": "Customer",
+          "label": "measures",
+          "properties": {
+            "difficulty": -1,
+            "volume": 53.1508495181978,
+            "vocabulary": -1,
+            "length": 16,
+            "weight": 1,
+            "effort": 44.29237459849817,
+            "estimatedBugs": 0.017716949839399268,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#HalsteadMetrics"
+        }
+      },
+      {
+        "data": {
+          "id": "4e54ccf9137325c74a9ec1b3f2393ae2",
+          "source": "Payment#capture()",
+          "label": "measures",
+          "properties": {
+            "difficulty": 0.8333333333333334,
+            "volume": 30.880904142633646,
+            "vocabulary": 7,
+            "length": 11,
+            "weight": 1,
+            "effort": 25.73408678552804,
+            "estimatedBugs": 0.010293634714211216,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#HalsteadMetrics"
+        }
+      },
+      {
+        "data": {
+          "id": "d98099d5f8a99c82b41752763a81e621",
+          "source": "Payment",
+          "label": "encapsulates",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment.refundedAmount"
+        }
+      },
+      {
+        "data": {
+          "id": "1f997ca4f25307eede67be8b35f998d7",
+          "source": "Order#calculateRefundableAmount(Payment)",
+          "label": "invokes",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment#isCaptured()"
+        }
+      },
+      {
+        "data": {
+          "id": "ae1d86860b7c11148a09f4a19fe13dfb",
+          "source": "Main#main(java.lang.String[])",
+          "label": "measures",
+          "properties": {
+            "difficulty": 11.711538461538462,
+            "volume": 1029.8919709670454,
+            "vocabulary": 29,
+            "length": 212,
+            "weight": 1,
+            "effort": 12061.619429210205,
+            "estimatedBugs": 0.3432973236556818,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#HalsteadMetrics"
+        }
+      },
+      {
+        "data": {
+          "id": "9e0cc4121caac233fde005e4ce871f53",
+          "source": "Customer#addOrder(Order)",
+          "label": "measures",
+          "properties": {
+            "weight": 1,
+            "value": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#NumStatements"
+        }
+      },
+      {
+        "data": {
+          "id": "0af814139f5b8e5ec7f185b05cb5aff4",
+          "source": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\order-payment",
+          "label": "contains",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\order-payment\\Main.class"
+        }
+      },
+      {
+        "data": {
+          "id": "8d1506d9249a3ad0dd5cb5c20ee15f4d",
+          "source": "Order#getTotal()",
+          "label": "measures",
+          "properties": {
+            "weight": 1,
+            "value": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#NumStatements"
+        }
+      },
+      {
+        "data": {
+          "id": "bb6d806c3f7e186a40ce905836a31b14",
+          "source": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\order-payment\\Customer.java",
+          "label": "declares",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Customer"
+        }
+      },
+      {
+        "data": {
+          "id": "1e124d2ee7b41ba876aea3ef11fd19aa",
+          "source": "Order#Order(java.math.BigDecimal)",
+          "label": "uses",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Order.total"
+        }
+      },
+      {
+        "data": {
+          "id": "636521223c0f44193ed85bd6f0c8cbef",
+          "source": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\order-payment\\Payment.java",
+          "label": "declares",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment"
+        }
+      },
+      {
+        "data": {
+          "id": "14131a729d2d01fcbb8daedcd1348ac6",
+          "source": "Order#calculateRefundableAmount(Payment):param[0]:payment",
+          "label": "typed",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment"
+        }
+      },
+      {
+        "data": {
+          "id": "b401d9af0dec0f5b4d8e81ac0ac1d923",
+          "source": "Payment",
+          "label": "encapsulates",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment#capture()"
+        }
+      },
+      {
+        "data": {
+          "id": "bb094e32e4d19c2600a194b54c42c1fc",
+          "source": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\order-payment",
+          "label": "contains",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\order-payment\\Order.class"
+        }
+      },
+      {
+        "data": {
+          "id": "336d2b0c94584e5387c724bab6590f23",
+          "source": "Payment#getRefundedAmount()",
+          "label": "measures",
+          "properties": {
+            "difficulty": 0.875,
+            "volume": 18.575424759098897,
+            "vocabulary": 5,
+            "length": 8,
+            "weight": 1,
+            "effort": 16.253496664211536,
+            "estimatedBugs": 0.006191808253032966,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#HalsteadMetrics"
+        }
+      },
+      {
+        "data": {
+          "id": "a77d6242c598e995faca7c4bdfa3dcc1",
+          "source": "Payment",
+          "label": "encapsulates",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment.order"
+        }
+      },
+      {
+        "data": {
+          "id": "1d683daf374bcbb162f8fc76935dcf88",
+          "source": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\order-payment",
+          "label": "contains",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\order-payment\\Payment.class"
+        }
+      },
+      {
+        "data": {
+          "id": "47fc0207934c47fdbbad0274dfa6d9e6",
+          "source": "Payment",
+          "label": "encapsulates",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment#isCaptured()"
+        }
+      },
+      {
+        "data": {
+          "id": "848c20da4c73a84e12d627806db54f37",
+          "source": "Order#getTotal()",
+          "label": "uses",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Order.total"
+        }
+      },
+      {
+        "data": {
+          "id": "7716e35e13b92325ec7c6a69164a34c7",
+          "source": "Payment#getCapturedAmount()",
+          "label": "measures",
+          "properties": {
+            "difficulty": 0.875,
+            "volume": 18.575424759098897,
+            "vocabulary": 5,
+            "length": 8,
+            "weight": 1,
+            "effort": 16.253496664211536,
+            "estimatedBugs": 0.006191808253032966,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#HalsteadMetrics"
+        }
+      },
+      {
+        "data": {
+          "id": "9d7cf4643de0919658aead5df8994f2f",
+          "source": "Payment#refund(java.math.BigDecimal)",
+          "label": "invokes",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Order#calculateRefundableAmount(Payment)"
+        }
+      },
+      {
+        "data": {
+          "id": "6d59792d981d51d1ac1c8593f9011a27",
+          "source": "Order#Order(java.math.BigDecimal):param[0]:total",
+          "label": "parameterizes",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Order#Order(java.math.BigDecimal)"
+        }
+      },
+      {
+        "data": {
+          "id": "011eef641a1044830f1a23135e52e16b",
+          "source": "Order#calculateRefundableAmount(Payment):param[0]:payment",
+          "label": "parameterizes",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Order#calculateRefundableAmount(Payment)"
+        }
+      },
+      {
+        "data": {
+          "id": "106c4e4282ce69cc9b991c6d0be9f56d",
+          "source": "Payment#refund(java.math.BigDecimal)",
+          "label": "uses",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment.order"
+        }
+      },
+      {
+        "data": {
+          "id": "f244d3bff23b211a43de5f4335986593",
+          "source": "Main",
+          "label": "encapsulates",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Main#Main()"
+        }
+      },
+      {
+        "data": {
+          "id": "491f92d36e06c629ee528ae8e2796e46",
+          "source": "Payment#isCaptured()",
+          "label": "uses",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment.captured"
+        }
+      },
+      {
+        "data": {
+          "id": "9fb77a2bd93910c1ebdfdc9e864ae1cd",
+          "source": "Payment#isCaptured()",
+          "label": "measures",
+          "properties": {
+            "weight": 1,
+            "value": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#NumStatements"
+        }
+      },
+      {
+        "data": {
+          "id": "57cc809684e797595d7c1f0b86ad778a",
+          "source": "Payment#Payment(Order,java.math.BigDecimal)",
+          "label": "uses",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment.capturedAmount"
+        }
+      },
+      {
+        "data": {
+          "id": "cac6aa7e570fd6dc7adf4cd6bb0d3174",
+          "source": "Order",
+          "label": "encapsulates",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Order#Order(java.math.BigDecimal)"
+        }
+      },
+      {
+        "data": {
+          "id": "277c36b94aa1cdc797e5c9b7ff7fa8a5",
+          "source": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\order-payment\\Main.java",
+          "label": "declares",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Main"
+        }
+      },
+      {
+        "data": {
+          "id": "db41335faeb4384491918b8a4ee19e0d",
+          "source": "Main#main(java.lang.String[])",
+          "label": "invokes",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment#capture()"
+        }
+      },
+      {
+        "data": {
+          "id": "6c12c5d0d6f88106779af8d579201890",
+          "source": "Order#calculateRefundableAmount(Payment)",
+          "label": "uses",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Order.total"
+        }
+      },
+      {
+        "data": {
+          "id": "d7beddff65a18ef72203d81d3e53692b",
+          "source": "Main#main(java.lang.String[])",
+          "label": "invokes",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment#getCapturedAmount()"
+        }
+      },
+      {
+        "data": {
+          "id": "734ddb36a00866ee37c95e5c9afa55da",
+          "source": "PaymentProcessor",
+          "label": "measures",
+          "properties": {
+            "weight": 1,
+            "value": 2,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#NumMethods"
+        }
+      },
+      {
+        "data": {
+          "id": "87f88201c3e5ee38ebdaaa6291956105",
+          "source": "Payment#refund(java.math.BigDecimal)",
+          "label": "uses",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment.refundedAmount"
+        }
+      },
+      {
+        "data": {
+          "id": "f4bf1cca09ada157ad5be473970bd168",
+          "source": "Main#main(java.lang.String[]):param[0]:args",
+          "label": "parameterizes",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Main#main(java.lang.String[])"
+        }
+      },
+      {
+        "data": {
+          "id": "0d52a4763ab643356fd6014324cebb12",
+          "source": "Payment#getCapturedAmount()",
+          "label": "uses",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment.capturedAmount"
+        }
+      },
+      {
+        "data": {
+          "id": "92edd4de7bd9ee718c69943c7b488331",
+          "source": "Order",
+          "label": "encapsulates",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Order.total"
+        }
+      },
+      {
+        "data": {
+          "id": "f8fde3affc92a3f40b7c5b354ed6c4ea",
+          "source": "Main",
+          "label": "encapsulates",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Main#main(java.lang.String[])"
+        }
+      },
+      {
+        "data": {
+          "id": "7d31c6623ad806753c30c4919acf95f0",
+          "source": "Main#Main()",
+          "label": "measures",
+          "properties": {
+            "weight": 1,
+            "value": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#NumStatements"
+        }
+      },
+      {
+        "data": {
+          "id": "236c0891ae7929e70622306b64d145ef",
+          "source": "Payment#capture()",
+          "label": "measures",
+          "properties": {
+            "weight": 1,
+            "value": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#NumStatements"
+        }
+      },
+      {
+        "data": {
+          "id": "297edbde85cf07a44bd2f2fa70a09369",
+          "source": "Customer",
+          "label": "measures",
+          "properties": {
+            "weight": 1,
+            "value": 2,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#NumMethods"
+        }
+      },
+      {
+        "data": {
+          "id": "cb3cbe53f4ac80711c88a4207028967f",
+          "source": "Main#main(java.lang.String[])",
+          "label": "invokes",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Order#getTotal()"
+        }
+      },
+      {
+        "data": {
+          "id": "3203e1ff0df385ef65d6f9090a7dce8e",
+          "source": "Payment#refund(java.math.BigDecimal):param[0]:amount",
+          "label": "parameterizes",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment#refund(java.math.BigDecimal)"
+        }
+      },
+      {
+        "data": {
+          "id": "bd511255f58c0b0d5f31e87e4aeb7611",
+          "source": "Order#calculateRefundableAmount(Payment)",
+          "label": "invokes",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment#getCapturedAmount()"
+        }
+      },
+      {
+        "data": {
+          "id": "f6577523bddeab266d785468495c143f",
+          "source": "Main#Main()",
+          "label": "returns",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Main"
+        }
+      },
+      {
+        "data": {
+          "id": "b0cf629b758c80a19e6dc07d7e3dc8e6",
+          "source": "Payment#refund(java.math.BigDecimal)",
+          "label": "measures",
+          "properties": {
+            "weight": 1,
+            "value": 3,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#NumStatements"
+        }
+      },
+      {
+        "data": {
+          "id": "c751911820889a12e1a0529b9ec8dfdb",
+          "source": "Main#main(java.lang.String[])",
+          "label": "instantiates",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Customer"
+        }
+      },
+      {
+        "data": {
+          "id": "02ce0f615304b6507df071a634174c37",
+          "source": "Payment#refund(java.math.BigDecimal)",
+          "label": "measures",
+          "properties": {
+            "difficulty": 9.6875,
+            "volume": 294.28526732617695,
+            "vocabulary": 21,
+            "length": 67,
+            "weight": 1,
+            "effort": 2850.8885272223392,
+            "estimatedBugs": 0.09809508910872565,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#HalsteadMetrics"
+        }
+      },
+      {
+        "data": {
+          "id": "836d3830f5a6d803660016978b2cd702",
+          "source": "Order",
+          "label": "measures",
+          "properties": {
+            "weight": 1,
+            "value": 3,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#NumMethods"
+        }
+      },
+      {
+        "data": {
+          "id": "75570e58829953f29527efea984fd279",
+          "source": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\order-payment",
+          "label": "contains",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\order-payment\\Customer.class"
+        }
+      },
+      {
+        "data": {
+          "id": "de45158891ba1d2e400363c9191d1200",
+          "source": "Order",
+          "label": "encapsulates",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Order#calculateRefundableAmount(Payment)"
+        }
+      },
+      {
+        "data": {
+          "id": "e1879b84b36140f8ab49a49c4b763ba7",
+          "source": "Payment",
+          "label": "encapsulates",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment.captured"
+        }
+      },
+      {
+        "data": {
+          "id": "c73d0df78bb9ce7b65ab6040e391d268",
+          "source": "Payment#isCaptured()",
+          "label": "measures",
+          "properties": {
+            "difficulty": 0.875,
+            "volume": 18.575424759098897,
+            "vocabulary": 5,
+            "length": 8,
+            "weight": 1,
+            "effort": 16.253496664211536,
+            "estimatedBugs": 0.006191808253032966,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#HalsteadMetrics"
+        }
+      },
+      {
+        "data": {
+          "id": "bba8adf4bff69a7c30741fcdba85368a",
+          "source": "Payment#Payment(Order,java.math.BigDecimal):param[0]:order",
+          "label": "parameterizes",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment#Payment(Order,java.math.BigDecimal)"
+        }
+      },
+      {
+        "data": {
+          "id": "c4ab76bfe6ee04033b6e5663ae2b174c",
+          "source": "Payment#Payment(Order,java.math.BigDecimal)",
+          "label": "measures",
+          "properties": {
+            "weight": 1,
+            "value": 4,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#NumStatements"
+        }
+      },
+      {
+        "data": {
+          "id": "1419ab8ddc01f28b0fedb0b863711c34",
+          "source": "Payment",
+          "label": "measures",
+          "properties": {
+            "difficulty": -1,
+            "volume": 399.4678705052062,
+            "vocabulary": -1,
+            "length": 110,
+            "weight": 1,
+            "effort": 2941.6366006647136,
+            "estimatedBugs": 0.13315595683506873,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#HalsteadMetrics"
+        }
+      },
+      {
+        "data": {
+          "id": "3fe4b4b0017c22c17fc266e6b76ea34b",
+          "source": "Payment#Payment(Order,java.math.BigDecimal)",
+          "label": "returns",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment"
+        }
+      },
+      {
+        "data": {
+          "id": "3d7253083d0e674c241b799eaab7e259",
+          "source": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\order-payment",
+          "label": "contains",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\order-payment\\Order.java"
+        }
+      },
+      {
+        "data": {
+          "id": "3b31ade0967912b28104aa20c98ea32d",
+          "source": "Payment#getOrder()",
+          "label": "returns",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Order"
+        }
+      },
+      {
+        "data": {
+          "id": "5ccd13e48e3b488c15e592365326dd81",
+          "source": "Order#calculateRefundableAmount(Payment)",
+          "label": "invokes",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment#getRefundedAmount()"
+        }
+      },
+      {
+        "data": {
+          "id": "0b26b6a2fa17fe52b33a806591a3ed41",
+          "source": "Payment#getRefundedAmount()",
+          "label": "uses",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment.refundedAmount"
+        }
+      },
+      {
+        "data": {
+          "id": "aface35c2798a862a482e4e991b97598",
+          "source": "PaymentProcessor#PaymentProcessor()",
+          "label": "measures",
+          "properties": {
+            "weight": 1,
+            "value": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#NumStatements"
+        }
+      },
+      {
+        "data": {
+          "id": "dc830fc59a72583d225891f8cb619820",
+          "source": "Payment#Payment(Order,java.math.BigDecimal)",
+          "label": "uses",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment.refundedAmount"
+        }
+      },
+      {
+        "data": {
+          "id": "bc197c52b6d0d68ad9564137de12d37a",
+          "source": "Main#main(java.lang.String[])",
+          "label": "invokes",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Customer#addOrder(Order)"
+        }
+      },
+      {
+        "data": {
+          "id": "4215aa5184556664c3155d5bf427852e",
+          "source": "Order",
+          "label": "encapsulates",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Order#getTotal()"
+        }
+      },
+      {
+        "data": {
+          "id": "bdec64108f3fdc466715a79f7f40be28",
+          "source": "Payment#getOrder()",
+          "label": "measures",
+          "properties": {
+            "weight": 1,
+            "value": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#NumStatements"
+        }
+      },
+      {
+        "data": {
+          "id": "182abb1afb3dd7bc5aee2377b7d656fa",
+          "source": "Payment#getRefundedAmount()",
+          "label": "measures",
+          "properties": {
+            "weight": 1,
+            "value": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#NumStatements"
+        }
+      },
+      {
+        "data": {
+          "id": "48208377bd36d40301cc0de1c728b595",
+          "source": "Payment#getOrder()",
+          "label": "measures",
+          "properties": {
+            "difficulty": 0.875,
+            "volume": 18.575424759098897,
+            "vocabulary": 5,
+            "length": 8,
+            "weight": 1,
+            "effort": 16.253496664211536,
+            "estimatedBugs": 0.006191808253032966,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#HalsteadMetrics"
+        }
+      },
+      {
+        "data": {
+          "id": "6849e90b8d3b7b4d318685bee2f51a12",
+          "source": "order-payment",
+          "label": "includes",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\order-payment"
+        }
+      },
+      {
+        "data": {
+          "id": "00e99f49a0749ab4a49b5f9af8f97f8e",
+          "source": "Order#getTotal()",
+          "label": "measures",
+          "properties": {
+            "difficulty": 0.875,
+            "volume": 18.575424759098897,
+            "vocabulary": 5,
+            "length": 8,
+            "weight": 1,
+            "effort": 16.253496664211536,
+            "estimatedBugs": 0.006191808253032966,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#HalsteadMetrics"
+        }
+      },
+      {
+        "data": {
+          "id": "89b7da285662f85ba0d60fd785ff99e8",
+          "source": "Payment",
+          "label": "encapsulates",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment#getCapturedAmount()"
+        }
+      },
+      {
+        "data": {
+          "id": "fcd0ab7e89c739fa82d54801d8ce095b",
+          "source": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\order-payment\\Order.java",
+          "label": "declares",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Order"
+        }
+      },
+      {
+        "data": {
+          "id": "b44afe2d56b05c7fd8094fd0e48d0b2a",
+          "source": "Payment#Payment(Order,java.math.BigDecimal):param[1]:capturedAmount",
+          "label": "parameterizes",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment#Payment(Order,java.math.BigDecimal)"
+        }
+      },
+      {
+        "data": {
+          "id": "5ecbe7ecd0d49681180ffef442474a8c",
+          "source": "Main#main(java.lang.String[])",
+          "label": "invokes",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment#getRefundedAmount()"
+        }
+      },
+      {
+        "data": {
+          "id": "c46f09301b41d1abfec7e3ed8e42a760",
+          "source": "Customer#addOrder(Order)",
+          "label": "uses",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Customer.orders"
+        }
+      },
+      {
+        "data": {
+          "id": "ee25606d0113566faa8f03da0d83a2ea",
+          "source": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\order-payment",
+          "label": "contains",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\order-payment\\Main.java"
+        }
+      },
+      {
+        "data": {
+          "id": "3444f46cf2d8805026eb093abb82cf76",
+          "source": "PaymentProcessor#process(Payment):param[0]:payment",
+          "label": "parameterizes",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "PaymentProcessor#process(Payment)"
+        }
+      },
+      {
+        "data": {
+          "id": "b3054e7bb2c1c466fb4bbe4f2b0227e2",
+          "source": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\order-payment",
+          "label": "contains",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\order-payment\\Customer.java"
+        }
+      },
+      {
+        "data": {
+          "id": "cf10d3a54939b92dedc197751c8db8bc",
+          "source": "Payment",
+          "label": "encapsulates",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment#refund(java.math.BigDecimal)"
+        }
+      },
+      {
+        "data": {
+          "id": "a3ede0e8fce56423f137048e903f0caa",
+          "source": "Main#main(java.lang.String[])",
+          "label": "instantiates",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment"
+        }
+      },
+      {
+        "data": {
+          "id": "2590abd51a50386b230829edc9a9235d",
+          "source": "Customer#addOrder(Order):param[0]:order",
+          "label": "typed",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Order"
+        }
+      },
+      {
+        "data": {
+          "id": "9004247a343facefbac56db0424ae1c6",
+          "source": "Main#main(java.lang.String[])",
+          "label": "invokes",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment#refund(java.math.BigDecimal)"
+        }
+      },
+      {
+        "data": {
+          "id": "faa1e95648d716c472f047b79048d920",
+          "source": "Payment",
+          "label": "measures",
+          "properties": {
+            "weight": 1,
+            "value": 7,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#NumMethods"
+        }
+      },
+      {
+        "data": {
+          "id": "23c6e6534ed94058b99a01f50e0a23df",
+          "source": "Payment#getOrder()",
+          "label": "uses",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment.order"
+        }
+      },
+      {
+        "data": {
+          "id": "d6721e896bb9ec97269b793db80cb61d",
+          "source": "PaymentProcessor",
+          "label": "encapsulates",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "PaymentProcessor#process(Payment)"
+        }
+      },
+      {
+        "data": {
+          "id": "218a86da20e89038137caf438b636cd6",
+          "source": "Payment",
+          "label": "encapsulates",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Payment#getRefundedAmount()"
+        }
+      },
+      {
+        "data": {
+          "id": "fac271def35de60440dad4e790a7853b",
+          "source": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\order-payment",
+          "label": "contains",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\order-payment\\PaymentProcessor.java"
+        }
+      },
+      {
+        "data": {
+          "id": "9e76b359c2eca254b1bf290f09fa05d5",
+          "source": "Customer#Customer()",
+          "label": "returns",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Customer"
+        }
+      },
+      {
+        "data": {
+          "id": "8fa6e4d4a23e4a22c62b4896dddeb547",
+          "source": "Order",
+          "label": "measures",
+          "properties": {
+            "difficulty": -1,
+            "volume": 212.16339979804135,
+            "vocabulary": -1,
+            "length": 62,
+            "weight": 1,
+            "effort": 1022.9109668667123,
+            "estimatedBugs": 0.07072113326601379,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#HalsteadMetrics"
+        }
+      },
+      {
+        "data": {
+          "id": "e51ad960f5340ece4ca5a38f54e5713a",
+          "source": "Order#calculateRefundableAmount(Payment)",
+          "label": "measures",
+          "properties": {
+            "difficulty": 5.2,
+            "volume": 193.58797503894246,
+            "vocabulary": 12,
+            "length": 54,
+            "weight": 1,
+            "effort": 1006.6574702025008,
+            "estimatedBugs": 0.06452932501298082,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#HalsteadMetrics"
+        }
+      },
+      {
+        "data": {
+          "id": "b4c0a4d7db6bbc1ab80d5a418a4ad95e",
+          "source": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\order-payment\\PaymentProcessor.java",
+          "label": "declares",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "PaymentProcessor"
+        }
+      },
+      {
+        "data": {
+          "id": "43de28c9ffb402a13ae310795ebe6937",
+          "source": "Main",
+          "label": "measures",
+          "properties": {
+            "weight": 1,
+            "value": 2,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#NumMethods"
+        }
+      },
+      {
+        "data": {
+          "id": "061220ac933e264adbcdaf53f58075c2",
+          "source": "Main",
+          "label": "measures",
+          "properties": {
+            "difficulty": -1,
+            "volume": 1029.8919709670454,
+            "vocabulary": -1,
+            "length": 212,
+            "weight": 1,
+            "effort": 12061.619429210205,
+            "estimatedBugs": 0.3432973236556818,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#HalsteadMetrics"
+        }
+      }
+    ]
+  },
+  "properties": {
+    "schemaVersion": "2.0"
+  }
+}

@@ -1,0 +1,1123 @@
+{
+  "elements": {
+    "nodes": [
+      {
+        "data": {
+          "id": "GameSession#startLevel(java.lang.String):param[0]:levelName",
+          "properties": {
+            "simpleName": "levelName",
+            "parameterIndex": 0,
+            "qualifiedName": "GameSession#startLevel(java.lang.String):param[0]:levelName",
+            "kind": "parameter",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Variable"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\instantiation-cd\\Main.java",
+          "properties": {
+            "simpleName": "Main.java",
+            "qualifiedName": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\instantiation-cd\\Main.java",
+            "kind": "file",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "File"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "LevelLoader#load(GameSession,java.lang.String):param[1]:levelName",
+          "properties": {
+            "simpleName": "levelName",
+            "parameterIndex": 1,
+            "qualifiedName": "LevelLoader#load(GameSession,java.lang.String):param[1]:levelName",
+            "kind": "parameter",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Variable"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Metrics#NumMethods",
+          "properties": {
+            "simpleName": "NumMethods",
+            "qualifiedName": "Number of Methods",
+            "kind": "metric",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Metric"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "GameSession.loader",
+          "properties": {
+            "visibility": "private",
+            "simpleName": "loader",
+            "qualifiedName": "GameSession.loader",
+            "kind": "field",
+            "sourceText": "private final LevelLoader loader = new LevelLoader();",
+            "docComment": "",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Variable"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "GameSession#GameSession()",
+          "properties": {
+            "visibility": "public",
+            "simpleName": "GameSession()",
+            "qualifiedName": "GameSession#GameSession()",
+            "kind": "constructor",
+            "sourceText": "GameSession() {\r\n    super();\r\n}",
+            "docComment": "",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Operation"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "GameSession#setCurrentLevel(java.lang.String)",
+          "properties": {
+            "visibility": "public",
+            "simpleName": "setCurrentLevel(java.lang.String)",
+            "qualifiedName": "GameSession#setCurrentLevel(java.lang.String)",
+            "kind": "method",
+            "sourceText": "public void setCurrentLevel(java.lang.String levelName) {\r\n    this.currentLevel = levelName;\r\n}",
+            "docComment": "",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Operation"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Metrics#HalsteadMetrics",
+          "properties": {
+            "simpleName": "HalsteadMetrics",
+            "qualifiedName": "Halstead Complexity Metrics",
+            "kind": "metric",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Metric"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\instantiation-cd",
+          "properties": {
+            "simpleName": "instantiation-cd",
+            "qualifiedName": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\instantiation-cd",
+            "kind": "folder",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Folder"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\instantiation-cd\\LevelLoader.java",
+          "properties": {
+            "simpleName": "LevelLoader.java",
+            "qualifiedName": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\instantiation-cd\\LevelLoader.java",
+            "kind": "file",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "File"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Main",
+          "properties": {
+            "docComment": "",
+            "visibility": "public",
+            "simpleName": "Main",
+            "qualifiedName": "Main",
+            "kind": "class",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Type"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "LevelLoader#load(GameSession,java.lang.String):param[0]:session",
+          "properties": {
+            "simpleName": "session",
+            "parameterIndex": 0,
+            "qualifiedName": "LevelLoader#load(GameSession,java.lang.String):param[0]:session",
+            "kind": "parameter",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Variable"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Metrics#NumStatements",
+          "properties": {
+            "simpleName": "NumStatements",
+            "qualifiedName": "Number of Statements",
+            "kind": "metric",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Metric"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "GameSession#setCurrentLevel(java.lang.String):param[0]:levelName",
+          "properties": {
+            "simpleName": "levelName",
+            "parameterIndex": 0,
+            "qualifiedName": "GameSession#setCurrentLevel(java.lang.String):param[0]:levelName",
+            "kind": "parameter",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Variable"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Main#main(java.lang.String[]):param[0]:args",
+          "properties": {
+            "simpleName": "args",
+            "parameterIndex": 0,
+            "qualifiedName": "Main#main(java.lang.String[]):param[0]:args",
+            "kind": "parameter",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Variable"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "MyProject",
+          "properties": {
+            "simpleName": "MyProject",
+            "qualifiedName": "MyProject",
+            "kind": "project",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Project"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Main#main(java.lang.String[])",
+          "properties": {
+            "visibility": "public",
+            "simpleName": "main(java.lang.String[])",
+            "qualifiedName": "Main#main(java.lang.String[])",
+            "kind": "method",
+            "sourceText": "public static void main(java.lang.String[] args) {\r\n    GameSession session = new GameSession();\r\n    session.startLevel(\"Forest\");\r\n    java.lang.System.out.println(session.getCurrentLevel());\r\n}",
+            "docComment": "",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Operation"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "Main#Main()",
+          "properties": {
+            "visibility": "public",
+            "simpleName": "Main()",
+            "qualifiedName": "Main#Main()",
+            "kind": "constructor",
+            "sourceText": "Main() {\r\n    super();\r\n}",
+            "docComment": "",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Operation"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "GameSession",
+          "properties": {
+            "docComment": "",
+            "visibility": "public",
+            "simpleName": "GameSession",
+            "qualifiedName": "GameSession",
+            "kind": "class",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Type"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "LevelLoader",
+          "properties": {
+            "docComment": "",
+            "visibility": "public",
+            "simpleName": "LevelLoader",
+            "qualifiedName": "LevelLoader",
+            "kind": "class",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Type"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "GameSession.currentLevel",
+          "properties": {
+            "visibility": "private",
+            "simpleName": "currentLevel",
+            "qualifiedName": "GameSession.currentLevel",
+            "kind": "field",
+            "sourceText": "private java.lang.String currentLevel;",
+            "docComment": "",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Variable"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "GameSession#startLevel(java.lang.String)",
+          "properties": {
+            "visibility": "public",
+            "simpleName": "startLevel(java.lang.String)",
+            "qualifiedName": "GameSession#startLevel(java.lang.String)",
+            "kind": "method",
+            "sourceText": "public void startLevel(java.lang.String levelName) {\r\n    this.loader.load(this, levelName);\r\n}",
+            "docComment": "",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Operation"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "LevelLoader#LevelLoader()",
+          "properties": {
+            "visibility": "public",
+            "simpleName": "LevelLoader()",
+            "qualifiedName": "LevelLoader#LevelLoader()",
+            "kind": "constructor",
+            "sourceText": "LevelLoader() {\r\n    super();\r\n}",
+            "docComment": "",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Operation"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\instantiation-cd\\GameSession.java",
+          "properties": {
+            "simpleName": "GameSession.java",
+            "qualifiedName": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\instantiation-cd\\GameSession.java",
+            "kind": "file",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "File"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "GameSession#getCurrentLevel()",
+          "properties": {
+            "visibility": "public",
+            "simpleName": "getCurrentLevel()",
+            "qualifiedName": "GameSession#getCurrentLevel()",
+            "kind": "method",
+            "sourceText": "public java.lang.String getCurrentLevel() {\r\n    return this.currentLevel;\r\n}",
+            "docComment": "",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Operation"
+          ]
+        }
+      },
+      {
+        "data": {
+          "id": "LevelLoader#load(GameSession,java.lang.String)",
+          "properties": {
+            "visibility": "public",
+            "simpleName": "load(GameSession,java.lang.String)",
+            "qualifiedName": "LevelLoader#load(GameSession,java.lang.String)",
+            "kind": "method",
+            "sourceText": "public void load(GameSession session, java.lang.String levelName) {\r\n    // Simplified: assume the level loads successfully.\r\n    java.lang.System.out.println(\"Loading \" + levelName);\r\n    session.setCurrentLevel(levelName);\r\n}",
+            "docComment": "",
+            "metaSrc": "source code"
+          },
+          "labels": [
+            "Operation"
+          ]
+        }
+      }
+    ],
+    "edges": [
+      {
+        "data": {
+          "id": "60725073bb61fe7988142ef24b9dd870",
+          "source": "GameSession",
+          "label": "measures",
+          "properties": {
+            "difficulty": -1,
+            "volume": 112.07103874584776,
+            "vocabulary": -1,
+            "length": 40,
+            "weight": 1,
+            "effort": 126.03482493667468,
+            "estimatedBugs": 0.03735701291528259,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#HalsteadMetrics"
+        }
+      },
+      {
+        "data": {
+          "id": "a1a5658520b5bcb89864d333e1520af3",
+          "source": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\instantiation-cd\\Main.java",
+          "label": "declares",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Main"
+        }
+      },
+      {
+        "data": {
+          "id": "c8c45f16666fc78a9d29e339d41ac391",
+          "source": "LevelLoader#load(GameSession,java.lang.String)",
+          "label": "measures",
+          "properties": {
+            "weight": 1,
+            "value": 2,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#NumStatements"
+        }
+      },
+      {
+        "data": {
+          "id": "9762ba8f0526da34af0d93022431a266",
+          "source": "LevelLoader",
+          "label": "encapsulates",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "LevelLoader#LevelLoader()"
+        }
+      },
+      {
+        "data": {
+          "id": "9cc5cc94ee1c3d8cba41a1c1e1be2d09",
+          "source": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\instantiation-cd\\LevelLoader.java",
+          "label": "declares",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "LevelLoader"
+        }
+      },
+      {
+        "data": {
+          "id": "f94fe1f511e2a5bfef56ba740c394aed",
+          "source": "LevelLoader#load(GameSession,java.lang.String):param[0]:session",
+          "label": "typed",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "GameSession"
+        }
+      },
+      {
+        "data": {
+          "id": "f4bf1cca09ada157ad5be473970bd168",
+          "source": "Main#main(java.lang.String[]):param[0]:args",
+          "label": "parameterizes",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Main#main(java.lang.String[])"
+        }
+      },
+      {
+        "data": {
+          "id": "97a4e86865a610a5a63b9f4acedd86a6",
+          "source": "GameSession",
+          "label": "encapsulates",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "GameSession.currentLevel"
+        }
+      },
+      {
+        "data": {
+          "id": "f8fde3affc92a3f40b7c5b354ed6c4ea",
+          "source": "Main",
+          "label": "encapsulates",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Main#main(java.lang.String[])"
+        }
+      },
+      {
+        "data": {
+          "id": "7d31c6623ad806753c30c4919acf95f0",
+          "source": "Main#Main()",
+          "label": "measures",
+          "properties": {
+            "weight": 1,
+            "value": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#NumStatements"
+        }
+      },
+      {
+        "data": {
+          "id": "061220ac933e264adbcdaf53f58075c2",
+          "source": "Main",
+          "label": "measures",
+          "properties": {
+            "difficulty": -1,
+            "volume": 96.79398751947123,
+            "vocabulary": -1,
+            "length": 27,
+            "weight": 1,
+            "effort": 241.98496879867807,
+            "estimatedBugs": 0.03226466250649041,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#HalsteadMetrics"
+        }
+      },
+      {
+        "data": {
+          "id": "b06aef3dbabbdce80d217a9759317fcd",
+          "source": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\instantiation-cd",
+          "label": "contains",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\instantiation-cd\\Main.java"
+        }
+      },
+      {
+        "data": {
+          "id": "d6423ecf5beb5ef5ec55f1105e155327",
+          "source": "Main#main(java.lang.String[])",
+          "label": "invokes",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "GameSession#startLevel(java.lang.String)"
+        }
+      },
+      {
+        "data": {
+          "id": "3bb5b8b65bcf65448210725261d33c3d",
+          "source": "LevelLoader",
+          "label": "encapsulates",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "LevelLoader#load(GameSession,java.lang.String)"
+        }
+      },
+      {
+        "data": {
+          "id": "b2a80e11d491f08797278a6982cd0b39",
+          "source": "GameSession#getCurrentLevel()",
+          "label": "measures",
+          "properties": {
+            "weight": 1,
+            "value": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#NumStatements"
+        }
+      },
+      {
+        "data": {
+          "id": "055a6c7e99c52f2d0e57248fe0bfa269",
+          "source": "GameSession#setCurrentLevel(java.lang.String)",
+          "label": "uses",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "GameSession.currentLevel"
+        }
+      },
+      {
+        "data": {
+          "id": "f6577523bddeab266d785468495c143f",
+          "source": "Main#Main()",
+          "label": "returns",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Main"
+        }
+      },
+      {
+        "data": {
+          "id": "46f646bb56d127b31643e8f3468a0ac1",
+          "source": "LevelLoader#LevelLoader()",
+          "label": "returns",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "LevelLoader"
+        }
+      },
+      {
+        "data": {
+          "id": "fe262703ecddef205586220964bcb4b0",
+          "source": "Main#main(java.lang.String[])",
+          "label": "measures",
+          "properties": {
+            "weight": 1,
+            "value": 3,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#NumStatements"
+        }
+      },
+      {
+        "data": {
+          "id": "90402e551558a6588b2f7a27685ea2fe",
+          "source": "GameSession",
+          "label": "encapsulates",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "GameSession#getCurrentLevel()"
+        }
+      },
+      {
+        "data": {
+          "id": "796a370c58da10b65ba8e053cff61e25",
+          "source": "GameSession",
+          "label": "encapsulates",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "GameSession#setCurrentLevel(java.lang.String)"
+        }
+      },
+      {
+        "data": {
+          "id": "ab758a8d9cdc7da223301011f7fb09f1",
+          "source": "Main#main(java.lang.String[])",
+          "label": "invokes",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "GameSession#getCurrentLevel()"
+        }
+      },
+      {
+        "data": {
+          "id": "db0c19079d35480f7e8d5d2fc1ccaa3e",
+          "source": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\instantiation-cd",
+          "label": "contains",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\instantiation-cd\\GameSession.java"
+        }
+      },
+      {
+        "data": {
+          "id": "8d7719473729344e81b253972dfe9fe3",
+          "source": "GameSession#GameSession()",
+          "label": "returns",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "GameSession"
+        }
+      },
+      {
+        "data": {
+          "id": "aabe243e8dd63fecebc5f54f5687cc46",
+          "source": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\instantiation-cd\\GameSession.java",
+          "label": "declares",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "GameSession"
+        }
+      },
+      {
+        "data": {
+          "id": "47285e78c778bde7fdbccb2911083d46",
+          "source": "GameSession#startLevel(java.lang.String)",
+          "label": "measures",
+          "properties": {
+            "weight": 1,
+            "value": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#NumStatements"
+        }
+      },
+      {
+        "data": {
+          "id": "8660279b853461f10a692dfc94fff4e3",
+          "source": "MyProject",
+          "label": "includes",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\instantiation-cd"
+        }
+      },
+      {
+        "data": {
+          "id": "ef482abb8bd26de05fb9e0d9420661bd",
+          "source": "LevelLoader#load(GameSession,java.lang.String):param[0]:session",
+          "label": "parameterizes",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "LevelLoader#load(GameSession,java.lang.String)"
+        }
+      },
+      {
+        "data": {
+          "id": "dc029707d0b7a1ffc0e4d74cd222105a",
+          "source": "LevelLoader#load(GameSession,java.lang.String)",
+          "label": "measures",
+          "properties": {
+            "difficulty": 2.6666666666666665,
+            "volume": 89.94522208456974,
+            "vocabulary": 11,
+            "length": 26,
+            "weight": 1,
+            "effort": 239.8539255588526,
+            "estimatedBugs": 0.02998174069485658,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#HalsteadMetrics"
+        }
+      },
+      {
+        "data": {
+          "id": "4082cb17f99d217cddffbe5bcc1310b0",
+          "source": "GameSession#GameSession()",
+          "label": "measures",
+          "properties": {
+            "weight": 1,
+            "value": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#NumStatements"
+        }
+      },
+      {
+        "data": {
+          "id": "05f35718e0475e8420edc4f6d7d8dd15",
+          "source": "Main#main(java.lang.String[])",
+          "label": "instantiates",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "GameSession"
+        }
+      },
+      {
+        "data": {
+          "id": "574236c11e8378f7f5379840aa43dd32",
+          "source": "GameSession#setCurrentLevel(java.lang.String)",
+          "label": "measures",
+          "properties": {
+            "difficulty": 1,
+            "volume": 36.49561398674886,
+            "vocabulary": 7,
+            "length": 13,
+            "weight": 1,
+            "effort": 36.49561398674886,
+            "estimatedBugs": 0.012165204662249619,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#HalsteadMetrics"
+        }
+      },
+      {
+        "data": {
+          "id": "ae1d86860b7c11148a09f4a19fe13dfb",
+          "source": "Main#main(java.lang.String[])",
+          "label": "measures",
+          "properties": {
+            "difficulty": 2.5,
+            "volume": 96.79398751947123,
+            "vocabulary": 12,
+            "length": 27,
+            "weight": 1,
+            "effort": 241.98496879867807,
+            "estimatedBugs": 0.03226466250649041,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#HalsteadMetrics"
+        }
+      },
+      {
+        "data": {
+          "id": "1fe024066d7f93f034255df02f94aa3b",
+          "source": "GameSession#startLevel(java.lang.String)",
+          "label": "uses",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "GameSession.loader"
+        }
+      },
+      {
+        "data": {
+          "id": "3a994cff7177acc838660d723f5e75c0",
+          "source": "LevelLoader",
+          "label": "measures",
+          "properties": {
+            "difficulty": -1,
+            "volume": 89.94522208456974,
+            "vocabulary": -1,
+            "length": 26,
+            "weight": 1,
+            "effort": 239.8539255588526,
+            "estimatedBugs": 0.02998174069485658,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#HalsteadMetrics"
+        }
+      },
+      {
+        "data": {
+          "id": "b03e9b6c88ecf1e65bbdc7a7b40aba04",
+          "source": "GameSession#startLevel(java.lang.String)",
+          "label": "invokes",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "LevelLoader#load(GameSession,java.lang.String)"
+        }
+      },
+      {
+        "data": {
+          "id": "0c22e3351fb446078fa4d65b3fa31c14",
+          "source": "GameSession",
+          "label": "measures",
+          "properties": {
+            "weight": 1,
+            "value": 4,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#NumMethods"
+        }
+      },
+      {
+        "data": {
+          "id": "24b702837575ca1d80fcd90e57562b00",
+          "source": "GameSession",
+          "label": "encapsulates",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "GameSession#GameSession()"
+        }
+      },
+      {
+        "data": {
+          "id": "449dfb3296892aa3bd7d3212cf0242e7",
+          "source": "LevelLoader#LevelLoader()",
+          "label": "measures",
+          "properties": {
+            "weight": 1,
+            "value": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#NumStatements"
+        }
+      },
+      {
+        "data": {
+          "id": "35a4b0d6dda5dd09a98827db5e0d2199",
+          "source": "GameSession.loader",
+          "label": "typed",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "LevelLoader"
+        }
+      },
+      {
+        "data": {
+          "id": "23788a0ed2d528f7231a422b12a8deb8",
+          "source": "GameSession#startLevel(java.lang.String)",
+          "label": "measures",
+          "properties": {
+            "difficulty": 1.2857142857142858,
+            "volume": 57,
+            "vocabulary": 8,
+            "length": 19,
+            "weight": 1,
+            "effort": 73.28571428571429,
+            "estimatedBugs": 0.019,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#HalsteadMetrics"
+        }
+      },
+      {
+        "data": {
+          "id": "83aef076b5a6c6600473c809cba4f7ed",
+          "source": "LevelLoader#load(GameSession,java.lang.String):param[1]:levelName",
+          "label": "parameterizes",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "LevelLoader#load(GameSession,java.lang.String)"
+        }
+      },
+      {
+        "data": {
+          "id": "a1aab40505a3e3ef9a6fe3f7140560f0",
+          "source": "GameSession#getCurrentLevel()",
+          "label": "uses",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "GameSession.currentLevel"
+        }
+      },
+      {
+        "data": {
+          "id": "ad018883bb9cbda65b04552f41c8be72",
+          "source": "GameSession#setCurrentLevel(java.lang.String)",
+          "label": "measures",
+          "properties": {
+            "weight": 1,
+            "value": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#NumStatements"
+        }
+      },
+      {
+        "data": {
+          "id": "f244d3bff23b211a43de5f4335986593",
+          "source": "Main",
+          "label": "encapsulates",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "Main#Main()"
+        }
+      },
+      {
+        "data": {
+          "id": "028a43c91ebeec8831b0d4ea1d771df3",
+          "source": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\instantiation-cd",
+          "label": "contains",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "C:\\Users\\20203755\\Documents\\NOT_OneDrive\\Dev\\JavaProjects\\cyclic-dependency-examples\\instantiation-cd\\LevelLoader.java"
+        }
+      },
+      {
+        "data": {
+          "id": "c47534effdad696ed1ccf2e43acab07c",
+          "source": "LevelLoader#load(GameSession,java.lang.String)",
+          "label": "invokes",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "GameSession#setCurrentLevel(java.lang.String)"
+        }
+      },
+      {
+        "data": {
+          "id": "8400cd64acf3152de2f53d6b87f76347",
+          "source": "GameSession#setCurrentLevel(java.lang.String):param[0]:levelName",
+          "label": "parameterizes",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "GameSession#setCurrentLevel(java.lang.String)"
+        }
+      },
+      {
+        "data": {
+          "id": "e40941342a2844d303a04e8795fbc494",
+          "source": "GameSession",
+          "label": "encapsulates",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "GameSession#startLevel(java.lang.String)"
+        }
+      },
+      {
+        "data": {
+          "id": "1bb78a7ddf4a4de56ffcce49231e3ce9",
+          "source": "GameSession#startLevel(java.lang.String):param[0]:levelName",
+          "label": "parameterizes",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "GameSession#startLevel(java.lang.String)"
+        }
+      },
+      {
+        "data": {
+          "id": "83950c0769dafb0a6e5603105628ac12",
+          "source": "GameSession",
+          "label": "encapsulates",
+          "properties": {
+            "weight": 1,
+            "metaSrc": "source code"
+          },
+          "target": "GameSession.loader"
+        }
+      },
+      {
+        "data": {
+          "id": "e0fc140e0ae1933335c2b91943c35f86",
+          "source": "LevelLoader",
+          "label": "measures",
+          "properties": {
+            "weight": 1,
+            "value": 2,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#NumMethods"
+        }
+      },
+      {
+        "data": {
+          "id": "5f0b8788a7f0fedde2295ca8648907be",
+          "source": "GameSession#getCurrentLevel()",
+          "label": "measures",
+          "properties": {
+            "difficulty": 0.875,
+            "volume": 18.575424759098897,
+            "vocabulary": 5,
+            "length": 8,
+            "weight": 1,
+            "effort": 16.253496664211536,
+            "estimatedBugs": 0.006191808253032966,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#HalsteadMetrics"
+        }
+      },
+      {
+        "data": {
+          "id": "43de28c9ffb402a13ae310795ebe6937",
+          "source": "Main",
+          "label": "measures",
+          "properties": {
+            "weight": 1,
+            "value": 2,
+            "metaSrc": "source code"
+          },
+          "target": "Metrics#NumMethods"
+        }
+      }
+    ]
+  },
+  "properties": {
+    "schemaVersion": "2.0"
+  }
+}

@@ -20,22 +20,23 @@ export const cacheNodeStyles = function (pCy) {
 	pCy.nodes().forEach((n) => {
 		const style = n.style();
         let borderColor = style['border-color'];
+        let backgroundColor = style['background-color']
         if (nodeHasLabel(n, "CD-smell")) {
             borderColor = "red";
         }
         if (nodeHasLabel(n, "New")) {
-            borderColor = "green";
+            backgroundColor = "#e8f5e9";
         }
         if (nodeHasLabel(n, "Modified")) {
-            borderColor = "orange"
+            backgroundColor = "#fff3e0"
         }
         if (nodeHasLabel(n, "Removed")) {
-            borderColor = "red"
+            backgroundColor = "#ffebee"
         }
 		addScratch(n, 'style_default', {
 			'color': style['color'],
 			'border-color': borderColor,
-			'background-color': style['background-color'],
+			'background-color': backgroundColor,
 			'background-fill': style['background-fill']
 		});
 	});

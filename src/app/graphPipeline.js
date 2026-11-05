@@ -269,8 +269,8 @@ function setHideMethods(cy, state) {
     
     // Remove all fields and methods of non smelly nodes to save space
     // Modified not strictly needed, but it improves layout for now, so change this later
-    state.hiddenNodes["methods2"] = cy.nodes('.Operation').filter((n) => !nodeHasLabel(n.parent(), 'CD-smell') && !nodeHasLabel(n, 'Modified') && !nodeHasLabel(n, 'inspect')).remove();
-    cy.nodes('.Variable').filter((n) => n.parent().data("labels") !== undefined && !nodeHasLabel(n.parent(), 'CD-smell') && !nodeHasLabel(n, 'Modified') && !nodeHasLabel(n, 'inspect')).remove()
+    state.hiddenNodes["methods2"] = cy.nodes('.Operation').filter((n) => !nodeHasLabel(n.parent(), 'CD-smell') && !nodeHasLabel(n, 'Modified') && !nodeHasLabel(n.parent(), 'inspect')).remove();
+    cy.nodes('.Variable').filter((n) => n.parent().data("labels") !== undefined && !nodeHasLabel(n.parent(), 'CD-smell') && !nodeHasLabel(n, 'Modified') && !nodeHasLabel(n.parent(), 'inspect')).remove()
 
     state.hiddenNodes['methods'] = {}
     state.hiddenNodes['variables'] = {}
@@ -280,7 +280,7 @@ function setHideMethods(cy, state) {
     })
 
     
-    cy.nodes().filter((n) => nodeHasLabel(n, "Variable") && (nodeHasLabel(n, 'Modified') || nodeHasLabel(n, "New"))).forEach((n) => {
+    cy.nodes().filter((n) => nodeHasLabel(n, "Variable") && (nodeHasLabel(n, 'Modified') || nodeHasLabel(n, "New") || nodeHasLabel(n.parent(), "inspect"))).forEach((n) => {
         const parentId = n.parent().id()
             if (!Object.hasOwn(state.hiddenNodes['variables'], parentId)) {
                 state.hiddenNodes['variables'][parentId] = cy.collection();
@@ -288,7 +288,7 @@ function setHideMethods(cy, state) {
             state.hiddenNodes['variables'][parentId] = state.hiddenNodes['variables'][parentId].union(n)
         }
     )
-    cy.nodes().filter((n) => nodeHasLabel(n, "Operation") && (nodeHasLabel(n, 'Modified') || nodeHasLabel(n, "New"))).forEach((n) => {
+    cy.nodes().filter((n) => nodeHasLabel(n, "Operation") && (nodeHasLabel(n, 'Modified') || nodeHasLabel(n, "New") || nodeHasLabel(n.parent(), "inspect"))).forEach((n) => {
         const parentId = n.parent().id()
             if (!Object.hasOwn(state.hiddenNodes['methods'], parentId)) {
                 state.hiddenNodes['methods'][parentId] = cy.collection();

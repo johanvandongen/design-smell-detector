@@ -35,7 +35,7 @@ export class GraphAbtractizer {
          * Helper: compose l1 and l2 such that each l1.target matches l2.source.
          * Multiplies 'weight' if present, aggregates them if source->target repeats.
          */
-        const compose = function (l1: RawEdgeData[], l2: RawEdgeData[], newlabel?: string) {
+        const compose = function (l1: RawEdgeData[], l2: RawEdgeData[], newlabel?: string, addTargetProperties: boolean = false) {
             if (!Array.isArray(l1) || !Array.isArray(l2)) return [];
 
             // Create a map from l2's source -> list of { target, label, weight }
@@ -45,7 +45,7 @@ export class GraphAbtractizer {
                 if (!mapping.has(source)) {
                     mapping.set(source, []);
                 }
-                mapping.get(source).push({ target, label, weight });
+                mapping.get(source).push({ target, label, weight, properties });
             }
 
             // We'll aggregate weights when multiple edges share the same source->target
@@ -56,7 +56,7 @@ export class GraphAbtractizer {
                 const weight1 = properties?.weight ?? 1;
                 const matches = mapping.get(t1);
                 if (matches) {
-                    for (const { target: t2, label: l2label, weight: w2 } of matches) {
+                    for (const { target: t2, label: l2label, weight: w2, properties: t2Properties } of matches) {
                         const newWeight = w2 * weight1;
                         const key = `${s1}-${t2}`; // Unique key for the final edge
 
@@ -66,7 +66,7 @@ export class GraphAbtractizer {
                                 source: s1,
                                 target: t2,
                                 label: newlabel || `${label}-${l2label}`,
-                                properties: { weight: newWeight },
+                                properties: addTargetProperties ? {...t2Properties, weight: newWeight} : { weight: newWeight },
                             });
                         } else {
                             // If we already have the same source->target, just add to its weight
@@ -170,7 +170,7 @@ export class GraphAbtractizer {
             return path;
         }
 
-        const parameterizes = compose(invert(edges['parameterizes']) || [], edges['typed'] || [], "parameterizes").filter(
+        const parameterizes = compose(invert(edges['parameterizes']) || [], edges['typed'] || [], "parameterizes", true).filter(
 		    (edge) => edge.source !== edge.target
 	    );
 

@@ -174,7 +174,7 @@ export const clearInfo = (sel) => {
 	r(sel);
 }
 
-export const displayInfo = (sel) => (node) => {
+export const displayInfo = (sel, closeHandler) => (node) => {
 
 	const element = $(sel);
 	const renderData = prepareRenderData(node);
@@ -207,6 +207,7 @@ export const displayInfo = (sel) => (node) => {
 	const ul = h("ul", {}, ulContents);
 
 	element.textContent = "";
+    element.appendChild(h('button', {}, 'Close', {click: closeHandler}))
 	element.appendChild(h('h2', {}, [renderData.title]));
 	element.appendChild(ul);
 }

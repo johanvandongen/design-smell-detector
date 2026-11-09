@@ -277,23 +277,23 @@ export function createActions({ state, ui }) {
 		cy.on('select', 'node', (event) => {
 			event.target.addClass('selected');
             console.log("selected node", event.target.data(), event.target.classes())
-			displayInfo('#infobody')(event.target);
+			displayInfo('#infobody', () => {event.target.unselect()})(event.target);
 			if (ui.$('#infobox').style.display !== 'flex') {
 				ui.$('#infobox').style.display = 'flex';
-				cyDiv.style.right = '270px';
-				cy.animate({ panBy: { x: -135 } }, { duration: 200 });
+				// cyDiv.style.right = '270px';
+				// cy.animate({ panBy: { x: -135 } }, { duration: 200 });
 			}
 		});
 
 		cy.on('unselect', 'node', (event) => {
-			event.target.removeClass('selected');
+            event.target.removeClass('selected');
 			setTimeout(() => {
 				if (cy.$('node:selected').length === 0) {
 					event.target.cy().nodes().removeClass('highlight');
 					clearInfo('#infobody');
 					ui.$('#infobox').style.display = 'none';
-					cyDiv.style.right = '0px';
-					cy.animate({ panBy: { x: 135 } }, { duration: 200 });
+					// cyDiv.style.right = '0px';
+					// cy.animate({ panBy: { x: 135 } }, { duration: 200 });
 				}
 			}, 1);
 		});

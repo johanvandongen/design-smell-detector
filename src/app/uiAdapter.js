@@ -1,6 +1,8 @@
 import { $, $all, h, on, r, toJson, toText } from '../utilities/shorthands.js';
 
 export function createUiAdapter() {
+    const downSvg = `<svg width="800px" height="800px" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M17 10.5L12.5 15L8 10.5" stroke="#121923" stroke-width="1.2"/></svg>`//h('img', {src: "../../img/chevron-down.svg", class: 'description-icon'})
+    const upSvg = `<svg width="800px" height="800px" viewBox="0 0 25 25" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M8 14.5L12.5 10L17 14.5" stroke="#121923" stroke-width="1.2"/></svg>`
 	return {
 		$,
 		$all,
@@ -196,10 +198,13 @@ export function createUiAdapter() {
                     )),
                 ]);
             },
+            
             renderRefactorDescription(description) {
                 let isOpen = true;
-
-                const content = h('div', {class: 'description-content open'}, [description]);
+                const content = h('div', {class: 'description-content open'}, [
+                    h('h2', {}, 'Refactoring description'),
+                    description
+                ]);
 
                 const button = h('button', 
                     {
@@ -207,20 +212,22 @@ export function createUiAdapter() {
                         'aria-expanded': 'false',
                         title: 'Toggle refactoring description'
                     }, 
-                    ['⌄'], 
+                    downSvg, 
                     {
                         click: () => {
                             console.log(isOpen)
                             isOpen = !isOpen;
 
                             content.classList.toggle('open', isOpen);
-                            button.innerHTML = isOpen ? '⌃' : '⌄';
+                            button.innerHTML = isOpen ? upSvg : downSvg;
                             button.setAttribute(
                                 'aria-expanded',
                                 String(isOpen)
                             );
                         }
-                    });
+                    }
+                );
+                button.innerHTML = downSvg;
 
                 r('#refactoring-description', [
                     h('div', { class: 'description-header' }, [

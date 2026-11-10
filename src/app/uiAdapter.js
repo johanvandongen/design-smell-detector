@@ -195,6 +195,39 @@ export function createUiAdapter() {
                         ])
                     )),
                 ]);
-            }
-        };
+            },
+            renderRefactorDescription(description) {
+                let isOpen = true;
+
+                const content = h('div', {class: 'description-content open'}, [description]);
+
+                const button = h('button', 
+                    {
+                        class: 'description-toggle',
+                        'aria-expanded': 'false',
+                        title: 'Toggle refactoring description'
+                    }, 
+                    ['⌄'], 
+                    {
+                        click: () => {
+                            console.log(isOpen)
+                            isOpen = !isOpen;
+
+                            content.classList.toggle('open', isOpen);
+                            button.innerHTML = isOpen ? '⌃' : '⌄';
+                            button.setAttribute(
+                                'aria-expanded',
+                                String(isOpen)
+                            );
+                        }
+                    });
+
+                r('#refactoring-description', [
+                    h('div', { class: 'description-header' }, [
+                        button
+                    ]),
+                    content
+                ]);
+            },
+        }
 	}

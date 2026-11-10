@@ -89,6 +89,7 @@ export function bootstrapApp() {
 
         const problematic_interactions = ['calls', 'holds', 'accepts'];
         let edges = cy.edges().filter((e) => problematic_interactions.includes(e.data("label")) && nodeMapping.hasOwnProperty(e.source().id()) && nodeMapping.hasOwnProperty(e.target().id())).map(edge => [nodeMapping[edge.source().id()], nodeMapping[edge.target().id()]]);
+        console.log(nodeMapping, edges)
         const SCCs = GraphService.getStronglyConnectedComponents(Object.keys(nodeMapping).length, edges);
         return SCCs.map(scc => scc.map(index => nodeMapping[index]));
 
@@ -165,23 +166,23 @@ export function bootstrapApp() {
             ]
         };
         const numEdges = ctx.state.hcy.edges().length;
-        const cynew = await ctx.cyAdapter.createVisual(ctx.ui.$('#cypreview'), elements, ctx.style, numEdges > 5000);
+        const cynew = await ctx.cyAdapter.createVisual(ctx.ui.$('#cy-preview'), elements, ctx.style, numEdges > 5000);
         
         let strategy;
         switch( refactoring.kind) {
             case "extract-interface":
                 strategy = new ExtractInterfaceStrategy();
-                break;
-                case "dependency-injection":
+            break;
+            case "dependency-injection":
                 strategy = new DependencyInjectionStrategy();
-                break;
-                case "move-method":
+            break;
+            case "move-method":
                 strategy = new MoveMethodStrategy();
-                break;
+            break;
             default:
                 throw Error("No strategy found to apply refactoring of kind: " + refactoring.kind);
-            }
-        
+        }
+                    
         const changeSet = strategy.apply(ctx.state.hcy, refactoring);
         statePreview.cy = cynew;
         // statePreview.hcy = ctx.cyAdapter.createHeadless(cynew.json().elements.clone());
@@ -197,7 +198,7 @@ export function bootstrapApp() {
         }
 
         const scc = ctx.state.stronglyConnectedComponents[index]
-
+        
         // Remove red borders again, not working atm
         cynew.$(".CD-smell").forEach((ele) => {
             if (ele.data("labels")) {
@@ -209,7 +210,7 @@ export function bootstrapApp() {
             ele.data("labels").push("inspect")
             ele.addClass("inspect")
         })
-
+        
         const SCCs = detectCyclicDependenciesFromCytoscape(cynew)
         SCCs.forEach((scc) => {
             scc.forEach((id) => {
@@ -217,6 +218,14 @@ export function bootstrapApp() {
             })
         })
         
+        let explanation = refactoring.description + "\n" + "added " + changeSet.addedNodes.length + " nodes"
+        if (SCCs.some((sccn) => sccn.some((c) => scc.includes(c)))) {
+            explanation += "Cycle remains"
+        } else {
+            explanation += "Cycle resolved"
+        }
+        ctx.ui.renderRefactorDescription(explanation)
+
         statePreview.stronglyConnectedComponents = SCCs;
 
         const visualPipeline = createVisualPipeline({ state: statePreview });

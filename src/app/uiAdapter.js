@@ -198,12 +198,17 @@ export function createUiAdapter() {
                     )),
                 ]);
             },
-            
+            renderCycleDescription(description) {
+                this.renderDescription(description, '#cycle-description', "Cycle description")
+            },
             renderRefactorDescription(description) {
+                this.renderDescription(description, '#refactoring-description', 'Refactoring description')
+            },
+            renderDescription(description, elementId, title) {
                 let isOpen = true;
                 const content = h('div', {class: 'description-content open'}, [
-                    h('h2', {}, 'Refactoring description'),
-                    description
+                    h('h2', {}, title),
+                    ...description.split("\n").map((d) => h('p', {}, d))
                 ]);
 
                 const button = h('button', 
@@ -229,12 +234,12 @@ export function createUiAdapter() {
                 );
                 button.innerHTML = downSvg;
 
-                r('#refactoring-description', [
+                r(elementId, [
                     h('div', { class: 'description-header' }, [
                         button
                     ]),
                     content
                 ]);
-            },
+            }
         }
 	}

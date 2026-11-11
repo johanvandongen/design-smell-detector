@@ -47,7 +47,7 @@ export class ExtractInterfaceTransformation {
         const targetNode = cy.getElementById(suggestion.targetClass) // target node is the class which we want an interface for
         targetNode.data("labels").push("Modified")
 
-        const newInterfaceId = "I" + targetNode.data("label") + "<<Interface>>"
+        const newInterfaceId = "I" + targetNode.data("label")
         
         const refactoringChangeSet: RefactoringChangeSet = {
             addedNodes: [], addedEdges: [], updatedNodes: [],
@@ -61,6 +61,7 @@ export class ExtractInterfaceTransformation {
             interaction: "",
             group: "edges"
         })
+        refactoringChangeSet.description = `Added interface ${newInterfaceId}`
         
         // Add original methods to interface
         const originalClassMethods = targetNode.children().filter((child) => nodeHasKind(child, "method"));

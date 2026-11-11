@@ -11,6 +11,7 @@ export interface RefactoringChangeSet {
 
     updatedNodes: EdgeUpdate[];
     focus: string;
+    description?: string;
 }
 
 interface EdgeUpdate {

@@ -272,7 +272,7 @@ export function createActions({ state, ui }) {
 
 	function bindCyInteractions(pCy = state.cy) {
 		const cy = pCy;
-		const cyDiv = ui.$('#cy');
+		const cyDiv = ui.$('#cy-baseline');
 
 		cy.on('select', 'node', (event) => {
 			event.target.addClass('selected');

@@ -16,6 +16,8 @@ import { MoveMethodStrategy } from '../refactoring/moveMethodStrategy.ts'
 import { relayout } from '../uiControls/graphPanel.js';
 import { applyRefactoringChangeSet, showNeighborhood } from '../graphProcessing/visualTransformations.js'
 import { RefactorEngine } from '../refactoring/refactorEngine.ts';
+import { CDAnalyser } from '../app/cdAnalyser.ts'
+import { CycleAnalyser } from './cycleAnalyser.ts'
 
 const pipeAsync = (...fns) => async (x) => {
 	let value = x;
@@ -35,7 +37,7 @@ export function bootstrapApp() {
 	const visualPipeline = createVisualPipeline({ state });
     const refactoringPipeline = createRefactoringPipeline({ state });
 	installWindowStateShim(state);
-    Split(['#cy', '#cypreview'])
+    Split(['#baseline', '#preview'])
 
 	const stageResetRuntimeState = tap((ctx) => {
 		ctx.state.hiddenEdges = {};
@@ -73,6 +75,9 @@ export function bootstrapApp() {
         stageRunRefactoringPipeline(ctx)
         actions.fillInspectionControls(ctx.state.cy, "#tab-baseline")
         actions.setEdgeVisibilityPreset("#tab-baseline", ctx.state.cy, "class")
+        const ca = new CycleAnalyser()
+        
+        ui.renderCycleDescription(ca.getDescription(ctx.state.cy, scc));
         ctx.state.cy.animate({fit: {eles: inspect.fitElements}})
     }
 
@@ -87,7 +92,7 @@ export function bootstrapApp() {
             };
         })
 
-        const problematic_interactions = ['calls', 'holds', 'accepts'];
+        const problematic_interactions = ['calls', 'holds', 'accepts', "returns(cls)"];
         let edges = cy.edges().filter((e) => problematic_interactions.includes(e.data("label")) && nodeMapping.hasOwnProperty(e.source().id()) && nodeMapping.hasOwnProperty(e.target().id())).map(edge => [nodeMapping[edge.source().id()], nodeMapping[edge.target().id()]]);
         console.log(nodeMapping, edges)
         const SCCs = GraphService.getStronglyConnectedComponents(Object.keys(nodeMapping).length, edges);
@@ -106,7 +111,7 @@ export function bootstrapApp() {
             k += 1;
         }
         
-        const problematic_interactions = ['calls', 'holds', 'accepts'];
+        const problematic_interactions = ['calls', 'holds', 'accepts', 'returns(cls)'];
         let edges = ctx.graph.abstract.elements.edges.filter(edge => problematic_interactions.includes(edge.data.label) && nodeMapping.hasOwnProperty(edge.data.source) && nodeMapping.hasOwnProperty(edge.data.target)).map(edge => [nodeMapping[edge.data.source], nodeMapping[edge.data.target]]);
         const SSCs = GraphService.getStronglyConnectedComponents(ctx.graph.abstract.elements.nodes.length, edges);
         
@@ -129,7 +134,7 @@ export function bootstrapApp() {
 
 	const stageCreateVisualCy = async (ctx) => {
 		const numEdges = ctx.state.hcy.edges().length;
-		ctx.state.cy = await ctx.cyAdapter.createVisual(ctx.ui.$('#cy'), ctx.state.hcy.json().elements, ctx.style, numEdges > 5000);
+		ctx.state.cy = await ctx.cyAdapter.createVisual(ctx.ui.$('#cy-baseline'), ctx.state.hcy.json().elements, ctx.style, numEdges > 5000);
 		return ctx;
 	};
 
@@ -217,13 +222,29 @@ export function bootstrapApp() {
                 cynew.getElementById(id).data("labels").push("CD-smell")
             })
         })
-        
-        let explanation = refactoring.description + "\n" + "added " + changeSet.addedNodes.length + " nodes"
-        if (SCCs.some((sccn) => sccn.some((c) => scc.includes(c)))) {
-            explanation += "Cycle remains"
-        } else {
-            explanation += "Cycle resolved"
+
+        const displayList = (arr) => {
+            let result = "";
+            for (const e of arr) {
+                if (result.length > 50) {
+                    break
+                }
+                result += e
+            }
+            return result;
         }
+
+        const defaultExplanation = 
+            "Added " + changeSet.addedNodes.length + " node(s)" + displayList(changeSet.addedNodes.map((n) => n.label)) + "\n" + 
+            "Added " + changeSet.addedEdges.length + " edge(s)" + "\n" + 
+            "Removed " + changeSet.removeNodeIds.length + " node(s)" + "\n" + 
+            "Removed " + changeSet.removeEdgeIds.length + " edge(s)" + "\n"
+        
+        let explanation = refactoring.description + ". \n\n" + (changeSet.description ?? defaultExplanation)
+        
+        const cdAnalyser = new CDAnalyser(cynew, scc, SCCs)
+        explanation += "\n" + cdAnalyser.analyseRefactoringResult(refactoring, changeSet)
+
         ctx.ui.renderRefactorDescription(explanation)
 
         statePreview.stronglyConnectedComponents = SCCs;

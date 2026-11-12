@@ -597,31 +597,6 @@ ul.tabs {
     margin: 16px 0;
 }
 
-.info-diagram {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 12px;
-    margin: 20px 0;
-}
-
-.info-diagram span:not(.diagram-arrow) {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 38px;
-    height: 38px;
-    border: 2px solid #999;
-    border-radius: 8px;
-    background: white;
-    font-weight: 600;
-}
-
-.diagram-arrow {
-    font-size: 20px;
-    color: #666;
-}
-
 .class-dependency-example {
     display: flex;
     flex-direction: column;

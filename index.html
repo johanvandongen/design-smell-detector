@@ -97,17 +97,7 @@
 
                 <div class="info-example">
                     <strong>Example: A strongly connected component</strong>
-
-                    <div class="info-diagram">
-                        <span>A</span>
-                        <span class="diagram-arrow">→</span>
-                        <span>B</span>
-                        <span class="diagram-arrow">→</span>
-                        <span>C</span>
-                        <span class="diagram-arrow">→</span>
-                        <span>A</span>
-                    </div>
-
+                    <img src="img/scc_example.webp"/>
                     <p>
                         A can reach B, B can reach C, and C can reach A.
                         Therefore, all three nodes belong to the same SCC.
@@ -255,7 +245,7 @@
 <p>The direct <code>returns</code> dependency is represented at the class level as <code>A returns(cls) B</code>.</p>
                 </div>
                     <div class="dependency-explanation">
-                    <h4>Invokes (Construts)</h4>
+                    <h4>Invokes (Constructs)</h4>
                     <p>A method invokes a method belonging to another class.</p>
                     <pre><code>class A {
     void process(B item) {

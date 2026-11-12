@@ -481,3 +481,166 @@ ul.tabs {
     display: flex;
     flex-direction: column;
 }
+
+/*
+* START info model styles
+*/
+/* Information button */
+/* Modal */
+.tool-info-dialog {
+    width: min(850px, calc(100vw - 32px));
+    max-height: 85vh;
+    padding: 0;
+    align-self: center;
+    justify-self: center;
+
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+
+    color: #333;
+    background: white;
+}
+
+.tool-info-dialog::backdrop {
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(2px);
+}
+
+/* Modal header */
+.info-modal-header {
+    position: sticky;
+    top: 0;
+    z-index: 2;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 16px 24px;
+    background: white;
+    border-bottom: 1px solid #ddd;
+}
+
+.info-modal-header h2 {
+    margin: 0;
+    font-size: 20px;
+}
+
+.info-close-button {
+    border: none;
+    background: transparent;
+    font-size: 28px;
+    color: #777;
+    cursor: pointer;
+    line-height: 1;
+}
+
+.info-close-button:hover {
+    color: #222;
+}
+
+/* Scrollable content */
+.info-modal-content {
+    padding: 20px 28px 28px;
+    overflow-y: auto;
+    max-height: calc(85vh - 65px);
+    line-height: 1.6;
+}
+
+.info-modal-content section {
+    margin-top: 28px;
+}
+
+.info-modal-content h3 {
+    font-size: 18px;
+    margin: 0 0 12px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid #eee;
+}
+
+.info-modal-content h4 {
+    font-size: 15px;
+    margin: 18px 0 6px;
+}
+
+.info-modal-content p {
+    margin: 8px 0;
+}
+
+.info-modal-content ul {
+    padding-left: 22px;
+}
+
+/* Code examples */
+.info-modal-content pre {
+    background: #f5f5f5;
+    border: 1px solid #e5e5e5;
+    border-radius: 6px;
+    padding: 12px 16px;
+    overflow-x: auto;
+    margin: 10px 0;
+}
+
+.info-modal-content pre code {
+    font-family: Consolas, monospace;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+/* Example containers */
+.info-example {
+    background: #f8f9fa;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    padding: 16px;
+    margin: 16px 0;
+}
+
+.info-diagram {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin: 20px 0;
+}
+
+.info-diagram span:not(.diagram-arrow) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    border: 2px solid #999;
+    border-radius: 8px;
+    background: white;
+    font-weight: 600;
+}
+
+.diagram-arrow {
+    font-size: 20px;
+    color: #666;
+}
+
+.class-dependency-example {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 14px;
+    margin-top: 12px;
+    border-radius: 6px;
+    background: #e8f5e9;
+}
+
+.class-dependency-example strong {
+    font-size: 18px;
+}
+
+.class-dependency-example span {
+    font-size: 13px;
+    color: #555;
+}
+/*
+* END info model styles
+*/

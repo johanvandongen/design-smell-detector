@@ -302,6 +302,9 @@ export function bootstrapApp() {
 		ui.on('click', ui.$('#btn-toggleVisibility'), actions.toggleVisibility);
 		ui.on('click', ui.$('#btn-hideClasses'), () => actions.setClassVisibilityTap('cxttap'));
 		ui.on('click', ui.$('#btn-showClasses'), () => actions.setClassVisibilityTap('tap'));
+        ui.on('click', ui.$('#tool-info-button'), () => ui.$('#tool-info-dialog').showModal())
+        ui.on('click', ui.$('#tool-info-close'), () => ui.$('#tool-info-dialog').close())
+        ui.on('click', ui.$('#tool-info-dialog'), (e) => {if (e.target === ui.$('#tool-info-dialog')) {ui.$('#tool-info-dialog').close()}})
 	};
 
 	const initFromPayload = async ({ rawGraph, style, sourceName }) => {

@@ -57,9 +57,209 @@
         <button title="Open SVG in new tab" id="btn-popup" class="toolbutton">
             <img class="icon icon-download" src="img/open-new.png" alt="popout" />
         </button>
+        <button title="About this visualization" id="tool-info-button" class="toolbutton">
+            <img class="icon icon-download" src="img/info.svg" alt="" />
+        </button>
     </div>
     <h1 id="filename">Software Visualization</h1>
   </div>
+
+  <!-- Information modal -->
+    <dialog id="tool-info-dialog" class="tool-info-dialog">
+        <div class="info-modal-header">
+            <h2>Understanding the visualization</h2>
+            <button id="tool-info-close" class="info-close-button" title="Close">
+                &times;
+            </button>
+        </div>
+
+        <div class="info-modal-content">
+            <p>
+                This tool visualizes dependencies between classes in a Java codebase
+                and identifies cyclic dependencies. The following sections explain
+                how cycles are detected and how to interpret the different
+                dependency types.
+            </p>
+
+            <section>
+                <h3>1. Detecting cyclic dependencies</h3>
+
+                <p>
+                    The tool uses <strong>Strongly Connected Components (SCCs)</strong>
+                    to identify groups of classes that form cyclic dependencies.
+                </p>
+
+                <p>
+                    A strongly connected component is a maximal group of nodes in
+                    which <strong>every node can reach every other node</strong>
+                    by following directed edges.
+                </p>
+
+                <div class="info-example">
+                    <strong>Example: A strongly connected component</strong>
+
+                    <div class="info-diagram">
+                        <span>A</span>
+                        <span class="diagram-arrow">→</span>
+                        <span>B</span>
+                        <span class="diagram-arrow">→</span>
+                        <span>C</span>
+                        <span class="diagram-arrow">→</span>
+                        <span>A</span>
+                    </div>
+
+                    <p>
+                        A can reach B, B can reach C, and C can reach A.
+                        Therefore, all three nodes belong to the same SCC.
+                    </p>
+                </div>
+
+                <p>
+                    An SCC can contain multiple cycles, not just one. For example,
+                    a group of classes may contain several different paths that
+                    eventually lead back to their starting point.
+                </p>
+
+                <p>
+                    <strong>Important:</strong> An SCC represents the entire
+                    interconnected group, not each individual cycle. A single
+                    SCC can therefore contain several overlapping cycles.
+                </p>
+            </section>
+
+            <section>
+                <h3>2. Understanding dependency types</h3>
+
+                <p>
+                    The arrows in the visualization are directed. An arrow from
+                    class A to class B means that A depends on B in some way.
+                    The tool distinguishes between several types of dependencies.
+                </p>
+
+                <div class="dependency-explanation">
+                    <h4>Holds (Typed)</h4>
+                    <p>A class holds a reference to another class through a field.</p>
+                    <pre><code>class A {
+        private B item;
+    }</code></pre>
+                    <p>A holds B because it declares a field of type B.</p>
+                </div>
+
+                <div class="dependency-explanation">
+                    <h4>Accepts (Parameterizes)</h4>
+                    <p>A method accepts another class as a parameter.</p>
+                    <pre><code>class A {
+        void process(B item) {
+            // ...
+        }
+    }</code></pre>
+                    <p>A accepts B because its method has a parameter of type B.</p>
+                </div>
+
+                <div class="dependency-explanation">
+                    <h4>Calls (Invokes)</h4>
+                    <p>A method invokes a method belonging to another class.</p>
+                    <pre><code>class A {
+        void process(B item) {
+            item.execute();
+        }
+    }</code></pre>
+                    <p>A calls B because its method invokes execute() on an instance of B.</p>
+                </div>
+
+                <div class="dependency-explanation">
+                    <h4>Constructs (Instantiates)</h4>
+                    <p>A method creates an instance of another class.</p>
+                    <pre><code>class A {
+        void create() {
+            B item = new B();
+        }
+    }</code></pre>
+                    <p>A constructs B because it creates an instance using new B().</p>
+                </div>
+
+                <div class="dependency-explanation">
+                    <h4>Produces (Returns)</h4>
+                    <p>A method returns an instance of another class.</p>
+                    <pre><code>class A {
+        B create() {
+            return new B();
+        }
+    }</code></pre>
+                    <p>A produces B because its method declares B as its return type.</p>
+                </div>
+            </section>
+
+            <section>
+                <h3>3. Method-level and class-level dependencies</h3>
+
+                <p>
+                    Dependencies are detected at the method and field level,
+                    but the visualization displays them at the class level.
+                </p>
+
+                <h4>Method-level dependencies</h4>
+                <p>
+                    These describe relationships between individual methods or
+                    fields. For example, a method in class A might call a method
+                    in class B.
+                </p>
+
+                <h4>Class-level dependencies</h4>
+                <p>
+                    These aggregate dependencies between two classes. If multiple
+                    methods or fields in A depend on B, their dependencies are
+                    represented as edges between A and B.
+                </p>
+
+                <div class="info-example">
+                    <strong>Example</strong>
+                    <pre><code>class A {
+        private B item;
+
+        void process(B other) {
+            other.execute();
+        }
+
+        B create() {
+            return new B();
+        }
+    }</code></pre>
+
+                    <p>Class A has several dependencies on B:</p>
+                    <ul>
+                        <li>Holds B</li>
+                        <li>Accepts B</li>
+                        <li>Calls B</li>
+                        <li>Produces B</li>
+                        <li>Constructs B</li>
+                    </ul>
+
+                    <div class="class-dependency-example">
+                        <strong>A → B</strong>
+                        <span>Holds · Accepts · Calls · Produces · Constructs</span>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <h3>4. Interpreting the visualization</h3>
+
+                <ul>
+                    <li><strong>Nodes</strong> represent classes.</li>
+                    <li><strong>Directed edges</strong> represent dependencies between classes.</li>
+                    <li><strong>Edge labels</strong> indicate the type of dependency.</li>
+                    <li><strong>Highlighted classes</strong> belong to a strongly connected component and participate in a cyclic dependency.</li>
+                </ul>
+
+                <p>
+                    By inspecting an SCC, you can explore the individual
+                    dependencies contributing to the cycle and investigate
+                    possible refactorings.
+                </p>
+            </section>
+        </div>
+    </dialog>
 
   <div id="main-container">
       <div id="sidebar">

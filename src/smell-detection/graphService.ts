@@ -174,7 +174,7 @@ export class CytoscapeToNumericAdapter {
             };
         })
 
-        const problematic_interactions = ['calls', 'holds', 'accepts', 'returns(cls)'];
+        const problematic_interactions = ['calls', 'holds', 'accepts', 'produces'];
         const edges = cytoscape.edges()
             .filter((e) => problematic_interactions.includes(e.data("label")) && cyToNumMapping.hasOwnProperty(e.source().id()) && cyToNumMapping.hasOwnProperty(e.target().id())).edges()
             .map(edge => [cyToNumMapping[edge.source().id()], cyToNumMapping[edge.target().id()]] as [number, number]);

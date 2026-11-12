@@ -112,7 +112,7 @@ export class MoveMethodDetector {
     private getSuperClass = (clasz: cytoscape.NodeSingular): cytoscape.NodeSingular | null => {
         const specializeEdges = clasz.outgoers().filter((e) => edgeHasLabel(e, "specializes")).edges()
         if (specializeEdges.length >= 2) {
-            throw new Error(`Class ${clasz.data("name")} has multiple specialize edges. This is not supported.`);
+            // throw new Error(`Class ${clasz.data("name")} has multiple specialize edges. This is not supported.`);
         }
 
         if (specializeEdges.length === 0) {

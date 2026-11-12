@@ -49,7 +49,7 @@ export class DependencyInjectionStrategy implements IRefactoringStrategy<Depende
 
         
         // Modify edges
-        const instantiatesEdges = field.outgoers().filter((e) => edgeHasLabel(e, "insstantiates"))
+        const instantiatesEdges = field.outgoers().filter((e) => edgeHasLabel(e, "instantiates"))
         refactoringChangeSet.removeEdgeIds.push(instantiatesEdges.first().id())
 
         const setMethodNewParameterizesEdge = {
@@ -63,7 +63,7 @@ export class DependencyInjectionStrategy implements IRefactoringStrategy<Depende
 
         if (fieldHasInterfaceType) {
             refactoringChangeSet.addedEdges.push(setMethodNewParameterizesEdge)
-            return refactoringChangeSet
+            return refactoringChangeSet 
         }
 
         // Field has no interface type so add extract interface
@@ -81,6 +81,7 @@ export class DependencyInjectionStrategy implements IRefactoringStrategy<Depende
         refactoringChangeSet.addedEdges.push(...extractInterfaceChangeSet.addedEdges)
         refactoringChangeSet.removeEdgeIds.push(...extractInterfaceChangeSet.removeEdgeIds)
         refactoringChangeSet.updatedNodes.push(...extractInterfaceChangeSet.updatedNodes)
+        refactoringChangeSet.focus = interfaceId;
 
         return refactoringChangeSet
     }

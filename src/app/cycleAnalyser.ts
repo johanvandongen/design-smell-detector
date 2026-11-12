@@ -17,7 +17,7 @@ export class CycleAnalyser {
         return description
     }
 
-    private cycleDescription(codebase: cytoscape.Core, cycle: string[]): string {
+    public cycleDescription(codebase: cytoscape.Core, cycle: string[]): string {
         let description = ""
         cycle.push(cycle[0])
         for (let i=0; i<cycle.length - 1; i++) {

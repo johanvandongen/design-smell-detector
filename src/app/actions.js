@@ -461,7 +461,7 @@ export function createActions({ state, ui }) {
                 'invokes': true,
                 'instantiates': false,
                 "calls": false, 
-                'returns(cls)': false,
+                'produces': false,
                 'accepts': false,
                 'holds': false,
             }
@@ -473,7 +473,7 @@ export function createActions({ state, ui }) {
                 'invokes': false,
                 'instantiates': true,
                 "calls": true, 
-                'returns(cls)': true,
+                'produces': true,
                 'accepts': true,
                 'holds': true,
             }

@@ -17,7 +17,7 @@ invokes -> calls
 instantiates -> contructs
 typed -> holds
 parameterizes -> accepts
-returns -> returns(cls)
+returns -> produces
 
 *Structural
 implements (interface)

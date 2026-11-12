@@ -3,6 +3,7 @@ import cytoscape from "cytoscape";
 import { edgeHasLabel, nodeHasKind } from '../utilities/utils.js';
 import { IRefactoringStrategy, RefactoringChangeSet } from "./IRefactoringStrategy.js";
 import { MoveMethodSuggestion } from "./moveMethodDetector.js";
+import { composedEdgesMap } from "../graphPreProcessing/graphPreprocessor.js";
 
 
 export class MoveMethodStrategy implements IRefactoringStrategy<MoveMethodSuggestion> {
@@ -18,7 +19,7 @@ export class MoveMethodStrategy implements IRefactoringStrategy<MoveMethodSugges
         const refactoringChangeSet: RefactoringChangeSet = {
             addedNodes: [], addedEdges: [], updatedNodes: [],
             removeEdgeIds: [], focus: method.id(),
-            removeNodeIds: []
+            removeNodeIds: [], description: ""
         };
 
         const methodNewId = targetClass.data("id") + method.data("properties.simpleName")
@@ -41,16 +42,20 @@ export class MoveMethodStrategy implements IRefactoringStrategy<MoveMethodSugges
         
         
         // Add dependency edges to new method
+        const interactions_removed: [string, string][] = []
         method.outgoers().forEach((edge) => {
             if (edgeHasLabel(edge, "returns") || edgeHasLabel(edge, "parameterizes") || edgeHasLabel(edge, "invokes") || edgeHasLabel(edge, "instantiates")) {
-                refactoringChangeSet.addedEdges.push({
-                    interaction: edge.data("interaction"),
-                    group: "edges",
-                    label: edge.data("label"),
-                    labels: ["New"],
-                    source: methodNewId,
-                    target: edge.target().id()
-                })
+                // refactoringChangeSet.addedEdges.push({
+                //     interaction: edge.data("interaction"),
+                //     group: "edges",
+                //     label: edge.data("label"),
+                //     labels: ["New"],
+                //     source: methodNewId,
+                //     target: edge.target().id()
+                // })
+                const targetParent = edge.target().data("properties.kind") === "method" ? edge.target().parent().first().id() : edge.target().id()
+                IRefactoringStrategy.addEdge(cy, refactoringChangeSet, edge, methodNewId, targetClass.id(), edge.target().id(), targetParent)
+                interactions_removed.push([edge.data("interaction"), edge.target().data("properties.kind") === "method" ? edge.target().parent().first().id() : edge.target().id()])
             }
         })
         // Remove self parameterizes edge once. 
@@ -76,24 +81,37 @@ export class MoveMethodStrategy implements IRefactoringStrategy<MoveMethodSugges
         
         // Update composed edges between source class and target class
         const sourceClassOtherMethods = sourceClass.children().filter((child) => nodeHasKind(child, "method") && child.id() !== method.id());
-        sourceClassOtherMethods.forEach((method) => {
-            if (!method.outgoers().edges().some((edge) => edgeHasLabel(edge, "returns"))) {
-                const returnEdgeId = sourceClass.outgoers().edges().filter((e) => edgeHasLabel(e, "returns(cls)") && e.target().id() === targetClass.id()).first().id();
-                refactoringChangeSet.removeEdgeIds.push(returnEdgeId)
-            }
-            if (!method.outgoers().edges().some((edge) => edgeHasLabel(edge, "parameterizes"))) {
-                const returnEdgeId = sourceClass.outgoers().edges().filter((e) => edgeHasLabel(e, "accepts") && e.target().id() === targetClass.id()).first().id();
-                refactoringChangeSet.removeEdgeIds.push(returnEdgeId)
-            }
-            if (!method.outgoers().edges().some((edge) => edgeHasLabel(edge, "invokes"))) {
-                const returnEdgeId = sourceClass.outgoers().edges().filter((e) => edgeHasLabel(e, "calls") && e.target().id() === targetClass.id()).first().id();
-                refactoringChangeSet.removeEdgeIds.push(returnEdgeId)
-            }
-            if (!method.outgoers().edges().some((edge) => edgeHasLabel(edge, "instantiates"))) {
-                const returnEdgeId = sourceClass.outgoers().edges().filter((e) => edgeHasLabel(e, "constructs") && e.target().id() === targetClass.id()).first().id();
-                refactoringChangeSet.removeEdgeIds.push(returnEdgeId)
+        interactions_removed.forEach(([interaction, target]) => {
+            const interactionStillExists = sourceClassOtherMethods.outgoers().edges().filter((e) => edgeHasLabel(e, interaction) && target === e.target().id()).length > 0
+            
+            const removeDescription = (interaction: string) => `Removed ${sourceClass.data("properties.simpleName")} ${interaction} ${cy.getElementById(target).data("properties.simpleName")}`
+            if (interactionStillExists) {
+                refactoringChangeSet.description += removeDescription(interaction) +  ` but composed edge (${composedEdgesMap[interaction]}) still exists due to other methods \n`
+            } else {
+                const composedEdgeId = sourceClass.outgoers().edges().filter((e) => edgeHasLabel(e,composedEdgesMap[interaction]) && e.target().id() === target).first().id();
+                refactoringChangeSet.removeEdgeIds.push(composedEdgeId)
+                refactoringChangeSet.description += removeDescription(composedEdgesMap[interaction]) + "\n"
             }
         })
+
+        // sourceClassOtherMethods.forEach((method) => {
+        //     if (!method.outgoers().edges().some((edge) => edgeHasLabel(edge, "returns"))) {
+        //         const returnEdgeId = sourceClass.outgoers().edges().filter((e) => edgeHasLabel(e, "produces") && e.target().id() === targetClass.id()).first().id();
+        //         refactoringChangeSet.removeEdgeIds.push(returnEdgeId)
+        //     }
+        //     if (!method.outgoers().edges().some((edge) => edgeHasLabel(edge, "parameterizes"))) {
+        //         const returnEdgeId = sourceClass.outgoers().edges().filter((e) => edgeHasLabel(e, "accepts") && e.target().id() === targetClass.id()).first().id();
+        //         refactoringChangeSet.removeEdgeIds.push(returnEdgeId)
+        //     }
+        //     if (!method.outgoers().edges().some((edge) => edgeHasLabel(edge, "invokes"))) {
+        //         const returnEdgeId = sourceClass.outgoers().edges().filter((e) => edgeHasLabel(e, "calls") && e.target().id() === targetClass.id()).first().id();
+        //         refactoringChangeSet.removeEdgeIds.push(returnEdgeId)
+        //     }
+        //     if (!method.outgoers().edges().some((edge) => edgeHasLabel(edge, "instantiates"))) {
+        //         const returnEdgeId = sourceClass.outgoers().edges().filter((e) => edgeHasLabel(e, "constructs") && e.target().id() === targetClass.id()).first().id();
+        //         refactoringChangeSet.removeEdgeIds.push(returnEdgeId)
+        //     }
+        // })
 
 
         method.incomers().edges().filter((e) => edgeHasLabel(e, "invokes")).forEach((edge) => {
@@ -107,6 +125,7 @@ export class MoveMethodStrategy implements IRefactoringStrategy<MoveMethodSugges
                     target: methodNewId
                 })
             } else if (suggestion.newMethodReference === 'field') {
+                console.warn("TODO field reference")
                 // 'uses' edges not supported in json input model, so left out of scope for now
                 // Add edges from edge.source() to sourceClass fields
                 // const sourceField = 'some source field of type target class'

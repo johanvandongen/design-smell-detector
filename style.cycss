@@ -271,7 +271,7 @@ edge[label = "holds"] {
   taxi-direction: leftward;
   taxi-turn: -32px;
 }
-edge[label = "returns(cls)"] {
+edge[label = "produces"] {
   source-arrow-color: #400080;
   line-fill: linear-gradient;
   line-gradient-stop-colors: #66FFCC #400080;

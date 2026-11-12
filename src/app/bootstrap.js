@@ -92,7 +92,7 @@ export function bootstrapApp() {
             };
         })
 
-        const problematic_interactions = ['calls', 'holds', 'accepts', "returns(cls)"];
+        const problematic_interactions = ['calls', 'holds', 'accepts', "produces"];
         let edges = cy.edges().filter((e) => problematic_interactions.includes(e.data("label")) && nodeMapping.hasOwnProperty(e.source().id()) && nodeMapping.hasOwnProperty(e.target().id())).map(edge => [nodeMapping[edge.source().id()], nodeMapping[edge.target().id()]]);
         console.log(nodeMapping, edges)
         const SCCs = GraphService.getStronglyConnectedComponents(Object.keys(nodeMapping).length, edges);
@@ -111,7 +111,7 @@ export function bootstrapApp() {
             k += 1;
         }
         
-        const problematic_interactions = ['calls', 'holds', 'accepts', 'returns(cls)'];
+        const problematic_interactions = ['calls', 'holds', 'accepts', 'produces'];
         let edges = ctx.graph.abstract.elements.edges.filter(edge => problematic_interactions.includes(edge.data.label) && nodeMapping.hasOwnProperty(edge.data.source) && nodeMapping.hasOwnProperty(edge.data.target)).map(edge => [nodeMapping[edge.data.source], nodeMapping[edge.data.target]]);
         const SSCs = GraphService.getStronglyConnectedComponents(ctx.graph.abstract.elements.nodes.length, edges);
         
@@ -240,10 +240,9 @@ export function bootstrapApp() {
             "Removed " + changeSet.removeNodeIds.length + " node(s)" + "\n" + 
             "Removed " + changeSet.removeEdgeIds.length + " edge(s)" + "\n"
         
-        let explanation = refactoring.description + ". \n\n" + (changeSet.description ?? defaultExplanation)
-        
+            
         const cdAnalyser = new CDAnalyser(cynew, scc, SCCs)
-        explanation += "\n" + cdAnalyser.analyseRefactoringResult(refactoring, changeSet)
+        let explanation = refactoring.description + "\n" + cdAnalyser.analyseRefactoringResult(refactoring, changeSet) + "\n" + (changeSet.description ?? defaultExplanation)
 
         ctx.ui.renderRefactorDescription(explanation)
 

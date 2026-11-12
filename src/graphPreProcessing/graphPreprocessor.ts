@@ -51,6 +51,18 @@ export interface GraphData {
     properties?: { [key: string]: any };
 }
 
+export const composedEdgesMap: { [key: string]: string } = {
+    "returns": "produces",
+    "parameterizes": "accepts",
+    "typed": "holds",
+    "invokes": "calls",
+    
+    "produces": "returns",
+    "accepts": "parameterizes",
+    "holds": "typed",
+    "calls": "invokes",
+}
+
 
 /**
  * This class is responsible for preprocessing the graph data before it is used in the application. 

@@ -18,7 +18,7 @@ export class ExtractInterfaceTransformation {
         }
 
         const interactions: { [key: string]: string } = {
-            "returns": "returns(cls)",
+            "returns": "produces",
             "parameterizes": "accepts",
             "typed": "holds",
             "invokes": "calls"
@@ -55,7 +55,19 @@ export class ExtractInterfaceTransformation {
             removeNodeIds: []
         };
 
-        refactoringChangeSet.addedNodes.push({parent: targetNode.parent().first().id(), id: newInterfaceId, label: newInterfaceId,  name: newInterfaceId, labels: ["Type", "New"], properties: { "type": "interface", "kind": "class", "simpleName": "Int", "name": "name", "shortname": "name"}})
+        refactoringChangeSet.addedNodes.push({
+            parent: targetNode.parent().first().id(), 
+            id: newInterfaceId, 
+            label: newInterfaceId,  
+            name: newInterfaceId, 
+            labels: ["Type", "New"], 
+            properties: {
+                type: "interface",
+                kind: "class",
+                simpleName: newInterfaceId,
+                shortname: newInterfaceId,
+                name: newInterfaceId
+            }})
         refactoringChangeSet.addedEdges.push({
             source: targetNode.id(), target: newInterfaceId, label: 'specializes', labels: ["New"],
             interaction: "",
@@ -101,7 +113,7 @@ export class ExtractInterfaceTransformation {
                 }
             }
         })
-        const removeComposedEdges = cy.edges().filter((e) => e.target().id() === targetNode.id() && (edgeHasLabel(e, "accepts") || edgeHasLabel(e, "holds") || edgeHasLabel(e, "returns(cls)") || edgeHasLabel(e, "calls"))).map((e) => e.id())
+        const removeComposedEdges = cy.edges().filter((e) => e.target().id() === targetNode.id() && (edgeHasLabel(e, "accepts") || edgeHasLabel(e, "holds") || edgeHasLabel(e, "produces") || edgeHasLabel(e, "calls"))).map((e) => e.id())
         refactoringChangeSet.removeEdgeIds.push(...removeComposedEdges)
 
         return {changeSet: refactoringChangeSet, interfaceId: newInterfaceId}

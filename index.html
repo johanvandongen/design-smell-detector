@@ -131,100 +131,168 @@
                 <h3>2. Understanding dependency types</h3>
 
                 <p>
-                    The arrows in the visualization are directed. An arrow from
-                    class A to class B means that A depends on B in some way.
-                    The tool distinguishes between several types of dependencies.
+                    The visualization uses different types of edges to represent
+                    relationships between classes. Some edges represent dependencies
+                    directly detected in the source code, while others are derived
+                    by combining these dependencies to provide a clearer overview
+                    at the class level.
                 </p>
 
-                <div class="dependency-explanation">
-                    <h4>Holds (Typed)</h4>
-                    <p>A class holds a reference to another class through a field.</p>
-                    <pre><code>class A {
-        private B item;
-    }</code></pre>
-                    <p>A holds B because it declares a field of type B.</p>
-                </div>
+                <h4>Direct dependencies</h4>
 
-                <div class="dependency-explanation">
-                    <h4>Accepts (Parameterizes)</h4>
-                    <p>A method accepts another class as a parameter.</p>
-                    <pre><code>class A {
-        void process(B item) {
-            // ...
-        }
-    }</code></pre>
-                    <p>A accepts B because its method has a parameter of type B.</p>
-                </div>
+                <p>
+                    Direct dependencies represent relationships detected at the
+                    method or field level in the Java source code. These edges
+                    describe how individual parts of a class depend on other classes.
+                </p>
+                <p>These are</p>
+                <ul>
+                    <li>Paramerizes</li>
+                    <li>Typed</li>
+                    <li>Returns</li>
+                    <li>Invokes</li>
+                    <li>Instantiates</li>
+                    <li>Specializes</li>
+                    <li>Implements</li>
+                </ul>
 
-                <div class="dependency-explanation">
-                    <h4>Calls (Invokes)</h4>
-                    <p>A method invokes a method belonging to another class.</p>
-                    <pre><code>class A {
-        void process(B item) {
-            item.execute();
-        }
-    }</code></pre>
-                    <p>A calls B because its method invokes execute() on an instance of B.</p>
-                </div>
+                <h4>Composed class-level dependencies</h4>
 
-                <div class="dependency-explanation">
-                    <h4>Constructs (Instantiates)</h4>
-                    <p>A method creates an instance of another class.</p>
-                    <pre><code>class A {
-        void create() {
-            B item = new B();
-        }
-    }</code></pre>
-                    <p>A constructs B because it creates an instance using new B().</p>
-                </div>
+                <p>
+                    When multiple methods or fields in a class depend on another
+                    class, displaying every individual dependency can make the
+                    visualization cluttered.
+                    To address this, the tool combines certain method-level
+                    dependencies into higher-level class-level relationships.
+                    These composed edges provide a more concise overview of
+                    dependencies between classes.
+                </p>
 
-                <div class="dependency-explanation">
-                    <h4>Produces (Returns)</h4>
-                    <p>A method returns an instance of another class.</p>
-                    <pre><code>class A {
-        B create() {
-            return new B();
-        }
-    }</code></pre>
-                    <p>A produces B because its method declares B as its return type.</p>
-                </div>
+                <p>
+                    Composed edges are derived from the direct dependencies.
+                    They are not additionally detected in the source code.
+                </p>
+
+                <p>These are</p>
+                <ul>
+                    <li>Accepts (composed from paramerizes edges)</li>
+                    <li>Holds (composed from typed edges)</li>
+                    <li>Returns(cls) (composed from returns edges)</li>
+                    <li>Calls (composed from invokes edges)</li>
+                    <li>Constructs (composed from instantiates edges)</li>
+                </ul>
+
+                <!-- <h4>Structural dependencies</h4>
+
+                <p>
+                    In addition to ordinary dependencies, the visualization
+                    represents relationships involving inheritance and interfaces.
+                </p> -->
+
+                <h4>CD-smell edges</h4>
+
+                <p>
+                    CD-smell edges are special analytical edges added by the tool
+                    to make strongly connected components easier to identify
+                    visually.
+                </p>
+
+                <p>
+                    Once an SCC has been detected, the tool adds CD-smell edges
+                    between the nodes belonging to that component. These edges
+                    highlight the relationship between classes that participate
+                    in the same cyclic dependency.
+                </p>
+
+                <p>
+                    Unlike the other edges, CD-smell edges do not represent
+                    dependencies found in the Java source code. They are
+                    visualization aids derived from the SCC analysis.
+                </p>
             </section>
 
             <section>
-                <h3>3. Method-level and class-level dependencies</h3>
+                <h3>3. Dependency type examples</h3>
+                <div class="dependency-explanation">
+                    <h4>Instantiates (Constructs)</h4>
+                    <p>A method creates an instance of another class.</p>
+                    <pre><code>class A {
+    void create() {
+        B item = new B();
+    }
+}</code></pre>
+<p>The direct <code>instantiates</code> dependency is represented at the class level as <code>A constructs B</code>.</p>
+                </div>
 
-                <p>
-                    Dependencies are detected at the method and field level,
-                    but the visualization displays them at the class level.
-                </p>
+                <div class="dependency-explanation">
+                    <h4>Typed (Holds)</h4>
+                    <p>A field or variable is declared with another class as its type.</p>
+                    <pre><code>class A {
+    private B item;
+}</code></pre>
+<p>The direct <code>typed</code> dependency is represented at the class level as <code>A holds B</code>.</p>
+                </div>
 
-                <h4>Method-level dependencies</h4>
-                <p>
-                    These describe relationships between individual methods or
-                    fields. For example, a method in class A might call a method
-                    in class B.
-                </p>
+                <div class="dependency-explanation">
+                    <h4>Parameterizes (Accepts)</h4>
+                    <p>A method accepts another class as a parameter.</p>
+                    <pre><code>class A {
+    void process(B item) {
+        // ...
+    }
+}</code></pre>
+<p>The direct <code>parameterizes</code> dependency is represented at the class level as <code>A accepts B</code>.</p>
+                </div>
 
-                <h4>Class-level dependencies</h4>
-                <p>
-                    These aggregate dependencies between two classes. If multiple
-                    methods or fields in A depend on B, their dependencies are
-                    represented as edges between A and B.
-                </p>
+                <div class="dependency-explanation">
+                    <h4>Returns (Returns(cls))</h4>
+                    <p>A method declares another class as its return type.</p>
+                    <pre><code>class A {
+    B create() {
+        return new B();
+    }
+}</code></pre>
+<p>The direct <code>returns</code> dependency is represented at the class level as <code>A returns(cls) B</code>.</p>
+                </div>
+                    <div class="dependency-explanation">
+                    <h4>Invokes (Construts)</h4>
+                    <p>A method invokes a method belonging to another class.</p>
+                    <pre><code>class A {
+    void process(B item) {
+        item.execute();
+    }
+}</code></pre>
+            <p>The direct <code>invokes</code> dependency is represented at the class level as <code>A calls B</code>.</p>
+                </div>
 
+                <div class="dependency-explanation">
+                    <h4>Implements</h4>
+                    <p>A class implements an interface.</p>
+                    <pre><code>class A implements B {
+}</code></pre>
+                </div>
+
+                <div class="dependency-explanation">
+                    <h4>Specializes</h4>
+                    <p>A class extends another class through inheritance.</p>
+                    <pre><code>class A extends B {
+}</code></pre>
+                </div>
+
+                <h4>Multiple dependencies example</h4>
                 <div class="info-example">
                     <strong>Example</strong>
                     <pre><code>class A {
-        private B item;
+    private B item;
 
-        void process(B other) {
-            other.execute();
-        }
+    void process(B other) {
+        other.execute();
+    }
 
-        B create() {
-            return new B();
-        }
-    }</code></pre>
+    B create() {
+        return new B();
+    }
+}</code></pre>
 
                     <p>Class A has several dependencies on B:</p>
                     <ul>
@@ -242,7 +310,7 @@
                 </div>
             </section>
 
-            <section>
+            <!-- <section>
                 <h3>4. Interpreting the visualization</h3>
 
                 <ul>
@@ -257,7 +325,7 @@
                     dependencies contributing to the cycle and investigate
                     possible refactorings.
                 </p>
-            </section>
+            </section> -->
         </div>
     </dialog>
 

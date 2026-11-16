@@ -1,4 +1,4 @@
-import { EdgeDataDefinition, NodeDataDefinition } from 'cytoscape';
+import cytoscape, { EdgeDataDefinition, NodeDataDefinition } from 'cytoscape';
 import { GraphAbtractizer } from './graphAbtractizer';
 import { GraphValidator } from './graphValidator';
 
@@ -62,6 +62,8 @@ export const composedEdgesMap: { [key: string]: string } = {
     "holds": "typed",
     "calls": "invokes",
 }
+export const composedInteractions = ["calls", "accepts", "produces", "constructs", "holds"]
+export const edgeIsComposed = (e: cytoscape.EdgeSingular) => composedInteractions.includes(e.data("interaction"))
 
 
 /**

@@ -113,6 +113,20 @@ node[properties.kind = "field"] {
   text-valign: center;
   text-border-color: grey;
 }
+node[properties.kind = "constructor"] {
+  shape: round-rectangle;
+  font-size: 16;
+  padding: 4px;
+  height: label;
+  width: label;
+  label: data(properties.simpleName);
+  border-color: grey;
+  background-color: whitesmoke;
+  border-width: 1px;
+  text-halign: center;
+  text-valign: center;
+  text-border-color: grey;
+}
 
 node[properties.kind = "parameter"] {
   shape: ellipse;
@@ -147,10 +161,12 @@ node[labels.0 = "BugType"] {
 edge {
   width: 3;
   line-fill: linear-gradient;
-  line-gradient-stop-colors: #FFCC66 #004080;
+  line-gradient-stop-colors: #FFCC66 #004080; 
+  line-gradient-stop-colors: #3B82F6 #F97316;
+  
   line-gradient-stop-positions: 0% 100%;
   source-arrow-shape: none;
-  target-arrow-shape: none;
+  target-arrow-shape: triangle;
   line-color: #004080;
   target-arrow-color: #004080;
   source-arrow-color: #FFCC66;
@@ -158,6 +174,9 @@ edge {
   edge-text-rotation: autorotate;
   label: data(interaction);
   arrow-scale: 1.5;
+  
+  taxi-direction: leftward;
+  taxi-turn: -32px;
 }
 
 edge[label = "encloses"] {
@@ -215,17 +234,7 @@ edge[label = "invokes"] {
   taxi-turn: -32px;
 }
 
-edge[label = "calls"] {
-  source-arrow-color: #000080;
-  line-fill: linear-gradient;
-  line-gradient-stop-colors: #CCFF66 #000080;
-  line-gradient-stop-positions: 0% 100%;
-  source-arrow-shape: none;
-  target-arrow-shape: triangle;
-  line-style: dashed;
-  taxi-direction: leftward;
-  taxi-turn: -32px;
-}
+
 
 edge[label = "CD-smell"] {
   line-fill: linear-gradient;
@@ -237,51 +246,7 @@ edge[label = "CD-smell"] {
   line-style: solid;
 }
 
-edge[label = "constructs"] {
-  target-arrow-color: #A61340;
-  line-fill: linear-gradient;
-  line-gradient-stop-colors: #FFFF66 #A61340;
-  line-gradient-stop-positions: 0% 100%;
-  source-arrow-shape: none;
-  target-arrow-shape: triangle;
-  arrow-scale: 1.5;
-  taxi-direction: leftward;
-  taxi-turn: -32px;
-}
 
-edge[label = "accepts"] {
-  target-arrow-color: #800000;
-  line-fill: linear-gradient;
-  line-gradient-stop-colors: #66FF66 #800000;
-  line-gradient-stop-positions: 0% 100%;
-  source-arrow-shape: none;
-  target-arrow-shape: triangle;
-  taxi-direction: leftward;
-  taxi-turn: -32px;
-}
-
-edge[label = "holds"] {
-  source-arrow-color: #400080;
-  line-fill: linear-gradient;
-  line-gradient-stop-colors: #66FFCC #400080;
-  line-gradient-stop-positions: 0% 100%;
-  source-arrow-shape: none;
-  source-arrow-fill: hollow;
-  target-arrow-shape: triangle;
-  taxi-direction: leftward;
-  taxi-turn: -32px;
-}
-edge[label = "produces"] {
-  source-arrow-color: #400080;
-  line-fill: linear-gradient;
-  line-gradient-stop-colors: #66FFCC #400080;
-  line-gradient-stop-positions: 0% 100%;
-  source-arrow-shape: none;
-  source-arrow-fill: hollow;
-  target-arrow-shape: triangle;
-  taxi-direction: leftward;
-  taxi-turn: -32px;
-}
 
 edge[label = "specializes"] {
   source-arrow-color: #804000;

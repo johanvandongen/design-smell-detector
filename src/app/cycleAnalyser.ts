@@ -1,5 +1,6 @@
 import cytoscape from "cytoscape";
 import { CytoscapeToNumericAdapter, GraphService } from '../smell-detection/graphService';
+import { edgeIsComposed } from "../graphPreProcessing/graphPreprocessor";
 
 export class CycleAnalyser {
     public getDescription(codebase: cytoscape.Core, scc: string[]) {
@@ -25,7 +26,9 @@ export class CycleAnalyser {
             const next = codebase.getElementById(cycle[i+1])
             const interactions: string[] = []
             current.edgesTo(next).forEach((e) => {
-                interactions.push(e.data("interaction"))
+                if (edgeIsComposed(e)) {
+                    interactions.push(e.data("interaction"))
+                }
             })
 
             description += `\n ${current.data("properties.simpleName")} -> ${next.data("properties.simpleName")} (${interactions.join(",")})`;

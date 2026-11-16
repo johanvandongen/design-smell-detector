@@ -1,12 +1,15 @@
 import cytoscape from "cytoscape";
 import { RefactorSuggestion } from "./refactorEngine";
-import { NodeData, EdgeData } from "../graphPreProcessing/graphPreprocessor";
+import { NodeData, EdgeData, composedEdgesMap, edgeIsComposed, composedInteractions } from "../graphPreProcessing/graphPreprocessor";
+// @ts-ignore
+import { nodeHasLabel, edgeHasLabel } from '../utilities/utils.js';
 
 export interface RefactoringChangeSet {
     addedNodes: NodeData[];
     addedEdges: EdgeData[];
 
     removeEdgeIds: string[];
+    removeEdges: EdgeData[];
     removeNodeIds: string[];
 
     updatedNodes: EdgeUpdate[];
@@ -20,31 +23,52 @@ interface EdgeUpdate {
 }
 
 export abstract class IRefactoringStrategy<T extends RefactorSuggestion> {
-    static addEdge2(cy: cytoscape.Core, changeSet: RefactoringChangeSet, interaction: string, source: string, sourceClass: string, target: string, targetClass: string) {
-        //TODO
+    static removeEdge(changeSet: RefactoringChangeSet, egde: cytoscape.EdgeSingular) {
+        if (changeSet.removeEdges.map((e) => e.id).includes(egde.id())) {
+            return;
+        }
+        changeSet.removeEdges.push({
+            interaction: egde.data("interaction"),
+            group: "edges",
+            id: egde.id(),
+            label: egde.data("label"),
+            source: egde.source().id(),
+            target: egde.target().id()
+        })
+
+        // Remove composed edge if possible
+        const sourceClass = nodeHasLabel(egde.source(), "Type") ? egde.source() : egde.source().parent().first()
+            const targetClass = nodeHasLabel(egde.target(), "Type") ? egde.target() : egde.target().parent().first()
+            const removedEdgesIds = new Set(changeSet.removeEdges.map((e) => e.id))
+            const interactionStillExists = sourceClass.children().outgoers().edges().filter((e) => !removedEdgesIds.has(e.id()) && edgeHasLabel(e, egde.data("interaction")) && e.target().id() === targetClass.id()).length > 0
+            if (!interactionStillExists) {
+                const composedEdge = sourceClass.outgoers().edges().filter((e) => edgeHasLabel(e,composedEdgesMap[egde.data("interaction")]) && e.target().id() === targetClass.id()).edges().first();
+                if (composedEdge.length === 0) {return;}
+                IRefactoringStrategy.removeEdge(changeSet, composedEdge)
+            }
     }
-    /** Adds the edge source-target, and also adds the composed edge between the parent classes */
-    static addEdge(cy: cytoscape.Core, changeSet: RefactoringChangeSet, edge: cytoscape.SingularElementReturnValue, source: string, sourceClass: string, target: string, targetClass: string) {
+
+    /** 
+     * Adds directed edge between source and target and composed edge between sourceClass and targetClass
+     * @param sourceClass parent class of source
+     * */
+    static addEdgeInteraction(cy: cytoscape.Core, changeSet: RefactoringChangeSet, interaction: string, source: string, sourceClass: string, target: string, targetClass: string) {
         if (source && target) {
             changeSet.addedEdges.push({
-                interaction: edge.data("interaction"),
+                interaction: interaction,
                 group: "edges",
-                label: edge.data("label"),
+                label: interaction,
                 source: source,
                 target: target
             })
         }
 
-        // Add composed edge
-        const interactions: { [key: string]: string } = {
-            "returns": "produces",
-            "parameterizes": "accepts",
-            "typed": "holds",
-            "invokes": "calls"
+        if (composedInteractions.includes(interaction)) {
+            return;
         }
 
-        const interaction:string = edge.data("interaction")
-        if (!Object.hasOwn(interactions, interaction)) {
+        // Add composed edge
+        if (!Object.hasOwn(composedEdgesMap, interaction)) {
             throw Error ("unknown interaction")
         }
         
@@ -52,7 +76,7 @@ export abstract class IRefactoringStrategy<T extends RefactorSuggestion> {
         if (sourceClass === targetClass) {
             return
         }
-        const classLevelInteraction: string = interactions[interaction]
+        const classLevelInteraction: string = composedEdgesMap[interaction]
         const newEdgeId = sourceClass + "-" + classLevelInteraction + "-" + targetClass;
         const sourceCy = cy.getElementById(sourceClass)
         const targetCy = cy.getElementById(sourceClass)
@@ -66,8 +90,12 @@ export abstract class IRefactoringStrategy<T extends RefactorSuggestion> {
                 source: sourceClass,
                 target: targetClass
             })
-            changeSet.description += `Added ${sourceCy ? sourceCy.data("properties.simpleName") : sourceClass} ${classLevelInteraction} ${targetCy ? targetCy.data("properties.simpleName") : targetClass}`
+            // changeSet.description += `Added ${sourceCy ? sourceCy.data("properties.simpleName") : sourceClass} ${classLevelInteraction} ${targetCy ? targetCy.data("properties.simpleName") : targetClass}`
         }
+    }
+
+    static addEdge(cy: cytoscape.Core, changeSet: RefactoringChangeSet, edge: cytoscape.SingularElementReturnValue, source: string, sourceClass: string, target: string, targetClass: string) {
+        IRefactoringStrategy.addEdgeInteraction(cy, changeSet, edge.data("interaction"), source, sourceClass, target, targetClass)
     }
 
     abstract apply(graph: cytoscape.Core, suggestion: T): RefactoringChangeSet;

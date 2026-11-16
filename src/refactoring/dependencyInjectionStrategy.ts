@@ -26,7 +26,7 @@ export class DependencyInjectionStrategy implements IRefactoringStrategy<Depende
         const refactoringChangeSet: RefactoringChangeSet = {
             addedNodes: [], addedEdges: [], updatedNodes: [],
             removeEdgeIds: [], focus: currentNode.id(),
-            removeNodeIds: []
+            removeNodeIds: [], removeEdges: [],
         };
 
         // Add setter method

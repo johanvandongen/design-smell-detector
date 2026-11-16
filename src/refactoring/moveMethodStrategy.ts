@@ -19,7 +19,7 @@ export class MoveMethodStrategy implements IRefactoringStrategy<MoveMethodSugges
         const refactoringChangeSet: RefactoringChangeSet = {
             addedNodes: [], addedEdges: [], updatedNodes: [],
             removeEdgeIds: [], focus: method.id(),
-            removeNodeIds: [], description: ""
+            removeNodeIds: [], description: "", removeEdges: [],
         };
 
         const methodNewId = targetClass.data("id") + method.data("properties.simpleName")
@@ -45,19 +45,12 @@ export class MoveMethodStrategy implements IRefactoringStrategy<MoveMethodSugges
         const interactions_removed: [string, string][] = []
         method.outgoers().forEach((edge) => {
             if (edgeHasLabel(edge, "returns") || edgeHasLabel(edge, "parameterizes") || edgeHasLabel(edge, "invokes") || edgeHasLabel(edge, "instantiates")) {
-                // refactoringChangeSet.addedEdges.push({
-                //     interaction: edge.data("interaction"),
-                //     group: "edges",
-                //     label: edge.data("label"),
-                //     labels: ["New"],
-                //     source: methodNewId,
-                //     target: edge.target().id()
-                // })
                 const targetParent = edge.target().data("properties.kind") === "method" ? edge.target().parent().first().id() : edge.target().id()
                 IRefactoringStrategy.addEdge(cy, refactoringChangeSet, edge, methodNewId, targetClass.id(), edge.target().id(), targetParent)
-                interactions_removed.push([edge.data("interaction"), edge.target().data("properties.kind") === "method" ? edge.target().parent().first().id() : edge.target().id()])
+                interactions_removed.push([edge.data("interaction"), edge.target().data("properties.kind") === "method" ? edge.target().parent().first().id() : edge.target().id()]) // direct edge automatically removed by removing method node
             }
         })
+
         // Remove self parameterizes edge once. 
         // We moved method to target class and added all the original edges to that, but the new self parameterize edge
         // is not needed, since we already have access to that object. A.method(b) becomes B.method(a)
@@ -69,15 +62,8 @@ export class MoveMethodStrategy implements IRefactoringStrategy<MoveMethodSugges
                 break;
             }
         }
-        refactoringChangeSet.addedEdges.push({
-            interaction: "parameterizes",
-            group: "edges",
-            label: "parameterizes",
-            labels: ["New"],
-            source: methodNewId,
-            target: sourceClass.id()
-        })
 
+        IRefactoringStrategy.addEdgeInteraction(cy, refactoringChangeSet, "parameterizes", methodNewId, targetClass.id(), sourceClass.id(), sourceClass.id())
         
         // Update composed edges between source class and target class
         const sourceClassOtherMethods = sourceClass.children().filter((child) => nodeHasKind(child, "method") && child.id() !== method.id());
@@ -88,31 +74,16 @@ export class MoveMethodStrategy implements IRefactoringStrategy<MoveMethodSugges
             if (interactionStillExists) {
                 refactoringChangeSet.description += removeDescription(interaction) +  ` but composed edge (${composedEdgesMap[interaction]}) still exists due to other methods \n`
             } else {
-                const composedEdgeId = sourceClass.outgoers().edges().filter((e) => edgeHasLabel(e,composedEdgesMap[interaction]) && e.target().id() === target).first().id();
-                refactoringChangeSet.removeEdgeIds.push(composedEdgeId)
-                refactoringChangeSet.description += removeDescription(composedEdgesMap[interaction]) + "\n"
+                const composedEdgeId = sourceClass.outgoers().edges().filter((e) => edgeHasLabel(e,composedEdgesMap[interaction]) && e.target().id() === target).edges().first();
+                if (composedEdgeId.length === 0) {
+                    // Happens when composed edge doesnt exist (either due to incorrect state, or self loop)
+                    return;
+                }
+                refactoringChangeSet.removeEdgeIds.push(composedEdgeId.id())
+                IRefactoringStrategy.removeEdge(refactoringChangeSet, composedEdgeId)
+                // refactoringChangeSet.description += removeDescription(composedEdgesMap[interaction]) + "\n"
             }
         })
-
-        // sourceClassOtherMethods.forEach((method) => {
-        //     if (!method.outgoers().edges().some((edge) => edgeHasLabel(edge, "returns"))) {
-        //         const returnEdgeId = sourceClass.outgoers().edges().filter((e) => edgeHasLabel(e, "produces") && e.target().id() === targetClass.id()).first().id();
-        //         refactoringChangeSet.removeEdgeIds.push(returnEdgeId)
-        //     }
-        //     if (!method.outgoers().edges().some((edge) => edgeHasLabel(edge, "parameterizes"))) {
-        //         const returnEdgeId = sourceClass.outgoers().edges().filter((e) => edgeHasLabel(e, "accepts") && e.target().id() === targetClass.id()).first().id();
-        //         refactoringChangeSet.removeEdgeIds.push(returnEdgeId)
-        //     }
-        //     if (!method.outgoers().edges().some((edge) => edgeHasLabel(edge, "invokes"))) {
-        //         const returnEdgeId = sourceClass.outgoers().edges().filter((e) => edgeHasLabel(e, "calls") && e.target().id() === targetClass.id()).first().id();
-        //         refactoringChangeSet.removeEdgeIds.push(returnEdgeId)
-        //     }
-        //     if (!method.outgoers().edges().some((edge) => edgeHasLabel(edge, "instantiates"))) {
-        //         const returnEdgeId = sourceClass.outgoers().edges().filter((e) => edgeHasLabel(e, "constructs") && e.target().id() === targetClass.id()).first().id();
-        //         refactoringChangeSet.removeEdgeIds.push(returnEdgeId)
-        //     }
-        // })
-
 
         method.incomers().edges().filter((e) => edgeHasLabel(e, "invokes")).forEach((edge) => {
             refactoringChangeSet.updatedNodes.push({id: edge.source().id(), newLabel: "Modified"})

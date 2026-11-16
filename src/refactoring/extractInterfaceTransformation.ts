@@ -2,11 +2,11 @@ import cytoscape from "cytoscape";
 // @ts-ignore
 import { nodeHasKind, edgeHasLabel } from '../utilities/utils.js';
 import { ExtractInterfaceSuggestion } from "./refactorEngine.js";
-import { RefactoringChangeSet } from "./IRefactoringStrategy.js";
+import { IRefactoringStrategy, RefactoringChangeSet } from "./IRefactoringStrategy.js";
 
 export class ExtractInterfaceTransformation {
 
-    static addEdge(changeSet: RefactoringChangeSet, edge: cytoscape.SingularElementReturnValue, sourceParent: string, targetParent: string, source?: string) {
+    static addEdge(changeSet: RefactoringChangeSet, edge: cytoscape.EdgeSingular, sourceParent: string, targetParent: string, source?: string) {
         if (source) {
             changeSet.addedEdges.push({
                 interaction: edge.data("interaction"),
@@ -52,7 +52,7 @@ export class ExtractInterfaceTransformation {
         const refactoringChangeSet: RefactoringChangeSet = {
             addedNodes: [], addedEdges: [], updatedNodes: [],
             removeEdgeIds: [], focus: newInterfaceId,
-            removeNodeIds: []
+            removeNodeIds: [], removeEdges: [],
         };
 
         refactoringChangeSet.addedNodes.push({
@@ -97,7 +97,7 @@ export class ExtractInterfaceTransformation {
             });
 
         // Redirect incoming edges to interface
-        targetNode.incomers().forEach((edge) => {
+        targetNode.incomers().edges().forEach((edge) => {
             if (edge.source().id()) {
                 if (edgeHasLabel(edge, "typed") || edgeHasLabel(edge, "returns") || edgeHasLabel(edge, "parameterizes") || edgeHasLabel(edge, "invokes")) {
                     this.addEdge(refactoringChangeSet, edge, edge.source().parent().first().id(), newInterfaceId, edge.source().id())
@@ -110,6 +110,7 @@ export class ExtractInterfaceTransformation {
                         newLabel: "Modified"
                     })
                     refactoringChangeSet.removeEdgeIds.push(edge.id());
+                    IRefactoringStrategy.removeEdge(refactoringChangeSet, edge)
                 }
             }
         })

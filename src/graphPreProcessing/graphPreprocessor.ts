@@ -56,14 +56,31 @@ export const composedEdgesMap: { [key: string]: string } = {
     "parameterizes": "accepts",
     "typed": "holds",
     "invokes": "calls",
+    "instantiates": "constructs",
     
     "produces": "returns",
     "accepts": "parameterizes",
     "holds": "typed",
     "calls": "invokes",
+    "constructs": "instantiates"
 }
 export const composedInteractions = ["calls", "accepts", "produces", "constructs", "holds"]
 export const edgeIsComposed = (e: cytoscape.EdgeSingular) => composedInteractions.includes(e.data("interaction"))
+export const edgeCategories = {
+    "produces": "composed",
+    "accepts": "composed",
+    "holds": "composed",
+    "calls": "composed",
+    "constructs": "composed",
+    
+    "returns": "direct",
+    "parameterizes": "direct",
+    "typed": "direct",
+    "invokes": "direct",
+    "instantiates": "direct",
+    "specializes": "direct",
+    "implements": "direct",
+}
 
 
 /**

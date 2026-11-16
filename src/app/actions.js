@@ -8,6 +8,7 @@ import { arrayIntersection, getScratch, isPureContainer, nodeHasLabel } from '..
 import { deriveColorLegendModel, deriveRelationshipLabels } from './pure.js';
 import { clone, identity, lens, not, over, pipe, tap } from '../composing.js';
 import { ExpansionLayout } from './expansionLayout.js';
+import { edgeCategories } from '../graphPreProcessing/graphPreprocessor.js';
 
 const hiddenEdgesLens = lens(
 	(state) => state.hiddenEdges,
@@ -118,10 +119,22 @@ export function createActions({ state, ui }) {
 
 	function fillRelationshipToggles(pCy = state.cy, elementId = '#reltab') {
 		const ctx = { pCy };
+        const groupEdgeLabels = (edgeLabels) => {
+            const result = {}
+            for (const edgeLabel of edgeLabels) {
+                let type = "other";
+                if ((edgeLabel in edgeCategories)) {type = edgeCategories[edgeLabel]}
+                if (!(type in result)) {
+                    result[type] = [];
+                }
+                result[type].push(edgeLabel)
+            }
+            return result;
+        }
 		return pipe(
 			(ctxIn) => ({ ...ctxIn, edgeLabels: deriveRelationshipLabels(state.hcy.json().elements) }),
 			tap(({ edgeLabels }) => {
-				ui.renderRelationshipToggles(elementId, edgeLabels, {
+				ui.renderRelationshipToggles(elementId, groupEdgeLabels(edgeLabels), {
 					onToggleEdge: (checkbox) => setEdgeVisibilityViaCheckbox(checkbox, pCy),
 					onLineBend: setLineBends,
 					onLift: (label) => liftEdges(state.cy, label),
@@ -459,11 +472,12 @@ export function createActions({ state, ui }) {
                 "parameterizes": true, 
                 "typed": true, 
                 'invokes': true,
-                'instantiates': false,
+                'instantiates': true,
                 "calls": false, 
                 'produces': false,
                 'accepts': false,
                 'holds': false,
+                'constructs': false,
             }
         } else if (preset === "class") {
             defaultInspectEdges = {
@@ -471,11 +485,12 @@ export function createActions({ state, ui }) {
                 "parameterizes": false, 
                 "typed": false, 
                 'invokes': false,
-                'instantiates': true,
+                'instantiates': false,
                 "calls": true, 
                 'produces': true,
                 'accepts': true,
                 'holds': true,
+                'constructs': true,
             }
         }
         for (const [key, value] of Object.entries(defaultInspectEdges)) {

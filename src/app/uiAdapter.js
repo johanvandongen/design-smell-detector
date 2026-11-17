@@ -216,10 +216,19 @@ export function createUiAdapter() {
             },
             renderDescription(description, elementId, title) {
                 let isOpen = true;
-                const content = h('div', {class: 'description-content open'}, [
-                    h('h2', {}, title),
-                    ...description.split("\n").map((d) => h('p', {}, d))
-                ]);
+
+                let content;
+                if (typeof description === 'string') {
+                    content = h('div', {class: 'description-content open'}, [
+                        h('h2', {}, title),
+                        ...description.split("\n").map((d) => h('p', {}, d))
+                    ]);
+                } else {
+                    content = h('div', {class: 'description-content open'}, [
+                        h('h2', {}, title),
+                        description.render()
+                    ]);
+                }
 
                 const button = h('button', 
                     {

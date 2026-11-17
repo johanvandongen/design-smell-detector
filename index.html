@@ -235,14 +235,14 @@
                 </div>
 
                 <div class="dependency-explanation">
-                    <h4>Returns (Returns(cls))</h4>
+                    <h4>Returns (Produces)</h4>
                     <p>A method declares another class as its return type.</p>
                     <pre><code>class A {
     B create() {
         return new B();
     }
 }</code></pre>
-<p>The direct <code>returns</code> dependency is represented at the class level as <code>A returns(cls) B</code>.</p>
+<p>The direct <code>returns</code> dependency is represented at the class level as <code>A produces B</code>.</p>
                 </div>
                     <div class="dependency-explanation">
                     <h4>Invokes (Constructs)</h4>

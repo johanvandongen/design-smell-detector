@@ -343,7 +343,7 @@ ul.tabs {
     display: none;
     padding: 10px 12px;
 
-    max-height: 150px;
+    max-height: 250px;
     overflow-y: auto;
     box-sizing: border-box;
     line-height: 1.5;
@@ -618,4 +618,190 @@ ul.tabs {
 }
 /*
 * END info model styles
+*/
+
+/*
+* START cycle refactoring description
+*/
+.refactoring-report {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    color: #333;
+    font-size: 13px;
+}
+
+/* Title */
+.report-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.report-eyebrow {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #888;
+}
+
+.report-title h3 {
+    margin: 3px 0;
+    font-size: 17px;
+}
+
+.report-subtitle {
+    font-size: 12px;
+    color: #777;
+}
+
+/* Sections */
+.report-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.report-section h4 {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+/* Cycle status */
+.cycle-status {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 12px;
+    border-radius: 6px;
+}
+
+.cycle-status.shifted {
+    background: #eaf2fb;
+    color: #245b91;
+}
+
+.cycle-status.remains {
+    background: #fff3e0;
+    color: #9a5b00;
+}
+
+.cycle-status.resolved {
+    background: #e8f5e9;
+    color: #287d3c;
+}
+
+.status-icon {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.cycle-status p {
+    margin: 3px 0 0;
+    color: #555;
+    line-height: 1.4;
+}
+
+/* Resulting cycle */
+.cycle-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.cycle-edge {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 12px;
+    padding: 9px 12px;
+    background: #f5f6f7;
+    border-radius: 5px;
+}
+
+.cycle-edge strong {
+    white-space: nowrap;
+}
+
+.cycle-edge span {
+    text-align: right;
+    color: #666;
+    font-size: 11px;
+}
+
+/* Dependency changes */
+.change-group {
+    padding: 10px 12px;
+    border-radius: 6px;
+}
+
+.change-group.added {
+    background: #f0f8f1;
+}
+
+.change-group.removed {
+    background: #fff1f0;
+}
+
+.change-heading {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.added .change-heading {
+    color: #32834a;
+}
+
+.removed .change-heading {
+    color: #c44343;
+}
+
+.change-heading span {
+    font-size: 17px;
+}
+
+.change-group ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.change-group li {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding-left: 24px;
+}
+
+.change-group li span {
+    font-size: 11px;
+    color: #666;
+}
+
+.change-overflow {
+    margin: 10px 0 0;
+    padding-left: 24px;
+    font-size: 11px;
+    color: #777;
+}
+
+/* Technique-specific details */
+.technique-details {
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 10px 12px;
+    background: #f5f6f7;
+    border-radius: 6px;
+    line-height: 1.5;
+}
+/*
+* END cycle refactoring description
 */

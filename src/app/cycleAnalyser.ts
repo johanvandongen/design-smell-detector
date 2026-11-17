@@ -1,6 +1,7 @@
 import cytoscape from "cytoscape";
 import { CytoscapeToNumericAdapter, GraphService } from '../smell-detection/graphService';
 import { edgeIsComposed } from "../graphPreProcessing/graphPreprocessor";
+import { CycleDescription } from "./RefactoringDescription";
 
 export class CycleAnalyser {
     public getDescription(codebase: cytoscape.Core, scc: string[]) {
@@ -35,5 +36,27 @@ export class CycleAnalyser {
         }
 
         return description + "\n"
+    }
+
+    public getCycleDescription(codebase: cytoscape.Core, cycle: string[]): CycleDescription {
+        const cycleDescription = new CycleDescription();
+        cycle.push(cycle[0])
+        for (let i=0; i<cycle.length - 1; i++) {
+            const current = codebase.getElementById(cycle[i])
+            const next = codebase.getElementById(cycle[i+1])
+            const interactions: string[] = []
+            current.edgesTo(next).forEach((e) => {
+                if (edgeIsComposed(e)) {
+                    interactions.push(e.data("interaction"))
+                }
+            })
+            cycleDescription.addDependencyDecription({
+                source: current.data("properties.simpleName"),
+                target: next.data("properties.simpleName"),
+                types: interactions
+            })
+        }
+
+        return cycleDescription
     }
 }

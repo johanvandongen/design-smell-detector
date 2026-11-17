@@ -18,6 +18,7 @@ import { applyRefactoringChangeSet, showNeighborhood } from '../graphProcessing/
 import { RefactorEngine } from '../refactoring/refactorEngine.ts';
 import { CDAnalyser } from '../app/cdAnalyser.ts'
 import { CycleAnalyser } from './cycleAnalyser.ts'
+import { RefactoringAnalyser } from './RefactoringAnalyser.ts'
 
 const pipeAsync = (...fns) => async (x) => {
 	let value = x;
@@ -135,6 +136,7 @@ export function bootstrapApp() {
 	const stageCreateVisualCy = async (ctx) => {
 		const numEdges = ctx.state.hcy.edges().length;
 		ctx.state.cy = await ctx.cyAdapter.createVisual(ctx.ui.$('#cy-baseline'), ctx.state.hcy.json().elements, ctx.style, numEdges > 5000);
+        ctx.state.cy.edges().filter((e) => e.data("interaction") === "calls").forEach((e) => console.log(e.data()))
 		return ctx;
 	};
 
@@ -241,10 +243,11 @@ export function bootstrapApp() {
             "Removed " + changeSet.removeEdgeIds.length + " edge(s)" + "\n"
         
             
-        const cdAnalyser = new CDAnalyser(cynew, scc, SCCs)
-        let explanation = refactoring.description + "\n" + cdAnalyser.analyseRefactoringResult(refactoring, changeSet) + "\n" + (changeSet.description ?? defaultExplanation)
-
-        ctx.ui.renderRefactorDescription(explanation)
+        // const cdAnalyser = new CDAnalyser(cynew, scc, SCCs)
+        // let explanation = refactoring.description + "\n" + cdAnalyser.analyseRefactoringResult(refactoring, changeSet) + "\n" + (changeSet.description ?? defaultExplanation)
+        const refactoringAnalyser = new RefactoringAnalyser(cynew, scc, SCCs)
+        ctx.ui.renderRefactorDescription(refactoringAnalyser.analyseRefactoringResult2(refactoring, changeSet))
+        // ctx.ui.renderRefactorDescription(explanation)
 
         statePreview.stronglyConnectedComponents = SCCs;
 

@@ -482,6 +482,25 @@ ul.tabs {
     flex-direction: column;
 }
 
+/** START refactoring list */
+.refactoring-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+}
+
+.refactoring-score {
+    font-size: 0.9rem;
+    font-weight: 600;
+    padding: 4px 8px;
+    border-radius: 6px;
+    background: #e8f5e9;
+    color: #2e7d32;
+    white-space: nowrap;
+}
+/** END refactoring list */
+
 /*
 * START info model styles
 */

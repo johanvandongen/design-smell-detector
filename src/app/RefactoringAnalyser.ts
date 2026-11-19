@@ -5,6 +5,11 @@ import { CycleAnalyser } from "./cycleAnalyser";
 import { composedInteractions, EdgeData } from "../graphPreProcessing/graphPreprocessor";
 import { RefactoringDescription } from "./RefactoringDescription";
 
+
+interface SCCStatus {
+    status: 'resolved' | 'remains' | 'partially-resolved' | "shifted",
+    description: string,
+}
 /**
  * This class analyses the refactored codebase and provides an explanation as to why a cyclic dependency is resolved or remains
  */
@@ -17,7 +22,7 @@ export class RefactoringAnalyser {
     constructor(refactoredCodebase: cytoscape.Core, scc: string[], newSccs: string[][]) {
         this.refactoredCodebase = refactoredCodebase
         this.scc = scc
-        this.newSccs = newSccs
+        this.newSccs = JSON.parse(JSON.stringify(newSccs)) as string[][]
     }
 
     private groupBy<T>(list: Array<T>, fn: any): T[][] {
@@ -80,36 +85,63 @@ export class RefactoringAnalyser {
         edgeChangeDescription('removed')
     }
 
-    analyseRefactoringResult2(refactoring: RefactorSuggestion, changeSet: RefactoringChangeSet): RefactoringDescription {
+    getSCCImpact(originalSCC: string[], resultingSCCs: string[][], changeSet: RefactoringChangeSet): SCCStatus {
+        const overlappingSCCs = this.findRelatedSCCs(originalSCC, changeSet.addedNodes.map((n) => n.id), resultingSCCs);
+        if (overlappingSCCs.length === 0) {
+            return {status: "resolved", description: ""}
+        }
+
+        const resultingSCCNodeSize = overlappingSCCs.reduce((acc, a) => acc + a.length, 0)
+        const noMoreInCycle = originalSCC.filter((n) => !resultingSCCs.flat().includes(n))
+        const newInCycle = resultingSCCs.flat().filter((n) => !originalSCC.includes(n))
+        const shift = noMoreInCycle.length > 0 && newInCycle.length > 0
+
+        const sccRemains = overlappingSCCs.some((overlappingSCC) => originalSCC.every((c) => overlappingSCC.includes(c)));
+        const overflowDesc = (arr: any[]): string => `${arr.length > 1 ? "+ " + (arr.length -1) + " more": ""}`
+
+        if (sccRemains && newInCycle.length > 0) {
+            return {status: "remains", description: `Cycle expanded with ${newInCycle[0]} ${overflowDesc(newInCycle)}`}
+        } else if (sccRemains) {
+            return {status: "remains", description: ""}
+        }
+
+        const sccSplit = overlappingSCCs.length > 1
+        if (shift) {
+            const description = noMoreInCycle[0] + overflowDesc(noMoreInCycle) + " is no longer part of the cycle. Shifted cycle contains new node " + newInCycle[0] + overflowDesc(newInCycle)
+            return {status: "shifted", description: description}
+        } else if (resultingSCCNodeSize < originalSCC.length || sccSplit) {
+            return {status: "partially-resolved", description: ""}
+        }
+
+        return {status: "remains", description: ""}
+    }
+
+    findRelatedSCCs(originalSCC: string[], addedNodeIds: string[], refactoredSCCs: string[][]) {
+        const relevantNodes = new Set([
+            ...originalSCC,
+            ...addedNodeIds
+        ]);
+
+        return refactoredSCCs.filter(scc =>
+            scc.some(nodeId => relevantNodes.has(nodeId))
+        );
+    }
+
+    analyseRefactoringResult(refactoring: RefactorSuggestion, changeSet: RefactoringChangeSet): RefactoringDescription {
         const refactoringDescription = new RefactoringDescription(refactoring.kind, refactoring.description)
         if (changeSet.description) {refactoringDescription.addDetailsDesription(changeSet.description)}
-        const overlappingSCCs = this.newSccs.filter((sccn) => sccn.some((c) => this.scc.includes(c)))
+        this.addChangeSetDescription(refactoringDescription, changeSet)
         
-        if (overlappingSCCs.length === 0) {
-            refactoringDescription.addCycleImpact('resolved', "")
+        const overlappingSCCs = this.newSccs.filter((sccn) => sccn.some((c) => this.scc.includes(c)))
+        const sccImpact = this.getSCCImpact(this.scc, overlappingSCCs, changeSet)
+        if (sccImpact.status === 'resolved') {
+            refactoringDescription.addCycleImpact(sccImpact.status, sccImpact.description)
+            return refactoringDescription
         }
-
-        const cycleRemains = overlappingSCCs.some((overlappingSCC) => this.scc.every((c) => overlappingSCC.includes(c)));
-        const extraCycles = overlappingSCCs.length >= 2 ? `+ ${overlappingSCCs.length} extra cycles` : ""
         
         refactoringDescription.addResultingCycle(this.cycleAnalyer.getCycleDescription(this.refactoredCodebase, overlappingSCCs[0]))
+        refactoringDescription.addCycleImpact(sccImpact.status, sccImpact.description)
 
-        this.addChangeSetDescription(refactoringDescription, changeSet)
-
-        if (cycleRemains) {
-            console.log(changeSet.removeEdgeIds)
-            refactoringDescription.addCycleImpact('remains', "")
-            // return "Cycle remains" + extraCycles + "\n" + d +changeDescription
-        } else {
-            const overlapSCC = overlappingSCCs[0];
-            const noMoreInCycle = this.scc.filter((n) => !overlapSCC.includes(n))
-            const newInCycle = overlapSCC.filter((n) => !this.scc.includes(n))
-            // When cycle is shifted which includes an added node, the output should tell the new dependencies, for example
-            // cycle is shifted to added node IOrder, because it depends on og class due to method declaration.
-            const shiftExplanation = noMoreInCycle[0] + " is no longer part of the cycle. Shifted cycle contains new node " + newInCycle[0]
-            refactoringDescription.addCycleImpact('shifted', shiftExplanation)
-            // return "Cycle shifted" + extraCycles + "\n" + d + "\n" + shiftExplanation + changeDescription
-        }
         return refactoringDescription
     }
 }

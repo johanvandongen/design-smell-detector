@@ -1,7 +1,7 @@
 //@ts-ignore
 import { $, $all, h, on, r } from '../utilities/shorthands.js';
 
-type CycleImpactStatus = 'resolved' | 'remains' | 'shifted'
+type CycleImpactStatus = 'resolved' | 'remains' | 'shifted' | 'partially-resolved'
 class CycleImpact {
     status: CycleImpactStatus;
     description: string;
@@ -14,6 +14,7 @@ class CycleImpact {
     render() {
         const statusText = {
             resolved: 'Cycle resolved',
+            'partially-resolved': 'Cycle partially resolved',
             remains: 'Cycle remains',
             shifted: 'Cycle shifted'
         };
@@ -23,6 +24,7 @@ class CycleImpact {
             h('div', { class: `cycle-status ${this.status}` }, [
                 h('span', { class: 'status-icon' }, {
                     resolved: '✓',
+                    'partially-resolved': '✓',
                     remains: '!',
                     shifted: '↔'
                 }[this.status] ?? '!'),
@@ -34,7 +36,7 @@ class CycleImpact {
         ]);
     }
 }
-interface DependencyDescription {
+export interface DependencyDescription {
     source: string;
     target: string;
     types: string[];
@@ -146,12 +148,12 @@ export class RefactoringDescription {
                 ])
             ]),
 
-            this.cycleImpact?.render(),
-            this.resultingCycle?.render(),
+            this.cycleImpact ? this.cycleImpact.render() : "",
+            this.resultingCycle ?  this.resultingCycle.render() : "",
             h('section', { class: 'report-section' }, [
                 h('h4', {}, 'Dependency changes'),
-                this.addedDependencies?.render(),
-                this.removedDependencies?.render(),
+                this.addedDependencies ? this.addedDependencies.render() : "",
+                this.removedDependencies ? this.removedDependencies.render() : "",
             ]),
             this.detailsDescription === "" ? "" : h('section', { class: 'report-section' }, [
                 h('h4', {}, 'Refactoring details'),

@@ -30,7 +30,7 @@ export class ExtractInterfaceTransformation {
         }
         const classLevelInteraction: string = interactions[interaction]
         const newEdgeId = sourceParent + "-" + classLevelInteraction + "-" + targetParent;
-        if (!changeSet.addedEdges.some((e) => e.id === newEdgeId)) {
+        if (!changeSet.addedEdges.some((e) => e.id === newEdgeId) && sourceParent !== targetParent) {
             changeSet.addedEdges.push({
                 id: newEdgeId,
                 interaction: classLevelInteraction,
@@ -63,7 +63,7 @@ export class ExtractInterfaceTransformation {
             labels: ["Type", "New"], 
             properties: {
                 type: "interface",
-                kind: "class",
+                kind: "interface",
                 simpleName: newInterfaceId,
                 shortname: newInterfaceId,
                 name: newInterfaceId

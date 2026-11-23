@@ -10,7 +10,6 @@ import {
 	collectRoleStereotypes,
 } from '../graphProcessing/headlessTransformations.js';
 import {
-    setSmellStyles,
 	adjustEdgeWidths,
 	cacheNodeStyles,
 	liftEdges,
@@ -57,7 +56,6 @@ const stageLiftCallsOnce = tap(({ cy }) => liftEdges(cy, 'calls'));
 const stageLiftConstructsOnce = tap(({ cy }) => liftEdges(cy, 'constructs'));
 const stageRemoveContainmentEdges = tap(({ cy }) => removeContainmentEdges(cy));
 const stageAdjustEdgeWidths = tap(({ cy }) => adjustEdgeWidths(cy));
-const stageSetSmellStyles = tap(({ cy }) => {setSmellStyles(cy)});
 const stageHideMethods = tap(({ cy, state }) => setHideMethods(cy, state));
 
 function hasAnyLabel(node, labels) {
@@ -335,39 +333,16 @@ export function createVisualPipeline({ state }) {
 		stageBuildColoringRegistry,
 		stageApplyLayerModeLegacy,
 		stageRemoveExtraNodes,
-        stageSetSmellStyles,
         stageHideMethods
 	);
 	return (ctx) => pipeline({ ...ctx, state });
 }
-
-
-const stageSuggestRefactorings = tap(({ cy, state }) => {
-    if (state.stronglyConnectedComponents.length === 0) {
-        return;
-    }
-    
-    let scc;
-    if (state.inspect === null)  {
-        scc = state.stronglyConnectedComponents[0];
-    } else {
-        console.log(state.inspect.index, state.stronglyConnectedComponents)
-        scc = state.stronglyConnectedComponents[state.inspect.index];
-        console.log(scc)
-    }
-    const refactorEngine = new RefactorEngine(cy);
-    state.refactorings = refactorEngine.suggestRefactoringsForSCC(scc);
-});
 
 export function createRefactoringPipeline({ state }) {
     const pipeline = pipe(
         stageSuggestRefactorings
     );
     return (ctx) => pipeline({ ...ctx, state });
-}
-
-export function runRefactoringPipeline(cy, state) {
-    return createRefactoringPipeline({ state })({ cy });
 }
 
 export function runHeadlessPipeline(headlessCy, state) {

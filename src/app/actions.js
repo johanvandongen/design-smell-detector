@@ -492,6 +492,20 @@ export function createActions({ state, ui }) {
                 'holds': true,
                 'constructs': true,
             }
+        } else if (preset === "calls") {
+            defaultInspectEdges = {
+                "returns": false, 
+                "parameterizes": false, 
+                "typed": false, 
+                'invokes': false,
+                'instantiates': false,
+                "calls": true, 
+                'produces': false,
+                'accepts': false,
+                'holds': false,
+                'constructs': false,
+            }
+
         }
         for (const [key, value] of Object.entries(defaultInspectEdges)) {
             setEdgeVisibilityViaRelation(key, value, statecy, ui.$all(`${elementId} .reltab input[name="showrels"]`))

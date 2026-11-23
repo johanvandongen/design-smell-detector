@@ -471,6 +471,10 @@ ul.tabs {
     transition: background-color 0.15s ease;
 }
 
+.selectable-list-item button {
+    margin-right: 4px;
+}
+
 .selectable-list-item.active {
     background-color: #e8f5e9;
     border-color: #a5d6a7;

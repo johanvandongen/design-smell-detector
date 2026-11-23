@@ -38,7 +38,6 @@ export function bootstrapApp() {
     const graphPreprocessor = new GraphPreprocessor();
 	const headlessPipeline = createHeadlessPipeline({ state });
 	const visualPipeline = createVisualPipeline({ state });
-    const refactoringPipeline = createRefactoringPipeline({ state });
 	installWindowStateShim(state);
     Split(['#baseline', '#preview'])
 
@@ -75,7 +74,7 @@ export function bootstrapApp() {
             nodes: inspect.nodes
         }
         
-        stageRunRefactoringPipeline(ctx)
+        stagelistRefactorings(ctx)
         actions.fillInspectionControls(ctx.state.cy, "#tab-baseline")
         actions.setEdgeVisibilityPreset("#tab-baseline", ctx.state.cy, "class")
         const ca = new CycleAnalyser()
@@ -95,12 +94,18 @@ export function bootstrapApp() {
             };
         })
 
-        const problematic_interactions = ['calls', 'holds', 'accepts', "produces"];
+        const problematic_interactions = ['calls', 'holds', 'accepts', "produces", "constructs"];
         let edges = cy.edges().filter((e) => problematic_interactions.includes(e.data("label")) && nodeMapping.hasOwnProperty(e.source().id()) && nodeMapping.hasOwnProperty(e.target().id())).map(edge => [nodeMapping[edge.source().id()], nodeMapping[edge.target().id()]]);
         const SCCs = GraphService.getStronglyConnectedComponents(Object.keys(nodeMapping).length, edges);
         return SCCs.map(scc => scc.map(index => nodeMapping[index]));
 
     }
+
+    const stageDetectCyclicDependenciesCytoscape = tap((ctx) => {
+        const SCCs = detectCyclicDependenciesFromCytoscape(ctx.state.hcy)
+        ui.listCyclicDependencies(SCCs, (idx) => inspectCD(ctx, idx));
+        ctx.state.stronglyConnectedComponents = SCCs;
+    })
     
     const stageDetectCyclicDependencies = tap((ctx) => {
         // Convert labeled nodes and edges into sequential indices for SCC detection
@@ -113,7 +118,7 @@ export function bootstrapApp() {
             k += 1;
         }
         
-        const problematic_interactions = ['calls', 'holds', 'accepts', 'produces'];
+        const problematic_interactions = ['calls', 'holds', 'accepts', 'produces', "constructs"];
         let edges = ctx.graph.abstract.elements.edges.filter(edge => problematic_interactions.includes(edge.data.label) && nodeMapping.hasOwnProperty(edge.data.source) && nodeMapping.hasOwnProperty(edge.data.target)).map(edge => [nodeMapping[edge.data.source], nodeMapping[edge.data.target]]);
         const SSCs = GraphService.getStronglyConnectedComponents(ctx.graph.abstract.elements.nodes.length, edges);
         
@@ -146,31 +151,32 @@ export function bootstrapApp() {
 		});
         // deriveRelationshipLabels(state.hcy.json().elements).forEach((relation) => ctx.state.hiddenEdges[relation] = ctx.state.cy.edges(`[label = "${relation}"]`) )
 	});
-    
-    const stageCreateRefactoringPipeline = async (ctx) => {
-		ctx.state.refactoringPipeline = await ctx.cyAdapter.createHeadless(ctx.graph.abstract.elements);
-		return ctx;
-	};
 
-    // const stageRunRefactoringPipeline = async (ctx) => {
-	// 	ctx.cyAdapter.batch(ctx.state.refactoringPipeline, () => {
-	// 		refactoringPipeline({ cy: ctx.state.hcy });
-	// 	});
+    const searchRefactoringOpportunities = (state) => {
+        if (state.stronglyConnectedComponents.length === 0 || state.inspect === null) {
+            return null;
+        }
+        const scc = state.stronglyConnectedComponents[state.inspect.index];
+        const refactorEngine = new RefactorEngine(state.hcy);
+        return refactorEngine.suggestRefactoringsForSCC(scc);
+    }
 
-    //     const ranked = await rankRefactorings(ctx, state.refactorings)
-    //     ui.listRefactorings(ranked, (refactoring) => previewRefactoring(ctx, refactoring));
-    //     // ui.listRefactorings(state.refactorings, (refactoring) => previewRefactoring(ctx, refactoring));
-    //     return ctx
-	// };
-    const stageRunRefactoringPipeline = tap((ctx) => {
-		ctx.cyAdapter.batch(ctx.state.refactoringPipeline, () => {
-			refactoringPipeline({ cy: ctx.state.hcy });
-		});
+    const stagelistRefactorings = tap((ctx) => {
+        state.refactorings = searchRefactoringOpportunities(ctx.state)
+        if (state.refactorings === null) {
+            ui.listRefactorings(null, {});  
+            return;
+        }
+
+        const handlers = {
+            preview: (refactoring) => previewRefactoring(ctx, refactoring),
+            accept: (refactoring) => acceptRefactoring(ctx, refactoring)
+        }
 
         rankRefactorings(ctx, state.refactorings).then((result) =>{
-            ui.listRefactorings(result, (refactoring) => previewRefactoring(ctx, refactoring));    
+            ui.listRefactorings(result, handlers, state.inspect.index);    
         })
-        ui.listRefactorings(state.refactorings, (refactoring) => previewRefactoring(ctx, refactoring));
+        ui.listRefactorings(state.refactorings, handlers, state.inspect.index);
 	});
 
     const rankRefactorings = async (ctx, refactorings) => {
@@ -220,7 +226,7 @@ export function bootstrapApp() {
             const changeSet = strategy.apply(ctx.state.hcy, refactoring);
             statePreview.cy = cynew;
             statePreview.hcy = ctx.state.hcy
-            applyRefactoringChangeSet(statePreview, changeSet, ctx.state)
+            applyRefactoringChangeSet(statePreview.cy, changeSet, ctx.state)
 
             const SCCs = detectCyclicDependenciesFromCytoscape(cynew)
             const refactorRanker = new RefactorRanker()
@@ -265,7 +271,7 @@ export function bootstrapApp() {
         statePreview.cy = cynew;
         // statePreview.hcy = ctx.cyAdapter.createHeadless(cynew.json().elements.clone());
         statePreview.hcy = ctx.state.hcy // TODO make hcy a clone of cynew o correct edgelabels can be derived in preview mode
-        applyRefactoringChangeSet(statePreview, changeSet, ctx.state)
+        applyRefactoringChangeSet(statePreview.cy, changeSet, ctx.state)
         
         
         let index;
@@ -345,6 +351,41 @@ export function bootstrapApp() {
         cynew.once('layoutstop', () => cynew.animate({fit: {eles: inspect.fitElements}}));
     }
 
+    const getChangeSetForRefactoring = (graph, refactoring) => {
+        let strategy;
+        switch( refactoring.kind) {
+            case "extract-interface":
+                strategy = new ExtractInterfaceStrategy();
+            break;
+            case "dependency-injection":
+                strategy = new DependencyInjectionStrategy();
+            break;
+            case "move-method":
+                strategy = new MoveMethodStrategy();
+            break;
+            default:
+                throw Error("No strategy found to apply refactoring of kind: " + refactoring.kind);
+        }
+                    
+        const changeSet = strategy.apply(graph, refactoring);
+        return changeSet
+    }
+
+    const acceptRefactoring = async (ctx, refactoring) => {
+        const changeSet = getChangeSetForRefactoring(ctx.state.hcy, refactoring)
+        applyRefactoringChangeSet(ctx.state.hcy, changeSet, ctx.state)
+        applyRefactoringChangeSet(ctx.state.cy, changeSet, ctx.state)
+        
+        stageDetectCyclicDependenciesCytoscape(ctx)
+        stageRunVisualPipeline(ctx)
+        actions.setEdgeVisibilityPreset('#tab-baseline', ctx.state.cy, 'calls')
+        ui.renderDescription(refactoring.description, '#cycle-description', 'Accepted refactoring')
+        ctx.state.inspect = null
+        stagelistRefactorings(ctx)
+        relayout(ctx.state.cy, ui.$('#selectlayout').options[ui.$('#selectlayout').selectedIndex].value);
+        ctx.state.cy.once('layoutstop', () => ctx.state.cy.animate({fit: {eles: changeSet.focus}}));
+    }
+
     const inspectNodes = (nodes, cy) => {
         const fitElements = cy.nodes().filter((n) => nodes.includes(n.id()))
         const nodesChildren = cy.nodes().filter((n) =>nodes.includes(n.parent().first().id())).map((n) => n.id());
@@ -363,8 +404,7 @@ export function bootstrapApp() {
 		stageRunHeadlessPipeline,
 		stageCreateVisualCy,
 		stageRunVisualPipeline,
-        stageCreateRefactoringPipeline,
-        stageRunRefactoringPipeline,
+        stagelistRefactorings,
 		stageRunPostRender
 	);
 

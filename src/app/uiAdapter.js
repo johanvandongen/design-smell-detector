@@ -189,7 +189,21 @@ export function createUiAdapter() {
             removeScopes(elementId) {
                 r(`${elementId} .menu-scope`, [])
             },
-            listRefactorings(refactorings, handler) {
+            listRefactorings(refactorings, handlers, cycleIndex = null) {
+                if (refactorings === null) {
+                    r('#menu-refactor', [
+                        h('h2', {}, ['Refactoring Opportunities']),
+                        h('p', {}, 'No cycle selected. Select a cycle to generate refactoring opportunities.')
+                    ])
+                    return;
+                }
+                if (refactorings.length === 0) {
+                    r('#menu-refactor', [
+                        h('h2', {}, ['Refactoring Opportunities']),
+                        h('p', {}, 'No refactoring opportunities have been found' + (cycleIndex === null ? '.' : ` for cycle ${cycleIndex+1}.`))
+                    ])
+                    return;
+                }
                 const isRankedRefactoring = refactorings.length > 0 && Object.hasOwn(refactorings[0], 'score')
                 r('#menu-refactor', [
                     h('h2', {}, ['Refactoring Opportunities']),
@@ -207,7 +221,15 @@ export function createUiAdapter() {
                                     const item = event.currentTarget.closest('li');
                                     item.parentElement.querySelectorAll('#menu-refactor .selectable-list-item.active').forEach((el) => el.classList.remove('active'));
                                     item.classList.add('active');
-                                    handler(refactoringSuggestion);
+                                    handlers.preview(refactoringSuggestion);
+                                },
+                            }),
+                            h('button', {}, 'accept', {
+                                click: (event) => {
+                                    const item = event.currentTarget.closest('li');
+                                    item.parentElement.querySelectorAll('#menu-refactor .selectable-list-item.active').forEach((el) => el.classList.remove('active'));
+                                    item.classList.add('active');
+                                    handlers.accept(refactoringSuggestion);
                                 },
                             })
                         ]);

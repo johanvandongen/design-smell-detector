@@ -117,15 +117,6 @@ export const adjustEdgeWidths = function (pCy) {
 	});
 }
 
-// Deprecated cacheNodeStyles no colors smell labels
-export const setSmellStyles = function (pCy) {
-    //  pCy.nodes(n => nodeHasLabel(n, 'CD-smell')).forEach((n) => {
-    //     addScratch(n, 'style_default', {
-    //         'border-color': 'red',
-    //     })
-    // })
-}
-
 export const removeExtraNodes = function (pCy) {
 	const extras = pCy.nodes(n => 
 		!nodeHasLabel(n, "Scope") && 
@@ -155,8 +146,8 @@ export const showNeighborhood = function (nodes) {
 		.removeClass("dimmed");
 };
 
-export const applyRefactoringChangeSet = (state, changeSet, stateOriginal) => {
-        const cynew = state.cy
+export const applyRefactoringChangeSet = (graphToUpdate, changeSet, stateOriginal) => {
+        const cynew = graphToUpdate
 
         changeSet.addedNodes.forEach((n) => {
             cynew.add({

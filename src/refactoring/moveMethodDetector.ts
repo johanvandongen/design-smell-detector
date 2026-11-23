@@ -76,7 +76,7 @@ export class MoveMethodDetector {
     }
 
     // Hacky fix. Graph should contain information about whether a method is abstract or not, but it currently does not. So we check the source text for the word "abstract" to determine if it is abstract.
-    private abstract = (n: cytoscape.NodeSingular) => nodeHasKind(n, "method") && (n.data("properties.sourceText").includes("abstract") || this.isInterface(n.parent().first()))
+    private abstract = (n: cytoscape.NodeSingular) => nodeHasKind(n, "method") && (n.data("properties.sourceText") && n.data("properties.sourceText").includes("abstract") || this.isInterface(n.parent().first()))
     private fieldIsNotPrivate = (n: cytoscape.NodeSingular) => nodeHasKind(n, "field") && n.data("properties.visibility") !== "private";
     private isInterface = (n: cytoscape.NodeSingular) => n.data("properties.kind") === "interface"
     private hasParameterOfType = (method: cytoscape.NodeSingular, targetClass: cytoscape.NodeSingular): boolean => {

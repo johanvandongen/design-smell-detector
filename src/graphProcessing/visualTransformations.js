@@ -42,7 +42,33 @@ export const cacheNodeStyles = function (pCy) {
 	});
 }
 
+const decreaseLiftScratch = (pCy, label) => {
+    const scratchData = pCy.scratch('_lift')
+    if (scratchData && Object.hasOwn(scratchData, label)) {
+        if (scratchData[label] === 0) {
+            return;
+        }
+        scratchData[label] = scratchData[label] - 1
+        pCy.scratch('_lift', {...scratchData})
+    }
+}
+const increaseLiftScratch = (pCy, label) => {
+    const scratchData = pCy.scratch('_lift')
+    if (!scratchData) {
+        const d = {};
+        d[label] = 1;
+        pCy.scratch('_lift', d)
+    } else if (scratchData && Object.hasOwn(scratchData, label)) {
+        scratchData[label] = scratchData[label] + 1
+        pCy.scratch('_lift', {...scratchData})
+    } else {
+        scratchData[label] = 1;
+        pCy.scratch('_lift', {...scratchData})
+    }
+}
+
 export const liftEdges = function (pCy, label) {
+    increaseLiftScratch(pCy, label)
 	const edges = pCy
 		.edges((e) => edgeHasLabel(e, label))
 		.filter((e) => {
@@ -86,6 +112,7 @@ export const liftEdges = function (pCy, label) {
 }
 
 export const lowerEdges = function (pCy, label) {
+    decreaseLiftScratch(pCy, label)
 	const maxLevel = Math.max(...cy.edges(`[label="${label}"]`)
 		.map((e) => e.data('properties.level'))
 		.filter((l) => Number.isFinite(l)));

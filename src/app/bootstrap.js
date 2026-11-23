@@ -374,13 +374,16 @@ export function bootstrapApp() {
     const acceptRefactoring = async (ctx, refactoring) => {
         const changeSet = getChangeSetForRefactoring(ctx.state.hcy, refactoring)
         applyRefactoringChangeSet(ctx.state.hcy, changeSet, ctx.state)
+        
+        // Either copy hcy into cy, or restore all edges (hidden and lifted) and apply changes to cy aswell (the latter is assumed to be more performative)
+        ctx.state.inspect = null
+        actions.restoreAllEdges("#tab-baseline")
         applyRefactoringChangeSet(ctx.state.cy, changeSet, ctx.state)
         
         stageDetectCyclicDependenciesCytoscape(ctx)
         stageRunVisualPipeline(ctx)
         actions.setEdgeVisibilityPreset('#tab-baseline', ctx.state.cy, 'calls')
         ui.renderDescription(refactoring.description, '#cycle-description', 'Accepted refactoring')
-        ctx.state.inspect = null
         stagelistRefactorings(ctx)
         relayout(ctx.state.cy, ui.$('#selectlayout').options[ui.$('#selectlayout').selectedIndex].value);
         ctx.state.cy.once('layoutstop', () => ctx.state.cy.animate({fit: {eles: changeSet.focus}}));

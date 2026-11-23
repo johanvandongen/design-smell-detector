@@ -3,6 +3,7 @@ import cytoscape from "cytoscape";
 import { nodeHasKind, edgeHasLabel } from '../utilities/utils.js';
 import { ExtractInterfaceSuggestion } from "./refactorEngine.js";
 import { IRefactoringStrategy, RefactoringChangeSet } from "./IRefactoringStrategy.js";
+import { edgeIsComposed } from "../graphPreProcessing/graphPreprocessor.js";
 
 export class ExtractInterfaceTransformation {
 
@@ -75,6 +76,7 @@ export class ExtractInterfaceTransformation {
         })
         refactoringChangeSet.description = `Added interface ${newInterfaceId}`
         
+        const getClass = (n: cytoscape.NodeSingular) => n.data("labels").includes("Type") ? n : n.parent().first();
         // Add original methods to interface
         const originalClassMethods = targetNode.children().filter((child) => nodeHasKind(child, "method"));
         originalClassMethods.forEach((method) => 
@@ -89,31 +91,36 @@ export class ExtractInterfaceTransformation {
                 
                 method.outgoers().filter((edge) => edgeHasLabel(edge, "returns") || edgeHasLabel(edge, "parameterizes")).forEach((edge) => {
                     if (edge.target().id() === targetNode.id()) {
-                        this.addEdge(refactoringChangeSet, edge, newInterfaceId, newInterfaceId, newMethodId)
+                        IRefactoringStrategy.addEdge(cy, refactoringChangeSet, edge, method.id(), targetNode.id(), newInterfaceId, newInterfaceId)
+                        IRefactoringStrategy.removeEdge(refactoringChangeSet, edge)
                     } else {
-                        this.addEdge(refactoringChangeSet, edge, newInterfaceId, edge.target().id(), newMethodId)
+                        IRefactoringStrategy.addEdge(cy, refactoringChangeSet, edge, newMethodId, newInterfaceId, edge.target().id(), getClass(edge.target()).id())
                     }
+                })
+                method.incomers().filter((edge) => edgeHasLabel(edge, "invokes")).forEach((edge) => {
+                    IRefactoringStrategy.addEdge(cy, refactoringChangeSet, edge, edge.source().id(), getClass(edge.source()).id(), newMethodId, newInterfaceId)
+                    IRefactoringStrategy.removeEdge(refactoringChangeSet, edge)
                 })
             });
 
+
         // Redirect incoming edges to interface
         targetNode.incomers().edges().forEach((edge) => {
-            if (edge.source().id()) {
-                if (edgeHasLabel(edge, "typed") || edgeHasLabel(edge, "returns") || edgeHasLabel(edge, "parameterizes") || edgeHasLabel(edge, "invokes")) {
-                    this.addEdge(refactoringChangeSet, edge, edge.source().parent().first().id(), newInterfaceId, edge.source().id())
-                    refactoringChangeSet.updatedNodes.push({
-                        id: edge.source().id(),
-                        newLabel: "Modified"
-                    })
-                    refactoringChangeSet.updatedNodes.push({
-                        id: edge.target().id(),
-                        newLabel: "Modified"
-                    })
-                    refactoringChangeSet.removeEdgeIds.push(edge.id());
-                    IRefactoringStrategy.removeEdge(refactoringChangeSet, edge)
-                }
+            if (edgeHasLabel(edge, "typed") || edgeHasLabel(edge, "returns") || edgeHasLabel(edge, "parameterizes") || edgeHasLabel(edge, "invokes") || edgeHasLabel(edge, 'instantiates')) {
+                IRefactoringStrategy.addEdge(cy, refactoringChangeSet, edge, edge.source().id(), getClass(edge.source()).id(), newInterfaceId, newInterfaceId)
+                refactoringChangeSet.updatedNodes.push({id: edge.source().id(), newLabel: "Modified"})
+                refactoringChangeSet.updatedNodes.push({id: edge.target().id(), newLabel: "Modified"})
+                refactoringChangeSet.removeEdgeIds.push(edge.id());
+                IRefactoringStrategy.removeEdge(refactoringChangeSet, edge)
             }
         })
+        // Update composed edges
+        // targetNode.incomers().edges().forEach((edge) => {
+        //     if (edgeIsComposed(edge)) {
+        //         IRefactoringStrategy.addEdgeInteraction(cy, refactoringChangeSet, edge.data('interaction'), edge.source().id(), edge.source().id(), newInterfaceId, newInterfaceId)
+        //         IRefactoringStrategy.removeEdge(refactoringChangeSet, edge)
+        //     }
+        // })
         const removeComposedEdges = cy.edges().filter((e) => e.target().id() === targetNode.id() && (edgeHasLabel(e, "accepts") || edgeHasLabel(e, "holds") || edgeHasLabel(e, "produces") || edgeHasLabel(e, "calls"))).map((e) => e.id())
         refactoringChangeSet.removeEdgeIds.push(...removeComposedEdges)
 

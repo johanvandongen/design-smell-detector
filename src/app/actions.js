@@ -147,6 +147,23 @@ export function createActions({ state, ui }) {
 		)(ctx);
 	}
 
+    function restoreAllEdges(elementId, pCy = state.cy) {
+        const liftedEdges = pCy.scratch('_lift')
+        if (!liftedEdges) {
+            return;
+        }
+        for (const label in liftedEdges) {
+            const count = liftedEdges[label]
+            for (let i=0; i<count; i++) {
+                lowerEdges(pCy, label)
+            }
+        }
+        const labels = deriveRelationshipLabels(state.hcy.json().elements)
+        labels.forEach((label) => {
+            setEdgeVisibilityViaRelation(label, true, pCy, ui.$all(`${elementId} input[name="showrels"]`))
+        })
+    }
+
 	function showTrace(_event, pCy = state.cy) {
 		const traceContext = {
 			pCy,
@@ -465,47 +482,15 @@ export function createActions({ state, ui }) {
     }
 
     function setEdgeVisibilityPreset(elementId, statecy, preset="method") {
-        let defaultInspectEdges;
+        const allLabels = deriveRelationshipLabels(state.hcy.json().elements)
+        let defaultInspectEdges = {};
+        allLabels.forEach((label) => defaultInspectEdges[label] = false)
         if (preset === "method") {
-            defaultInspectEdges = {
-                "returns": true, 
-                "parameterizes": true, 
-                "typed": true, 
-                'invokes': true,
-                'instantiates': true,
-                "calls": false, 
-                'produces': false,
-                'accepts': false,
-                'holds': false,
-                'constructs': false,
-            }
+            ["returns", "parameterizes", "typed", "invokes", "instantiates"].forEach((label) => defaultInspectEdges[label] = true)
         } else if (preset === "class") {
-            defaultInspectEdges = {
-                "returns": false, 
-                "parameterizes": false, 
-                "typed": false, 
-                'invokes': false,
-                'instantiates': false,
-                "calls": true, 
-                'produces': true,
-                'accepts': true,
-                'holds': true,
-                'constructs': true,
-            }
+            ["calls", 'produces', 'accepts', 'holds', 'constructs'].forEach((label) => defaultInspectEdges[label] = true)
         } else if (preset === "calls") {
-            defaultInspectEdges = {
-                "returns": false, 
-                "parameterizes": false, 
-                "typed": false, 
-                'invokes': false,
-                'instantiates': false,
-                "calls": true, 
-                'produces': false,
-                'accepts': false,
-                'holds': false,
-                'constructs': false,
-            }
-
+            defaultInspectEdges["calls"] = true
         }
         for (const [key, value] of Object.entries(defaultInspectEdges)) {
             setEdgeVisibilityViaRelation(key, value, statecy, ui.$all(`${elementId} .reltab input[name="showrels"]`))
@@ -530,5 +515,6 @@ export function createActions({ state, ui }) {
 		normalizeAfterEdgeMutation,
         fillInspectionControls,
         setEdgeVisibilityPreset,
+        restoreAllEdges,
 	};
 }

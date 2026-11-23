@@ -59,7 +59,10 @@ export abstract class IRefactoringStrategy<T extends RefactorSuggestion> {
                 group: "edges",
                 label: interaction,
                 source: source,
-                target: target
+                target: target,
+                properties: {
+                    weigth: 1
+                }
             })
         }
 
@@ -88,13 +91,16 @@ export abstract class IRefactoringStrategy<T extends RefactorSuggestion> {
                 group: "edges",
                 label: classLevelInteraction,
                 source: sourceClass,
-                target: targetClass
+                target: targetClass,
+                properties: {
+                    weight: 1
+                }
             })
             // changeSet.description += `Added ${sourceCy ? sourceCy.data("properties.simpleName") : sourceClass} ${classLevelInteraction} ${targetCy ? targetCy.data("properties.simpleName") : targetClass}`
         }
     }
 
-    static addEdge(cy: cytoscape.Core, changeSet: RefactoringChangeSet, edge: cytoscape.SingularElementReturnValue, source: string, sourceClass: string, target: string, targetClass: string) {
+    static addEdge(cy: cytoscape.Core, changeSet: RefactoringChangeSet, edge: cytoscape.SingularElementReturnValue | cytoscape.EdgeSingular, source: string, sourceClass: string, target: string, targetClass: string) {
         IRefactoringStrategy.addEdgeInteraction(cy, changeSet, edge.data("interaction"), source, sourceClass, target, targetClass)
     }
 

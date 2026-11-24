@@ -36,23 +36,65 @@ class CycleImpact {
         ]);
     }
 }
-export interface DependencyDescription {
+
+export class InspectDescription {
+    private scc: DependencyList
+    private subCycles: DependencyList[]
+    private sccSize: number;
+
+    constructor(scc: DependencyList, subCycles: DependencyList[], sccSize: number) {
+        this.scc = scc;
+        this.subCycles = subCycles;
+        this.sccSize = sccSize;
+    }
+
+    render = () => {
+        if (!this.subCycles || this.subCycles.length === 0) {
+            this.scc.setTitle(null);
+            return this.scc.render()
+        }
+
+        this.subCycles.forEach((s, idx) => s.setTitle(`Subcycle ${idx+1}`))
+        this.scc.setTitle("Entire Strongly Connected Component")
+        return h('div', { class: 'refactoring-report' }, [
+            h('section', { class: 'report-section' }, [
+               h('p', {}, `SCC contains ${this.sccSize} classes and contains many subcycles. A few are listed below.`)
+            ]),
+            h('section', { class: 'report-section' }, [
+                ...this.subCycles.map((s) => s.render()),
+            ]),
+            h('section', { class: 'report-section' }, [
+                this.scc.render()
+            ])
+        ])
+    };
+}
+export interface DependencyItem {
     source: string;
     target: string;
     types: string[];
 }
-export class CycleDescription {
-    private cycle: DependencyDescription[] = [];
+export class DependencyList {
+    private cycle: DependencyItem[] = [];
+    private title: string | null = 'Resulting SCC';
 
-    addDependencyDecription = (dep: DependencyDescription) => {
+    constructor(cycle: DependencyItem[] = []) {
+        this.cycle = cycle;
+    }
+
+    addDependencyDecription = (dep: DependencyItem) => {
         this.cycle.push(dep)
+    }
+
+    setTitle(title: string | null) {
+        this.title = title;
     }
 
     render = () => {
         if (!this.cycle.length) return null;
 
         return h('section', { class: 'report-section' }, [
-            h('h4', {}, 'Resulting cycle'),
+            ...(this.title === null ? [] : [h('h4', {}, this.title)]),
             h('div', { class: 'cycle-list' },
                 this.cycle.map(edge =>
                     h('div', { class: 'cycle-edge' }, [
@@ -67,15 +109,15 @@ export class CycleDescription {
 
 type DependencyChangeType = 'added' | 'removed'
 class DependencyChanges {
-    private dependencies: DependencyDescription[] = []
-    private dependenciesOutsideFocus: DependencyDescription[] = []
+    private dependencies: DependencyItem[] = []
+    private dependenciesOutsideFocus: DependencyItem[] = []
     private type: DependencyChangeType = 'added';
 
     constructor(type: DependencyChangeType) {
         this.type = type
     }
 
-    addDependencyDecription = (dep: DependencyDescription, inFocus: boolean = true) => {
+    addDependencyDecription = (dep: DependencyItem, inFocus: boolean = true) => {
         if (inFocus) {
             this.dependencies.push(dep);
         } else {
@@ -108,7 +150,7 @@ export class RefactoringDescription {
     public name: string;
     public description: string;
     public cycleImpact?: CycleImpact
-    private resultingCycle?: CycleDescription
+    private resultingCycle?: DependencyList
     private addedDependencies?: DependencyChanges = new DependencyChanges('added')
     private removedDependencies?: DependencyChanges = new DependencyChanges('removed')
     private detailsDescription: string = ""
@@ -122,11 +164,11 @@ export class RefactoringDescription {
         this.cycleImpact = new CycleImpact(status, description)
     }
 
-    addResultingCycle(resultingCycle: CycleDescription) {
+    addResultingCycle(resultingCycle: DependencyList) {//todo multiple
         this.resultingCycle = resultingCycle
     }
 
-    appendChangeDescription(type: DependencyChangeType, dep: DependencyDescription, inFocus: boolean = true) {
+    appendChangeDescription(type: DependencyChangeType, dep: DependencyItem, inFocus: boolean = true) {
         if (type === 'added') {
             this.addedDependencies?.addDependencyDecription(dep, inFocus)
         } else if (type === 'removed') {

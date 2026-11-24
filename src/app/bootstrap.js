@@ -77,9 +77,10 @@ export function bootstrapApp() {
         stagelistRefactorings(ctx)
         actions.fillInspectionControls(ctx.state.cy, "#tab-baseline")
         actions.setEdgeVisibilityPreset("#tab-baseline", ctx.state.cy, "class")
-        const ca = new CycleAnalyser()
+        const cycleAnalyser = new CycleAnalyser()
         
-        ui.renderCycleDescription(ca.getDescription(ctx.state.cy, scc));
+        const description = cycleAnalyser.getInspectDescription(ctx.state.cy, scc)
+        ui.renderCycleDescription(description);
         ctx.state.cy.animate({fit: {eles: inspect.fitElements}})
     }
 

@@ -2,7 +2,7 @@ import { RefactoringChangeSet } from "../refactoring/IRefactoringStrategy";
 import { RefactorSuggestion } from "../refactoring/refactorEngine";
 import { CycleAnalyser } from "./cycleAnalyser";
 import { RefactoringAnalyser } from "./RefactoringAnalyser";
-import { DependencyDescription } from "./RefactoringDescription";
+import { DependencyItem } from "./RefactoringDescription";
 
 export class RefactorRanker {
 
@@ -16,9 +16,9 @@ export class RefactorRanker {
         const largestResultingSCC = Math.max(...overlappingSCCs.map((s) => s.length))
 
         const cycleAnalyser = new CycleAnalyser()
-        const calcBurden = (dependencies: DependencyDescription[]) => dependencies.reduce((sum, dependency) => sum + dependency.types.length, 0)
-        const burdenBefore = calcBurden(cycleAnalyser.getSCCDescription(orginalCodebase, scc))
-        const burdenAfter = overlappingSCCs.reduce((sum, curr) => sum + calcBurden(cycleAnalyser.getSCCDescription(refactoredCodebase, curr)), 0)
+        const calcBurden = (dependencies: DependencyItem[]) => dependencies.reduce((sum, dependency) => sum + dependency.types.length, 0)
+        const burdenBefore = calcBurden(cycleAnalyser.getSCCDependencies(orginalCodebase, scc))
+        const burdenAfter = overlappingSCCs.reduce((sum, curr) => sum + calcBurden(cycleAnalyser.getSCCDependencies(refactoredCodebase, curr)), 0)
 
         const dependencyImprovement = (burdenBefore - burdenAfter) / Math.max(burdenBefore, 1);
         const cyclicNodesImprovement = (scc.length - overlappingSCCs.reduce((acc, a) => acc + a.length, 0)) / Math.max(scc.length, 1)

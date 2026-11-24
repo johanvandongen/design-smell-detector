@@ -4,6 +4,7 @@ import { RefactorSuggestion } from "../refactoring/refactorEngine";
 import { CycleAnalyser } from "./cycleAnalyser";
 import { composedInteractions, EdgeData } from "../graphPreProcessing/graphPreprocessor";
 import { RefactoringDescription } from "./RefactoringDescription";
+import { DependencyList, RefactoringDescription } from "./RefactoringDescription";
 
 
 interface SCCStatus {
@@ -140,6 +141,7 @@ export class RefactoringAnalyser {
         }
         
         refactoringDescription.addResultingCycle(this.cycleAnalyer.getCycleDescription(this.refactoredCodebase, overlappingSCCs[0]))
+        refactoringDescription.addResultingCycle(new DependencyList(this.cycleAnalyer.getSCCDependencies(this.refactoredCodebase, overlappingSCCs[0])))
         refactoringDescription.addCycleImpact(sccImpact.status, sccImpact.description)
 
         return refactoringDescription

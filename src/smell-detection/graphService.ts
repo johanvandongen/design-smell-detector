@@ -101,7 +101,6 @@ export class GraphService {
                 if (!visited[n]) {
                     visited[n] = true;
                     if (n === self_search) {
-                        console.log("found", self_search, path)
                         results.push(path)
                         visited[n] = false; // Dont mark self_search as visited so other paths can be found
                     }
@@ -133,7 +132,9 @@ export class GraphService {
         const result: number[][] = []
         // const uniquePaths = new Set<string>(); 
         for (let i=0; i<scc.length; i++){
-            for (let path of this.findShortestPaths(num_nodes, edges, scc[i])) {
+
+            const paths = this.findShortestPaths(num_nodes, edges, scc[i])
+            for (let path of paths) {
                 if (result.some((p) => cyclesAreEqual(p, path))) {continue}
                 result.push(path)
             }
@@ -143,21 +144,7 @@ export class GraphService {
             }
         }
 
-
-        // const testEdges: [number, number][] = [
-        //     [1, 3],
-        //     [2, 1],
-        //     [3, 2],
-        //     [3, 4],
-        //     [4, 6],
-        //     [6, 3],
-        //     [6, 7],
-        //     [4, 5],
-        // ]
-        // this.findShortestPaths(7, testEdges, 3)
-        // assert test case that both cycles of size 3 are returned
         return result.slice(0, limit)
-
     }
 };
 
@@ -174,7 +161,7 @@ export class CytoscapeToNumericAdapter {
             };
         })
 
-        const problematic_interactions = ['calls', 'holds', 'accepts', 'produces'];
+        const problematic_interactions = ['calls', 'holds', 'accepts', 'produces', "constructs"];
         const edges = cytoscape.edges()
             .filter((e) => problematic_interactions.includes(e.data("label")) && cyToNumMapping.hasOwnProperty(e.source().id()) && cyToNumMapping.hasOwnProperty(e.target().id())).edges()
             .map(edge => [cyToNumMapping[edge.source().id()], cyToNumMapping[edge.target().id()]] as [number, number]);

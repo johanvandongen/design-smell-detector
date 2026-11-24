@@ -6,6 +6,7 @@ import { composedInteractions, EdgeData } from "../graphPreProcessing/graphPrepr
 
 /**
  * This class analyses the refactored codebase and provides an explanation as to why a cyclic dependency is resolved or remains
+ * @deprecated Use new class {@code RefactoringAnalyser}
  */
 export class CDAnalyser {
     private refactoredCodebase;

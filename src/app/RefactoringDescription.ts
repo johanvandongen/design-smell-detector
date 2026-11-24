@@ -58,7 +58,7 @@ export class InspectDescription {
         this.scc.setTitle("Entire Strongly Connected Component")
         return h('div', { class: 'refactoring-report' }, [
             h('section', { class: 'report-section' }, [
-               h('p', {}, `SCC contains ${this.sccSize} classes and contains many subcycles. A few are listed below.`)
+               h('p', {}, `SCC contains ${this.sccSize} classes and many subcycles. A few are listed below.`)
             ]),
             h('section', { class: 'report-section' }, [
                 ...this.subCycles.map((s) => s.render()),
@@ -150,7 +150,7 @@ export class RefactoringDescription {
     public name: string;
     public description: string;
     public cycleImpact?: CycleImpact
-    private resultingCycle?: DependencyList
+    private resultingSCCs: DependencyList[] = []
     private addedDependencies?: DependencyChanges = new DependencyChanges('added')
     private removedDependencies?: DependencyChanges = new DependencyChanges('removed')
     private detailsDescription: string = ""
@@ -164,8 +164,8 @@ export class RefactoringDescription {
         this.cycleImpact = new CycleImpact(status, description)
     }
 
-    addResultingCycle(resultingCycle: DependencyList) {//todo multiple
-        this.resultingCycle = resultingCycle
+    addResultingSCCs(resultingSCCs: DependencyList[]) {
+        this.resultingSCCs = resultingSCCs
     }
 
     appendChangeDescription(type: DependencyChangeType, dep: DependencyItem, inFocus: boolean = true) {
@@ -181,6 +181,12 @@ export class RefactoringDescription {
     }
 
     render() {
+        
+        if (this.resultingSCCs.length === 1) {
+            this.resultingSCCs[0].setTitle("Resulting SCC")
+        } else if (this.resultingSCCs.length > 1) {
+            this.resultingSCCs.forEach((scc, idx) => scc.setTitle(`Resulting SCC ${idx+1}`))
+        }
         return h('div', { class: 'refactoring-report' }, [
             h('div', { class: 'report-title' }, [
                 h('div', {}, [
@@ -191,7 +197,7 @@ export class RefactoringDescription {
             ]),
 
             this.cycleImpact ? this.cycleImpact.render() : "",
-            this.resultingCycle ?  this.resultingCycle.render() : "",
+            ...this.resultingSCCs.map((scc) => scc.render()),
             h('section', { class: 'report-section' }, [
                 h('h4', {}, 'Dependency changes'),
                 this.addedDependencies ? this.addedDependencies.render() : "",

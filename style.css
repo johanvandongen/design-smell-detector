@@ -694,7 +694,7 @@ ul.tabs {
 /* Cycle status */
 .cycle-status {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     gap: 10px;
     padding: 10px 12px;
     border-radius: 6px;
@@ -711,6 +711,10 @@ ul.tabs {
 }
 
 .cycle-status.resolved {
+    background: #e8f5e9;
+    color: #287d3c;
+}
+.cycle-status.partially-resolved {
     background: #e8f5e9;
     color: #287d3c;
 }

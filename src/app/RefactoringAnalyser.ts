@@ -3,7 +3,6 @@ import { RefactoringChangeSet } from "../refactoring/IRefactoringStrategy";
 import { RefactorSuggestion } from "../refactoring/refactorEngine";
 import { CycleAnalyser } from "./cycleAnalyser";
 import { composedInteractions, EdgeData } from "../graphPreProcessing/graphPreprocessor";
-import { RefactoringDescription } from "./RefactoringDescription";
 import { DependencyList, RefactoringDescription } from "./RefactoringDescription";
 
 
@@ -107,11 +106,13 @@ export class RefactoringAnalyser {
         }
 
         const sccSplit = overlappingSCCs.length > 1
-        if (shift) {
+        if (resultingSCCNodeSize < originalSCC.length || sccSplit) {
+            let description = resultingSCCNodeSize < originalSCC.length ? `SCC size reduced from ${originalSCC.length} to ${resultingSCCNodeSize}.` : "";
+            if (sccSplit) {description += `Original scc split in ${overlappingSCCs.length}`}
+            return {status: "partially-resolved", description: description}
+        } else if (shift) {
             const description = noMoreInCycle[0] + overflowDesc(noMoreInCycle) + " is no longer part of the cycle. Shifted cycle contains new node " + newInCycle[0] + overflowDesc(newInCycle)
             return {status: "shifted", description: description}
-        } else if (resultingSCCNodeSize < originalSCC.length || sccSplit) {
-            return {status: "partially-resolved", description: ""}
         }
 
         return {status: "remains", description: ""}
@@ -140,8 +141,7 @@ export class RefactoringAnalyser {
             return refactoringDescription
         }
         
-        refactoringDescription.addResultingCycle(this.cycleAnalyer.getCycleDescription(this.refactoredCodebase, overlappingSCCs[0]))
-        refactoringDescription.addResultingCycle(new DependencyList(this.cycleAnalyer.getSCCDependencies(this.refactoredCodebase, overlappingSCCs[0])))
+        refactoringDescription.addResultingSCCs(overlappingSCCs.map((overlappingSCC) => new DependencyList(this.cycleAnalyer.getSCCDependencies(this.refactoredCodebase, overlappingSCC))))
         refactoringDescription.addCycleImpact(sccImpact.status, sccImpact.description)
 
         return refactoringDescription

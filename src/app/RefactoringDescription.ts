@@ -50,7 +50,7 @@ export class InspectDescription {
 
     render = () => {
         if (!this.subCycles || this.subCycles.length === 0) {
-            this.scc.setTitle(null);
+            this.scc.setTitle("Strongly Connected Component");
             return this.scc.render()
         }
 
@@ -75,15 +75,20 @@ export interface DependencyItem {
     types: string[];
 }
 export class DependencyList {
-    private cycle: DependencyItem[] = [];
+    private dependencies: DependencyItem[] = [];
+    private size: number; 
     private title: string | null = 'Resulting SCC';
 
-    constructor(cycle: DependencyItem[] = []) {
-        this.cycle = cycle;
+    constructor(dependencies: DependencyItem[] = []) {
+        this.dependencies = dependencies;
+        this.size = this.calculateNodeSize();
     }
+    
+    private calculateNodeSize = (): number => (new Set(this.dependencies.flatMap((d) => [d.source, d.target]))).size
 
     addDependencyDecription = (dep: DependencyItem) => {
-        this.cycle.push(dep)
+        this.dependencies.push(dep)
+        this.size = this.calculateNodeSize()
     }
 
     setTitle(title: string | null) {
@@ -91,12 +96,13 @@ export class DependencyList {
     }
 
     render = () => {
-        if (!this.cycle.length) return null;
+        if (!this.dependencies.length) return null;
+        const title = (this.title && this.size > 2) ? this.title + ` (${this.size} nodes)` : this.title // Heurtistc only show node size when it is bigger than 2
 
         return h('section', { class: 'report-section' }, [
-            ...(this.title === null ? [] : [h('h4', {}, this.title)]),
+            ...(title === null ? [] : [h('h4', {}, title)]),
             h('div', { class: 'cycle-list' },
-                this.cycle.map(edge =>
+                this.dependencies.map(edge =>
                     h('div', { class: 'cycle-edge' }, [
                         h('strong', {}, `${edge.source} → ${edge.target}`),
                         h('span', {}, edge.types.join(' · '))

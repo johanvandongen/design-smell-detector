@@ -113,10 +113,10 @@ export const liftEdges = function (pCy, label) {
 
 export const lowerEdges = function (pCy, label) {
     decreaseLiftScratch(pCy, label)
-	const maxLevel = Math.max(...cy.edges(`[label="${label}"]`)
+	const maxLevel = Math.max(...pCy.edges(`[label="${label}"]`)
 		.map((e) => e.data('properties.level'))
 		.filter((l) => Number.isFinite(l)));
-	cy.edges(`[label="${label}"]`)
+	pCy.edges(`[label="${label}"]`)
 		.filter((e) => e.data('properties.level') === maxLevel)
 		.forEach((edge) => {
 			// console.log(edge.data('properties')['bundle'])

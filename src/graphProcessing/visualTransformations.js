@@ -188,45 +188,28 @@ export const applyRefactoringChangeSet = (graphToUpdate, changeSet, stateOrigina
             }
         })
         
-        changeSet.updatedNodes.forEach((n) => {
-            let node = cynew.getElementById(n.id)
-            if (node.empty()) {
-                const nodehcy = stateOriginal.hcy.getElementById(n.id);
-                if (nodehcy.empty()) return;
-                const d = nodehcy.data();
-                cynew.add({
-                    group: "nodes",
-                    data: { ...d, labels: [...d.labels, "Modified"] }
-                });
-                node = cynew.getElementById(n.id);
-            }
-
-            const labels = node.data("labels");
-            if (labels && !labels.includes(n.newLabel)) {
-                node.data("labels", [...labels, n.newLabel]);
-            }
-        })
-        
         changeSet.addedEdges.forEach((n) => {
-            const s = cynew.getElementById(n.source)
-            if (!s.data()) {
-                const nodehcy = stateOriginal.hcy.getElementById(n.source);
-                if (!nodehcy || ! nodehcy.data()) {
-                    console.log("what", nodehcy)
+            const sourceNode = cynew.getElementById(n.source)
+            if (sourceNode.empty()) {
+                const nodeFromHcy = stateOriginal.hcy.getElementById(n.source);
+                if (!nodeFromHcy || ! nodeFromHcy.data()) {
+                    console.log("Could not add edge with source ", n.source)
                     return;
                 }
-                const d = nodehcy.data();
+                const d = nodeFromHcy.data();
                 cynew.add({
                     group: 'nodes',
                     data: {...d, labels: [...d.labels, "Modified"]}
                 });
             }
-            if (!cynew.getElementById(n.target).data()) {
-                const nodehcy = stateOriginal.hcy.getElementById(n.target);
-                if (!nodehcy || ! nodehcy.data()) {
+            const targetNode = cynew.getElementById(n.target)
+            if (targetNode.empty()) {
+                const nodeFromHcy = stateOriginal.hcy.getElementById(n.target);
+                if (!nodeFromHcy || !nodeFromHcy.data()) {
+                    console.log("Could not add edge with target ", n.target)
                     return;
                 }
-                const d = nodehcy.data();
+                const d = nodeFromHcy.data();
                 cynew.add({
                     group: 'nodes',
                     data: {...d, labels: [...d.labels, "Modified"]}
@@ -235,11 +218,24 @@ export const applyRefactoringChangeSet = (graphToUpdate, changeSet, stateOrigina
             
             const edgeExists = cynew.getElementById(n.id).nonempty()
             if (edgeExists) { return }
+            if (cynew.edges().filter((e) => e.source().id() === n.source && e.target().id() === n.target && e.data("interaction") === n.interaction).length > 0) {
+                console.log("Did not allow duplicate edge: ", n);
+                return;
+            }
 
             cynew.add({
                 group: 'edges',
                 data: n,
             })
+        })
+
+        changeSet.updatedNodes.forEach((n) => {
+            let node = cynew.getElementById(n.id)
+            if (node.empty()) { return; }
+            const labels = node.data("labels");
+            if (labels && !labels.includes(n.newLabel)) {
+                node.data("labels", [...labels, n.newLabel]);
+            }
         })
 
         changeSet.removeEdgeIds.forEach((e) => {

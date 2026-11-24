@@ -107,6 +107,9 @@ export class ExtractInterfaceTransformation {
         // Redirect incoming edges to interface
         targetNode.incomers().edges().forEach((edge) => {
             if (edgeHasLabel(edge, "typed") || edgeHasLabel(edge, "returns") || edgeHasLabel(edge, "parameterizes") || edgeHasLabel(edge, "invokes") || edgeHasLabel(edge, 'instantiates')) {
+                if (edgeHasLabel(edge, "typed") && edge.source().data("properties.kind") === "parameter") {
+                    return;
+                }
                 IRefactoringStrategy.addEdge(cy, refactoringChangeSet, edge, edge.source().id(), getClass(edge.source()).id(), newInterfaceId, newInterfaceId)
                 refactoringChangeSet.updatedNodes.push({id: edge.source().id(), newLabel: "Modified"})
                 refactoringChangeSet.updatedNodes.push({id: edge.target().id(), newLabel: "Modified"})

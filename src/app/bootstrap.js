@@ -381,6 +381,33 @@ export function bootstrapApp() {
         applyRefactoringChangeSet(ctx.state.cy, changeSet, ctx.state)
         
         stageDetectCyclicDependenciesCytoscape(ctx)
+
+        // Try remove method nodes to improve visual look (declutter) but for some reason some nodes cannot be removed without removing connected edges first
+        // Solved partially by removing (preventing) duplicate edges in applying changeset. HOWEVER, why does that change correspond with node.classes().includes(node.data("label")? that makes no sense what does the class have to do with duplicate edges
+        // const removeIds = []
+        // ctx.state.cy.nodes().filter((n) => nodeHasLabel(n, "Operation") && nodeHasLabel(n, "Modified")).forEach((ele) => {
+        //     if (ele.data("labels")) {
+        //         const newLabels = ele.data("labels").filter((l) => l !== "Modified")
+        //         ele.data("labels", newLabels);
+        //         ele.removeClass("Modified")
+        //         removeIds.push(ele.id())
+        //     }
+        // })
+        // for (const id of removeIds) {
+        //     const node = ctx.state.cy.getElementById(id)
+        //     if (id==="nl.tudelft.jpacman.npc.ghost.Inky.followPath(java.util.List,nl.tudelft.jpacman.board.Square)") {
+        //         // node.classes().includes(node.data("label")) || 
+        //         console.log("cannot remove: ", node)
+        //         node.connectedEdges().forEach((edge) => console.log(edge.data()))
+        //         // node.removeClass("Expanded")
+        //         // node.connectedEdges().remove()
+        //         node.remove()
+        //         console.warn(`Could not remove node`, node.data())
+        //         continue
+        //     }
+        //     node.remove()
+        // }
+
         stageRunVisualPipeline(ctx)
         actions.setEdgeVisibilityPreset('#tab-baseline', ctx.state.cy, 'calls')
         ui.renderDescription(refactoring.description, '#cycle-description', 'Accepted refactoring')

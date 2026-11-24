@@ -54,7 +54,9 @@ export abstract class IRefactoringStrategy<T extends RefactorSuggestion> {
      * */
     static addEdgeInteraction(cy: cytoscape.Core, changeSet: RefactoringChangeSet, interaction: string, source: string, sourceClass: string, target: string, targetClass: string) {
         if (source && target) {
+            const id = source + "-" + interaction + "-" + target
             changeSet.addedEdges.push({
+                id: id,
                 interaction: interaction,
                 group: "edges",
                 label: interaction,

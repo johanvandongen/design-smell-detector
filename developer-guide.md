@@ -4,6 +4,8 @@ cy = cytoscape
 hcy = headless cytoscape (non-visual transformations)
 scc = strongly connected component
 
+hcy is generally used as ground truth graph with all edges and nodes. The visual version cy is a filtered version with less edges to improve visual look (i.e. hide certain edges, and bundle edges) and to improve performance (less elements in graph is faster rendering (headless does not have to deal with rendering so then it does not matter as much))
+
 input json -> graphPreprocessing -> headlesstransformation -> visual transformtion -> post processing.
 
 input json has nodes and edges. Next to the codebase nodes and relationships, extra nodes such as dimension and category nodes are also present. These nodes are not part of the graph but are used for coloring and act as metadata

@@ -84,32 +84,11 @@ export function bootstrapApp() {
         ctx.state.cy.animate({fit: {eles: inspect.fitElements}})
     }
 
-    const stageDetectCyclicDependenciesCytoscape = tap((ctx) => {
+    const stageDetectCyclicDependencies = tap((ctx) => {
         const SCCs = GraphService.getStronglyConnectedComponents(ctx.state.hcy)
         ui.listCyclicDependencies(SCCs, (idx) => inspectCD(ctx, idx));
         ctx.state.stronglyConnectedComponents = SCCs;
     })
-    
-    const stageDetectCyclicDependencies = tap((ctx) => {
-        // Convert labeled nodes and edges into sequential indices for SCC detection
-        let nodeMapping = {};
-        let k = 1;
-        for (let node of ctx.graph.abstract.elements.nodes) {
-            if (!node.data.labels.includes('Type')) continue;
-            nodeMapping[k] = node.data.id;
-            nodeMapping[node.data.id] = k;
-            k += 1;
-        }
-        
-        const problematic_interactions = ['calls', 'holds', 'accepts', 'produces', "constructs"];
-        let edges = ctx.graph.abstract.elements.edges.filter(edge => problematic_interactions.includes(edge.data.label) && nodeMapping.hasOwnProperty(edge.data.source) && nodeMapping.hasOwnProperty(edge.data.target)).map(edge => [nodeMapping[edge.data.source], nodeMapping[edge.data.target]]);
-        const SSCs = GraphServiceNumeric.getStronglyConnectedComponents(ctx.graph.abstract.elements.nodes.length, edges);
-        
-        ui.listCyclicDependencies(SSCs.map(scc => scc.map(index => nodeMapping[index])), (idx) => inspectCD(ctx, idx));
-        
-        // Convert back to original node ids
-        ctx.state.stronglyConnectedComponents = SSCs.map(scc => scc.map(index => nodeMapping[index]));
-	});
 
 	const stageCreateHeadlessCy = async (ctx) => {
 		ctx.state.hcy = await ctx.cyAdapter.createHeadless(ctx.graph.abstract.elements);
@@ -303,7 +282,7 @@ export function bootstrapApp() {
         actions.restoreAllEdges("#tab-baseline")
         applyRefactoringChangeSet(ctx.state.cy, changeSet, ctx.state)
         
-        stageDetectCyclicDependenciesCytoscape(ctx)
+        stageDetectCyclicDependencies(ctx)
 
         // Try remove method nodes to improve visual look (declutter) but for some reason some nodes cannot be removed without removing connected edges first
         // Solved partially by removing (preventing) duplicate edges in applying changeset. HOWEVER, why does that change correspond with node.classes().includes(node.data("label")? that makes no sense what does the class have to do with duplicate edges
@@ -352,8 +331,8 @@ export function bootstrapApp() {
 	const initializeGraph = pipeAsync(
 		stageResetRuntimeState,
 		stagePrepareGraph,
-        stageDetectCyclicDependencies,
 		stageCreateHeadlessCy,
+        stageDetectCyclicDependencies,
 		stageRunHeadlessPipeline,
 		stageCreateVisualCy,
 		stageRunVisualPipeline,

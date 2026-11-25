@@ -1,20 +1,16 @@
 import cytoscape from "cytoscape";
-import { CytoscapeToNumericAdapter, GraphService } from '../smell-detection/graphService';
+import { GraphService } from '../smell-detection/graphService';
 import { edgeIsComposed } from "../graphPreProcessing/graphPreprocessor";
 import { DependencyList, DependencyItem, InspectDescription } from "./RefactoringDescription";
 
 export class CycleAnalyser {
     /** @deprecated use getInspectDescription */
     public getDescription(codebase: cytoscape.Core, scc: string[]) {
-        const [edges, mapToNum, mapToCy, k] = CytoscapeToNumericAdapter.getEdges(codebase)
-
-        const maxSubCyclesShown = 5
-        const subCycles = GraphService.getSmallestSubCycles(k, edges, scc.map((n) => mapToNum[n]), maxSubCyclesShown)
-
+        const subCycles = GraphService.getSmallestSubCycles(codebase, scc, 5)
         let description = ""
         for (let i=0; i<subCycles.length; i++) {
             description += subCycles.length > 1 ? `\nSub Cycle ${i+1}\n` : ""
-            description += this.cycleDescription(codebase, subCycles[i].map(n => mapToCy[n]))
+            description += this.cycleDescription(codebase, subCycles[i])
         }
 
         return description
@@ -72,10 +68,8 @@ export class CycleAnalyser {
             return new InspectDescription(sccDeps, [], scc.length); // Heuristic dont show subcycles if the scc is small
         }
 
-        const [edges, mapToNum, mapToCy, k] = CytoscapeToNumericAdapter.getEdges(codebase)
-        const maxSubCyclesShown = 3
-        const subCycles = GraphService.getSmallestSubCycles(k, edges, scc.map((n) => mapToNum[n]), maxSubCyclesShown)
-        const exampleCycle = subCycles.map((subCycle) => this.getCycleDespendencies(codebase, subCycle.map(n => mapToCy[n])))
+        const subCycles = GraphService.getSmallestSubCycles(codebase, scc, 3)
+        const exampleCycle = subCycles.map((subCycle) => this.getCycleDespendencies(codebase, subCycle))
         return new InspectDescription(sccDeps, exampleCycle, scc.length);
     }
 

@@ -1,5 +1,5 @@
 import { clearInfo } from '../uiControls/infoPanel.js';
-import { GraphService } from '../smell-detection/graphService.ts';
+import { GraphService, GraphServiceNumeric } from '../smell-detection/graphService.ts';
 import { GraphPreprocessor } from '../graphPreProcessing/graphPreprocessor.ts';
 import { augmentGraphWithDimensionMetadata, isColoringContractCompliant } from '../graphProcessing/dimensionMetadata.js';
 import { createActions } from './actions.js';
@@ -84,26 +84,8 @@ export function bootstrapApp() {
         ctx.state.cy.animate({fit: {eles: inspect.fitElements}})
     }
 
-    const detectCyclicDependenciesFromCytoscape = (cy) => {
-        let nodeMapping = {};
-        let k = 1;
-        cy.nodes().forEach((node) => {
-            if (nodeHasLabel(node, 'Type')) {
-                nodeMapping[k] = node.id();
-                nodeMapping[node.id()] = k;
-                k += 1;
-            };
-        })
-
-        const problematic_interactions = ['calls', 'holds', 'accepts', "produces", "constructs"];
-        let edges = cy.edges().filter((e) => problematic_interactions.includes(e.data("label")) && nodeMapping.hasOwnProperty(e.source().id()) && nodeMapping.hasOwnProperty(e.target().id())).map(edge => [nodeMapping[edge.source().id()], nodeMapping[edge.target().id()]]);
-        const SCCs = GraphService.getStronglyConnectedComponents(Object.keys(nodeMapping).length, edges);
-        return SCCs.map(scc => scc.map(index => nodeMapping[index]));
-
-    }
-
     const stageDetectCyclicDependenciesCytoscape = tap((ctx) => {
-        const SCCs = detectCyclicDependenciesFromCytoscape(ctx.state.hcy)
+        const SCCs = GraphService.getStronglyConnectedComponents(ctx.state.hcy)
         ui.listCyclicDependencies(SCCs, (idx) => inspectCD(ctx, idx));
         ctx.state.stronglyConnectedComponents = SCCs;
     })
@@ -121,7 +103,7 @@ export function bootstrapApp() {
         
         const problematic_interactions = ['calls', 'holds', 'accepts', 'produces', "constructs"];
         let edges = ctx.graph.abstract.elements.edges.filter(edge => problematic_interactions.includes(edge.data.label) && nodeMapping.hasOwnProperty(edge.data.source) && nodeMapping.hasOwnProperty(edge.data.target)).map(edge => [nodeMapping[edge.data.source], nodeMapping[edge.data.target]]);
-        const SSCs = GraphService.getStronglyConnectedComponents(ctx.graph.abstract.elements.nodes.length, edges);
+        const SSCs = GraphServiceNumeric.getStronglyConnectedComponents(ctx.graph.abstract.elements.nodes.length, edges);
         
         ui.listCyclicDependencies(SSCs.map(scc => scc.map(index => nodeMapping[index])), (idx) => inspectCD(ctx, idx));
         
@@ -207,7 +189,7 @@ export function bootstrapApp() {
             statePreview.hcy = ctx.state.hcy
             applyRefactoringChangeSet(statePreview.cy, changeSet, ctx.state)
 
-            const SCCs = detectCyclicDependenciesFromCytoscape(cynew)
+            const SCCs = GraphService.getStronglyConnectedComponents(cynew)
             const refactorRanker = new RefactorRanker()
             const score = refactorRanker.rank(ctx.state.hcy, cynew, scc, SCCs, refactoring, changeSet)
             rankedRefactorings.push({suggestion: refactoring, score: score})
@@ -262,7 +244,7 @@ export function bootstrapApp() {
 
         const scc = ctx.state.stronglyConnectedComponents[ctx.state.inspect.index]
         
-        const SCCs = detectCyclicDependenciesFromCytoscape(cynew) // should detect on unbundled edges (so before running visual pipeline like currently)
+        const SCCs = GraphService.getStronglyConnectedComponents(cynew) // should detect on unbundled edges (so before running visual pipeline like currently)
         updateSmellLabels(cynew, SCCs)
         const refactoringAnalyser = new RefactoringAnalyser(cynew, scc, SCCs)
         ctx.ui.renderRefactorDescription(refactoringAnalyser.analyseRefactoringResult(refactoring, changeSet))

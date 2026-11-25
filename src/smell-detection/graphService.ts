@@ -3,6 +3,19 @@ import cytoscape from "cytoscape";
 import { nodeHasLabel } from '../utilities/utils.js';
 
 export class GraphService {
+    public static getStronglyConnectedComponents(codebase: cytoscape.Core) {
+        const [edges, mapToNum, mapToCy, k] = CytoscapeToNumericAdapter.getEdges(codebase)
+        const numericSCCs = GraphServiceNumeric.getStronglyConnectedComponents(k, edges)
+        return numericSCCs.map(scc => scc.map((num) => mapToCy[num]));
+    }
+    public static getSmallestSubCycles(codebase: cytoscape.Core, scc: string[], maxSubCycles: number) {
+        const [edges, mapToNum, mapToCy, k] = CytoscapeToNumericAdapter.getEdges(codebase)
+        const numericSubCycles =  GraphServiceNumeric.getSmallestSubCycles(k, edges, scc.map((n) => mapToNum[n]), maxSubCycles)
+        return numericSubCycles.map((subCycle) => subCycle.map(n => mapToCy[n]))
+    }
+}
+
+export class GraphServiceNumeric {
     private static DFS1(u: number, adj: { [key: number]: number[] }, visited: boolean[], st: number[]) {
         visited[u] = true;
         for (let v of adj[u]) {
@@ -148,7 +161,8 @@ export class GraphService {
     }
 };
 
-export class CytoscapeToNumericAdapter {
+/** TOOD: rename classname. Classname is misleading since it does not convert everything to numeric, only classes and 5 dependency types. */
+class CytoscapeToNumericAdapter {
     public static getEdges(cytoscape: cytoscape.Core): [[number, number][], {[key: string]: number}, {[key: string]: string}, number] {
         const cyToNumMapping: {[key: string]: number} = {};
         const numToCyMapping: {[key: string]: string} = {};

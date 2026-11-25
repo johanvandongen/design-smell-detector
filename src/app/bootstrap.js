@@ -194,37 +194,18 @@ export function bootstrapApp() {
             const insideEdges = (edge) => sccNodeIds.includes(edge.data.source) && sccNodeIds.includes(edge.data.target);
             const boundaryEdges = (edge) => sccNodeIds.includes(edge.data.source) != sccNodeIds.includes(edge.data.target);
 
-            const prev = [
-                ...ctx.state.cy.edges().jsons(),
-                ...Object.values(ctx.state.hiddenEdges ?? {}).filter(Boolean).flatMap(edges => edges.jsons())
-            ]
-    
+
+            const prev = ctx.state.hcy.edges().jsons()
             const news = prev.filter((edge) => edge.data.source !== undefined && edge.data.target !== undefined && (insideEdges(edge) || boundaryEdges(edge)))
             const elements = {
-                nodes: ctx.state.cy.nodes().jsons(),
+                nodes: ctx.state.hcy.nodes().jsons(),
                 edges: news
             };
             const statePreview = createAppState()
 
             // console.log("edges length refac graph all vs scoped", prev.length, news.length, elements.nodes.length)
             const cynew = await ctx.cyAdapter.createHeadless(elements) //.createVisual(ctx.ui.$('#cy-preview'), elements, ctx.style, numEdges > 5000);
-            
-            let strategy;
-            switch( refactoring.kind) {
-                case "extract-interface":
-                    strategy = new ExtractInterfaceStrategy();
-                break;
-                case "dependency-injection":
-                    strategy = new DependencyInjectionStrategy();
-                break;
-                case "move-method":
-                    strategy = new MoveMethodStrategy();
-                break;
-                default:
-                    throw Error("No strategy found to apply refactoring of kind: " + refactoring.kind);
-            }
-                        
-            const changeSet = strategy.apply(ctx.state.hcy, refactoring);
+            const changeSet = getChangeSetForRefactoring(ctx.state.hcy, refactoring)
             statePreview.cy = cynew;
             statePreview.hcy = ctx.state.hcy
             applyRefactoringChangeSet(statePreview.cy, changeSet, ctx.state)
@@ -233,6 +214,7 @@ export function bootstrapApp() {
             const refactorRanker = new RefactorRanker()
             const score = refactorRanker.rank(ctx.state.hcy, cynew, scc, SCCs, refactoring, changeSet)
             rankedRefactorings.push({suggestion: refactoring, score: score})
+            console.log(`Ranked ${refactoring.description} with score: ${score}`)
         }
 
         rankedRefactorings.sort((a, b) => b.score - a.score)
@@ -244,31 +226,12 @@ export function bootstrapApp() {
         
         // Copy original graph including the hidden edges
         const elements = {
-            nodes: ctx.state.cy.nodes().jsons(),
-            edges: [
-                ...ctx.state.cy.edges().jsons(),
-                ...Object.values(ctx.state.hiddenEdges ?? {}).filter(Boolean).flatMap(edges => edges.jsons())
-            ]
+            nodes: ctx.state.hcy.nodes().jsons(),
+            edges: ctx.state.hcy.edges().jsons(),
         };
         const numEdges = ctx.state.hcy.edges().length;
         const cynew = await ctx.cyAdapter.createVisual(ctx.ui.$('#cy-preview'), elements, ctx.style, numEdges > 5000);
-        
-        let strategy;
-        switch( refactoring.kind) {
-            case "extract-interface":
-                strategy = new ExtractInterfaceStrategy();
-            break;
-            case "dependency-injection":
-                strategy = new DependencyInjectionStrategy();
-            break;
-            case "move-method":
-                strategy = new MoveMethodStrategy();
-            break;
-            default:
-                throw Error("No strategy found to apply refactoring of kind: " + refactoring.kind);
-        }
-                    
-        const changeSet = strategy.apply(ctx.state.hcy, refactoring);
+        const changeSet = getChangeSetForRefactoring(ctx.state.hcy, refactoring)
         statePreview.cy = cynew;
         // statePreview.hcy = ctx.cyAdapter.createHeadless(cynew.json().elements.clone());
         statePreview.hcy = ctx.state.hcy // TODO make hcy a clone of cynew o correct edgelabels can be derived in preview mode
@@ -301,31 +264,10 @@ export function bootstrapApp() {
             scc.forEach((id) => {
                 cynew.getElementById(id).data("labels").push("CD-smell")
             })
-        })
-
-        const displayList = (arr) => {
-            let result = "";
-            for (const e of arr) {
-                if (result.length > 50) {
-                    break
-                }
-                result += e
-            }
-            return result;
-        }
-
-        const defaultExplanation = 
-            "Added " + changeSet.addedNodes.length + " node(s)" + displayList(changeSet.addedNodes.map((n) => n.label)) + "\n" + 
-            "Added " + changeSet.addedEdges.length + " edge(s)" + "\n" + 
-            "Removed " + changeSet.removeNodeIds.length + " node(s)" + "\n" + 
-            "Removed " + changeSet.removeEdgeIds.length + " edge(s)" + "\n"
+        })          
         
-            
-        // const cdAnalyser = new CDAnalyser(cynew, scc, SCCs)
-        // let explanation = refactoring.description + "\n" + cdAnalyser.analyseRefactoringResult(refactoring, changeSet) + "\n" + (changeSet.description ?? defaultExplanation)
         const refactoringAnalyser = new RefactoringAnalyser(cynew, scc, SCCs)
         ctx.ui.renderRefactorDescription(refactoringAnalyser.analyseRefactoringResult(refactoring, changeSet))
-        // ctx.ui.renderRefactorDescription(explanation)
 
         statePreview.stronglyConnectedComponents = SCCs;
 

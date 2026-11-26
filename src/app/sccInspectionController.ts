@@ -136,6 +136,7 @@ export class SCCInspectionController {
             if (ele.data("labels")) {
                 const newLabels = ele.data("labels").filter((l: string) => l !== "CD-smell")
                 ele.data("labels", newLabels);
+                ele.removeClass("CD-smell")
             }
         })
         
@@ -151,6 +152,20 @@ export class SCCInspectionController {
         //     ele.data("labels").push("inspect")
         //     ele.addClass("inspect")
         // })
+    }
+    
+    removeModificationLabels(cy: cytoscape.Core) {
+        const labelsToBeRemoved = ["New", "Modified"]
+        labelsToBeRemoved.forEach((label) => {
+            cy.$(label).forEach((ele) => {
+                if (ele.data("labels")) {
+                    const newLabels = ele.data("labels").filter((l: string) => l !== label)
+                    ele.data("labels", newLabels);
+                    ele.removeClass(label)
+                    ele.removeClass("Expanded")
+                }
+            })
+        })
     }
     
     previewRefactoring = async (ctx: Context, refactoring: RefactorSuggestion) => {
@@ -226,6 +241,9 @@ export class SCCInspectionController {
         applyRefactoringChangeSet(ctx.state.cy, changeSet, ctx.state)
         
         this.detectCyclicDependencies(ctx)
+        this.updateSmellLabels(ctx.state.cy, ctx.state.stronglyConnectedComponents)
+        this.removeModificationLabels(ctx.state.hcy)
+        this.removeModificationLabels(ctx.state.cy)
 
         // Try remove method nodes to improve visual look (declutter) but for some reason some nodes cannot be removed without removing connected edges first
         // Solved partially by removing (preventing) duplicate edges in applying changeset. HOWEVER, why does that change correspond with node.classes().includes(node.data("label")? that makes no sense what does the class have to do with duplicate edges
@@ -254,6 +272,7 @@ export class SCCInspectionController {
         // }
 
         stageRunVisualPipeline(ctx)
+        ctx.actions.applyInitialColor(ctx.state.cy);
         ctx.actions.setEdgeVisibilityPreset('#tab-baseline', ctx.state.cy, 'calls')
         ctx.ui.renderDescription(refactoring.description, '#cycle-description', 'Accepted refactoring')
         this.listRefactorings(ctx)

@@ -19,7 +19,7 @@ export const recolorContainers = function (pCy) {
 export const cacheNodeStyles = function (pCy) {
 	pCy.nodes().forEach((n) => {
 		const style = n.style();
-        let borderColor = style['border-color'];
+        let borderColor = "grey"//style['border-color'];
         let backgroundColor = style['background-color']
         if (nodeHasLabel(n, "CD-smell")) {
             borderColor = "red";
@@ -177,44 +177,35 @@ export const applyRefactoringChangeSet = (graphToUpdate, changeSet, stateOrigina
         const cynew = graphToUpdate
 
         changeSet.addedNodes.forEach((n) => {
-            cynew.add({
+            const node = cynew.add({
                 group: 'nodes',
                 data: n,
             })
+            node.addClass(n.labels)
         })
         changeSet.addedNodes.forEach((n) => {
             if (n.parent) {
                 cynew.getElementById(n.id).move({parent: n.parent});
             }
         })
+
+        const copyNodeFromHcy = (node) => {
+            const nodeFromHcy = stateOriginal.hcy.getElementById(node);
+            if (nodeFromHcy.empty()) {
+                console.log("Could not add edge with node ", node)
+                return;
+            }
+            const nodeData = nodeFromHcy.data();
+            const newNode = cynew.add({
+                group: 'nodes',
+                data: {...nodeData, labels: [...nodeData.labels, "Modified"]}
+            });
+            newNode.addClass(nodeData.labels)
+        }
         
         changeSet.addedEdges.forEach((n) => {
-            const sourceNode = cynew.getElementById(n.source)
-            if (sourceNode.empty()) {
-                const nodeFromHcy = stateOriginal.hcy.getElementById(n.source);
-                if (!nodeFromHcy || ! nodeFromHcy.data()) {
-                    console.log("Could not add edge with source ", n.source)
-                    return;
-                }
-                const d = nodeFromHcy.data();
-                cynew.add({
-                    group: 'nodes',
-                    data: {...d, labels: [...d.labels, "Modified"]}
-                });
-            }
-            const targetNode = cynew.getElementById(n.target)
-            if (targetNode.empty()) {
-                const nodeFromHcy = stateOriginal.hcy.getElementById(n.target);
-                if (!nodeFromHcy || !nodeFromHcy.data()) {
-                    console.log("Could not add edge with target ", n.target)
-                    return;
-                }
-                const d = nodeFromHcy.data();
-                cynew.add({
-                    group: 'nodes',
-                    data: {...d, labels: [...d.labels, "Modified"]}
-                });
-            }
+            if (cynew.getElementById(n.source).empty()) {copyNodeFromHcy(n.source)}
+            if (cynew.getElementById(n.target).empty()) {copyNodeFromHcy(n.target)}
             
             const edgeExists = cynew.getElementById(n.id).nonempty()
             if (edgeExists) { return }
@@ -257,24 +248,6 @@ export const applyRefactoringChangeSet = (graphToUpdate, changeSet, stateOrigina
                 })
             }
         })
-
-        // removedNodes.remove();
-
-        // Remove red borders again, not working atm
-        // cynew.$(".CD-smell").forEach((ele) => {
-        //     if (ele.data("labels")) {
-        //         const newLabels = ele.data("labels").filter((l) => l !== "CD-smell")
-        //         if (ctx.state.inspect) {
-        //             scc = ctx.state.stronglyConnectedComponents[ctx.state.inspect.index]
-        //             console.log("yowaddup", scc, ele.id())
-        //             if (scc.indluces(ele.id())) {
-        //                 newLabels.push("inspect")
-        //             }
-        //         }
-        //         ele.data("labels", newLabels);
-        //     }
-        // })
-
         
         cynew.$('.New').forEach((ele) => {
             ele.addClass("Expanded")

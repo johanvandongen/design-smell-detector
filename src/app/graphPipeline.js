@@ -352,3 +352,11 @@ export function runHeadlessPipeline(headlessCy, state) {
 export function runVisualPipeline(cy, state) {
 	return createVisualPipeline({ state })({ cy });
 }
+
+export const stageRunVisualPipeline = tap((ctx) => {
+	const visualPipeline = createVisualPipeline({ state: ctx.state });
+    ctx.cyAdapter.batch(ctx.state.cy, () => {
+        visualPipeline({ cy: ctx.state.cy });
+    });
+    // deriveRelationshipLabels(state.hcy.json().elements).forEach((relation) => ctx.state.hiddenEdges[relation] = ctx.state.cy.edges(`[label = "${relation}"]`) )
+});

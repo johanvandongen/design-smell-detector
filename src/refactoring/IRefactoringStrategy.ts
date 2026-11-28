@@ -23,9 +23,10 @@ interface EdgeUpdate {
 }
 
 export abstract class IRefactoringStrategy<T extends RefactorSuggestion> {
-    static removeEdge(changeSet: RefactoringChangeSet, egde: cytoscape.EdgeSingular) {
+    /** Returns -1 if the edge was already removed, 0 if the edge was removed and 1 if the edge and its composed version was removed */
+    static removeEdge(changeSet: RefactoringChangeSet, egde: cytoscape.EdgeSingular): number {
         if (changeSet.removeEdges.map((e) => e.id).includes(egde.id())) {
-            return;
+            return -1;
         }
         changeSet.removeEdges.push({
             interaction: egde.data("interaction"),
@@ -38,14 +39,16 @@ export abstract class IRefactoringStrategy<T extends RefactorSuggestion> {
 
         // Remove composed edge if possible
         const sourceClass = nodeHasLabel(egde.source(), "Type") ? egde.source() : egde.source().parent().first()
-            const targetClass = nodeHasLabel(egde.target(), "Type") ? egde.target() : egde.target().parent().first()
-            const removedEdgesIds = new Set(changeSet.removeEdges.map((e) => e.id))
-            const interactionStillExists = sourceClass.children().outgoers().edges().filter((e) => !removedEdgesIds.has(e.id()) && edgeHasLabel(e, egde.data("interaction")) && e.target().id() === targetClass.id()).length > 0
-            if (!interactionStillExists) {
-                const composedEdge = sourceClass.outgoers().edges().filter((e) => edgeHasLabel(e,composedEdgesMap[egde.data("interaction")]) && e.target().id() === targetClass.id()).edges().first();
-                if (composedEdge.length === 0) {return;}
-                IRefactoringStrategy.removeEdge(changeSet, composedEdge)
-            }
+        const targetClass = nodeHasLabel(egde.target(), "Type") ? egde.target() : egde.target().parent().first()
+        const removedEdgesIds = new Set(changeSet.removeEdges.map((e) => e.id))
+        const interactionStillExists = sourceClass.children().outgoers().edges().filter((e) => !removedEdgesIds.has(e.id()) && edgeHasLabel(e, egde.data("interaction")) && e.target().id() === targetClass.id()).length > 0
+        if (!interactionStillExists) {
+            const composedEdge = sourceClass.outgoers().edges().filter((e) => edgeHasLabel(e,composedEdgesMap[egde.data("interaction")]) && e.target().id() === targetClass.id()).edges().first();
+            if (composedEdge.length === 0) {return 0;}
+            IRefactoringStrategy.removeEdge(changeSet, composedEdge)
+            return 1;
+        }
+        return 0
     }
 
     /** 

@@ -29,6 +29,8 @@ export class DependencyInjectionStrategy implements IRefactoringStrategy<Depende
             removeNodeIds: [], removeEdges: [],
         };
 
+        const composedHoldsEdgeRemoved = IRefactoringStrategy.removeEdge(refactoringChangeSet, typedEdges.edges().first()) === 1;
+
         // Add setter method
         refactoringChangeSet.addedNodes.push({
             id: newMethodId,
@@ -49,8 +51,8 @@ export class DependencyInjectionStrategy implements IRefactoringStrategy<Depende
 
         
         // Modify edges
-        const instantiatesEdges = field.outgoers().filter((e) => edgeHasLabel(e, "instantiates"))
-        refactoringChangeSet.removeEdgeIds.push(instantiatesEdges.first().id())
+        const instantiatesEdges = field.outgoers().edges().filter((e) => edgeHasLabel(e, "instantiates"))
+        IRefactoringStrategy.removeEdge(refactoringChangeSet, instantiatesEdges.edges().first())
 
         const setMethodNewParameterizesEdge = {
             interaction: "parameterizes",
@@ -58,27 +60,32 @@ export class DependencyInjectionStrategy implements IRefactoringStrategy<Depende
             label: "parameterizes",
             labels: ["New"],
             source: newMethodId,
-            target: typedEdges[0].target().id()
+            sourceClass: currentNode.id(),
+            target: typedEdges[0].target().id(),
+            targetClass: typedEdges[0].target().id()
         }
+        const e = setMethodNewParameterizesEdge //shorthand
 
         if (fieldHasInterfaceType) {
-            refactoringChangeSet.addedEdges.push(setMethodNewParameterizesEdge)
+            // refactoringChangeSet.addedEdges.push(setMethodNewParameterizesEdge)
+            IRefactoringStrategy.addEdgeInteraction(cy, refactoringChangeSet, e.interaction, e.source, e.sourceClass, e.target, e.targetClass)
             return refactoringChangeSet 
         }
 
         // Field has no interface type so add extract interface
         const {changeSet: extractInterfaceChangeSet, interfaceId} = ExtractInterfaceTransformation.apply(cy, {
-                kind: "extract-interface",
-                sourceClass: suggestion.sourceClass,
-                targetClass: suggestion.targetClass,
-                description: ""
-            })
+            kind: "extract-interface",
+            sourceClass: suggestion.sourceClass,
+            targetClass: suggestion.targetClass,
+            description: ""
+        })
 
-        refactoringChangeSet.addedEdges.push({...setMethodNewParameterizesEdge, target: interfaceId})
+
+        IRefactoringStrategy.addEdgeInteraction(cy, refactoringChangeSet, e.interaction, e.source, e.sourceClass, e.target, interfaceId)
 
         // Merge all changes from extract interface
         refactoringChangeSet.addedNodes = extractInterfaceChangeSet.addedNodes.concat(refactoringChangeSet.addedNodes)
-        refactoringChangeSet.addedEdges.push(...extractInterfaceChangeSet.addedEdges)
+        refactoringChangeSet.addedEdges.push(...(composedHoldsEdgeRemoved ? extractInterfaceChangeSet.addedEdges.filter((e) => !(e.interaction === "holds" && e.source === currentNode.id() && e.target === interfaceId)) : extractInterfaceChangeSet.addedEdges))
         refactoringChangeSet.removeEdgeIds.push(...extractInterfaceChangeSet.removeEdgeIds)
         refactoringChangeSet.updatedNodes.push(...extractInterfaceChangeSet.updatedNodes)
         refactoringChangeSet.focus = interfaceId;

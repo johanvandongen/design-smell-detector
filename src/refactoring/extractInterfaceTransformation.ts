@@ -106,7 +106,7 @@ export class ExtractInterfaceTransformation {
 
         // Redirect incoming edges to interface
         targetNode.incomers().edges().forEach((edge) => {
-            if (edgeHasLabel(edge, "typed") || edgeHasLabel(edge, "returns") || edgeHasLabel(edge, "parameterizes") || edgeHasLabel(edge, "invokes") || edgeHasLabel(edge, 'instantiates')) {
+            if (edgeHasLabel(edge, "typed") || edgeHasLabel(edge, "returns") || edgeHasLabel(edge, "parameterizes") || edgeHasLabel(edge, "invokes")) {
                 if (edgeHasLabel(edge, "typed") && edge.source().data("properties.kind") === "parameter") {
                     return;
                 }

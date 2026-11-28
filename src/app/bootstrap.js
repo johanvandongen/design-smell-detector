@@ -110,7 +110,7 @@ export function bootstrapApp() {
         ui.on('click', ui.$('#tool-info-button'), () => ui.$('#tool-info-dialog').showModal())
         ui.on('click', ui.$('#tool-info-close'), () => ui.$('#tool-info-dialog').close())
         ui.on('click', ui.$('#tool-info-dialog'), (e) => {if (e.target === ui.$('#tool-info-dialog')) {ui.$('#tool-info-dialog').close()}})
-        ui.on('change', ui.$('#select-sample-project'), (e) => {if (e.target.value !== "None") {initFromQueryParam(e.target.value)}})
+        ui.on('change', ui.$('#select-sample-project'), (e) => {if (e.target.value !== "None") {const params = new URLSearchParams(window.location.search); params.set('p', e.target.value); window.location.search = params}})
 	};
 
 	const initFromPayload = async ({ rawGraph, style, sourceName }) => {
@@ -128,7 +128,6 @@ export function bootstrapApp() {
 	};
 
 	const initFromUpload = async (file) => {
-        ui.$('#select-sample-project').value = "None"
 		ui.setFilename(`Software Visualization – ${file.name}`);
 		clearInfo('#infobody');
 		const [rawText, style] = await Promise.all([

@@ -43,6 +43,12 @@ export function bootstrapApp() {
 			scratchKey: 'style_default',
 			enabled: true,
 		}];
+        
+        ctx.state.hiddenEdges = {};
+        ctx.state.stronglyConnectedComponents = [];
+        ctx.state.hiddenNodes = {};
+        ctx.state.refactorings = [];
+        ctx.state.inspect = null;
 	});
 
 	const stagePrepareGraph = tap((ctx) => {
@@ -104,6 +110,7 @@ export function bootstrapApp() {
         ui.on('click', ui.$('#tool-info-button'), () => ui.$('#tool-info-dialog').showModal())
         ui.on('click', ui.$('#tool-info-close'), () => ui.$('#tool-info-dialog').close())
         ui.on('click', ui.$('#tool-info-dialog'), (e) => {if (e.target === ui.$('#tool-info-dialog')) {ui.$('#tool-info-dialog').close()}})
+        ui.on('change', ui.$('#select-sample-project'), (e) => {if (e.target.value !== "None") {initFromQueryParam(e.target.value)}})
 	};
 
 	const initFromPayload = async ({ rawGraph, style, sourceName }) => {
@@ -121,6 +128,7 @@ export function bootstrapApp() {
 	};
 
 	const initFromUpload = async (file) => {
+        ui.$('#select-sample-project').value = "None"
 		ui.setFilename(`Software Visualization – ${file.name}`);
 		clearInfo('#infobody');
 		const [rawText, style] = await Promise.all([
